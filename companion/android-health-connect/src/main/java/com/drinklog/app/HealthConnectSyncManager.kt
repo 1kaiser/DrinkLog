@@ -1,4 +1,4 @@
-package com.caphydro.app
+package com.drinklog.app
 
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.records.HydrationRecord
@@ -9,7 +9,7 @@ import java.time.Instant
 import java.time.ZoneOffset
 
 /**
- * Inserts CapHydro sip events into Android Health Connect with deterministic
+ * Inserts DrinkLog sip events into Android Health Connect with deterministic
  * clientRecordId deduplication so retried BLE syncs never double-log fluid intake.
  */
 class HealthConnectSyncManager(
@@ -37,7 +37,7 @@ class HealthConnectSyncManager(
             volume = Volume.milliliters(event.deltaMl.toDouble()),
             metadata = Metadata.autoRecorded(
                 device = Device(type = Device.TYPE_UNKNOWN),
-                clientRecordId = "caphydro-${deviceMac.replace(":", "")}-${event.seq}"
+                clientRecordId = "drinklog-${deviceMac.replace(":", "")}-${event.seq}"
             )
         )
         client.insertRecords(listOf(record))

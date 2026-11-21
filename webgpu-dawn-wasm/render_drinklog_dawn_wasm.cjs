@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * render_hydrocap_dawn_wasm.cjs
+ * render_drinklog_dawn_wasm.cjs
  * ------------------------------
  * Pure Node.js + LLVM Clang wasm32 C Kinematics + Native Dawn WebGPU (Vulkan RADV)
- * 3D studio animation renderer for HydroCap (zero browser / zero Chrome).
+ * 3D studio animation renderer for DrinkLog (zero browser / zero Chrome).
  *
  * Uses single-pass batched GPU queue submission + single mapAsync() readback
  * across all 180 frames (15 fps x 12.0 s) and composites WASM-computed 3D renders
@@ -25,9 +25,9 @@ Object.assign(globalThis, globals);
 const BASE_DIR = __dirname;
 const REPO_ROOT = path.resolve(BASE_DIR, "..");
 const OUT_DIR = path.join(REPO_ROOT, "outputs");
-const OUT_MP4 = path.join(OUT_DIR, "hydrocap_attachment_animation.mp4");
-const OUT_GIF = path.join(OUT_DIR, "hydrocap_attachment_animation.gif");
-const OUT_KF_SHEET = path.join(OUT_DIR, "hydrocap_dawn_webgpu_keyframes.png");
+const OUT_MP4 = path.join(OUT_DIR, "drinklog_attachment_animation.mp4");
+const OUT_GIF = path.join(OUT_DIR, "drinklog_attachment_animation.gif");
+const OUT_KF_SHEET = path.join(OUT_DIR, "drinklog_dawn_webgpu_keyframes.png");
 
 const WIDTH = 960;
 const HEIGHT = 540;
@@ -326,7 +326,7 @@ function alphaCompositeInPlace(dstRgba, srcRgba) {
 }
 
 function encodeGifFromMp4(mp4Path, gifPath, width, fps, maxColors) {
-  const pal = "/tmp/hydrocap_dawn_palette.png";
+  const pal = "/tmp/drinklog_dawn_palette.png";
   const r1 = spawnSync("ffmpeg", [
     "-y", "-threads", "3", "-i", mp4Path,
     "-vf", `fps=${fps},scale=${width}:-1:flags=lanczos,palettegen=max_colors=${maxColors}:stats_mode=diff`,
@@ -351,7 +351,7 @@ async function main() {
   fs.mkdirSync(OUT_DIR, { recursive: true });
 
   // 1. Instantiate Clang-compiled wasm32 kinematics kernel
-  const wasmPath = path.join(BASE_DIR, "wasm", "hydrocap_kinematics.wasm");
+  const wasmPath = path.join(BASE_DIR, "wasm", "drinklog_kinematics.wasm");
   const wasmMemory = new WebAssembly.Memory({ initial: 4 });
   const { instance: wasmInst } = await WebAssembly.instantiate(fs.readFileSync(wasmPath), {
     env: { __linear_memory: wasmMemory },
@@ -408,7 +408,7 @@ async function main() {
     bottleBase: uploadMesh(makeCylinder(3.05, 3.05, 0.22, 48)),
     waterCyl: uploadMesh(makeCylinder(2.96, 2.96, 1.0, 48)),
     meniscus: uploadMesh(makeTorus(2.92, 0.07, 48, 10)),
-    // Standard PET cap (Ø30.5 mm -> R = 1.525 u) & 1.10x HydroCap (Ø33.6 mm -> R = 1.68 u)
+    // Standard PET cap (Ø30.5 mm -> R = 1.525 u) & 1.10x DrinkLog (Ø33.6 mm -> R = 1.68 u)
     screwCap: uploadMesh(makeCylinder(1.525, 1.525, 1.35, 48)),
     collar: uploadMesh(makeCylinder(1.68, 1.68, 0.54, 56)),
     silPad: uploadMesh(makeBox(0.14, 0.42, 0.65)),
@@ -615,7 +615,7 @@ async function main() {
     // Translucent Glass Bottle Shell (rendered in glass pass after inner water)
     addDraw(glassList, meshes.bottleGlass, "glass", [0, bottleLiftY, 0, 0, 0, 0, 1, 1, 1], [0.62, 0.84, 0.97, 0.32], [0,0,0,0], 1, eye, tgt);
 
-    // HydroCap Assembly base Y
+    // DrinkLog Assembly base Y
     const capY = bottleLiftY + 14.35 + (stage === 1 ? capDropY : capLift);
     addDraw(opaqueList, meshes.collar, "opaque", [0, capY + 0.27, 0, 0, capRotY + scrollRot, 0, 1, 1, 1], [0.17, 0.24, 0.31, 1.0], [0,0,0,0], 0, eye, tgt);
 

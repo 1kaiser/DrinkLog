@@ -171,7 +171,7 @@ def render_orthographic_views(out_png: str, mesh_pet: trimesh.Trimesh) -> None:
     fig = plt.figure(figsize=(15.5, 11.5), dpi=200)
     fig.patch.set_facecolor("#FFFFFF")
     fig.suptitle(
-        "HydroCap 1.1x D_cap Proportioned Architecture — Universal Ø28 mm Core Across 4 Standard Bottle Cap Tiers",
+        "DrinkLog 1.1x D_cap Proportioned Architecture — Universal Ø28 mm Core Across 4 Standard Bottle Cap Tiers",
         fontsize=13.5, fontweight="bold", color="#1A252C", y=0.975
     )
 

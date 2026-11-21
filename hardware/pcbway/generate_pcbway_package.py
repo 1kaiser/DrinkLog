@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Generate complete PCBWay-ready manufacturing & KiCad 8 design package for
-HydroCap V2.1 Universal Core (Ø 28.0 mm, 0.8 mm thick, 4-layer FR4, ENIG-RoHS)
+DrinkLog V2.1 Universal Core (Ø 28.0 mm, 0.8 mm thick, 4-layer FR4, ENIG-RoHS)
 so ONE single PCBA fits ALL 1.1x D_cap shells (33.6 mm PET up to 69.3 mm Wide):
   - KiCad 8 project, schematic, and PCB (.kicad_pro, .kicad_sch, .kicad_pcb)
   - RS-274X Gerbers (.GTL, .G2, .G3, .GBL, .GTS, .GBS, .GTO, .GBO, .GTP, .GM1)
@@ -256,13 +256,13 @@ def build_parts() -> List[PartDef]:
         PadSpec("4",  2.7, 0.0, 1.2, 1.8, True, 0.0, "VIN1N"),
     ]
     parts.append(PartDef(
-        "J3", "BRIDGE_4PAD", "HydroCap", "FLEXURE_WIRE_PADS",
+        "J3", "BRIDGE_4PAD", "DrinkLog", "FLEXURE_WIRE_PADS",
         "Bottom Solder Pads for 4x BF1000-2AA Wheatstone Bridge (E+/E-/S+/S-)",
         "PAD_4x1.8mm", "PCB_PAD_DNP", "N/A (Solder Pads)",
         6.2, -5.2, 0.0, "Bottom", 7.2, 2.0, j3_pads
     ))
     parts.append(PartDef(
-        "J4", "LIPO_401520_PADS", "HydroCap", "BAT_SOLDER_PADS",
+        "J4", "LIPO_401520_PADS", "DrinkLog", "BAT_SOLDER_PADS",
         "Bottom Solder Pads for 401520 100 mAh (or 302030 150 mAh) LiPo",
         "PAD_2x2.2mm", "PCB_PAD_DNP", "N/A (Solder Pads)",
         -6.2, 1.2, 0.0, "Bottom", 5.6, 2.2, _rect_pads_2pin(3.2, 1.8, 2.2, "VBAT", "GND")
@@ -358,19 +358,19 @@ def _assert_balanced(text: str, name: str) -> None:
 
 def write_kicad_project(kicad_dir: str, parts: List[PartDef], routes: List[Tuple[str, float, List[Tuple[float, float]]]]) -> None:
     os.makedirs(kicad_dir, exist_ok=True)
-    pro_path = os.path.join(kicad_dir, "HydroCap_V2.kicad_pro")
-    sch_path = os.path.join(kicad_dir, "HydroCap_V2.kicad_sch")
-    pcb_path = os.path.join(kicad_dir, "HydroCap_V2.kicad_pcb")
+    pro_path = os.path.join(kicad_dir, "DrinkLog_V2.kicad_pro")
+    sch_path = os.path.join(kicad_dir, "DrinkLog_V2.kicad_sch")
+    pcb_path = os.path.join(kicad_dir, "DrinkLog_V2.kicad_pcb")
 
     with open(pro_path, "w", encoding="utf-8") as f:
-        f.write('{\n  "board": { "design_settings": { "defaults": { "board_outline_line_width": 0.1, "copper_line_width": 0.2 } } },\n  "meta": { "filename": "HydroCap_V2.kicad_pro", "version": 1 },\n  "schematic": { "meta": { "version": 1 } }\n}\n')
+        f.write('{\n  "board": { "design_settings": { "defaults": { "board_outline_line_width": 0.1, "copper_line_width": 0.2 } } },\n  "meta": { "filename": "DrinkLog_V2.kicad_pro", "version": 1 },\n  "schematic": { "meta": { "version": 1 } }\n}\n')
 
     sch_lines = [
-        '(kicad_sch (version 20231120) (generator "HydroCapGenerator")',
+        '(kicad_sch (version 20231120) (generator "DrinkLogGenerator")',
         f'  (uuid "{uuid.uuid4()}")',
         '  (paper "A3")',
         '  (title_block',
-        '    (title "HydroCap V2.1 Universal 28mm Core — IPX8 USB-C + MDBT50Q + NAU7802YG + BMA400")',
+        '    (title "DrinkLog V2.1 Universal 28mm Core — IPX8 USB-C + MDBT50Q + NAU7802YG + BMA400")',
         '    (rev "2.1")',
         '    (date "2026-11-22")',
         '    (comment 1 "PCBWay 4-Layer 0.8mm Circular 28.0mm ENIG — Fits All 1.1x D_cap Shells")',
@@ -380,20 +380,20 @@ def write_kicad_project(kicad_dir: str, parts: List[PartDef], routes: List[Tuple
     for idx, p in enumerate(parts):
         sx = 40.0 + (idx % 4) * 85.0
         sy = 45.0 + (idx // 4) * 45.0
-        sch_lines.append(f'  (symbol_instance (path "/{uuid.uuid4()}") (reference "{p.ref}") (unit 1) (value "{p.value}") (footprint "HydroCap:{p.pkg}"))')
+        sch_lines.append(f'  (symbol_instance (path "/{uuid.uuid4()}") (reference "{p.ref}") (unit 1) (value "{p.value}") (footprint "DrinkLog:{p.pkg}"))')
         sch_lines.append(f'  (text "{p.ref}: {p.mpn}\\n{p.desc}" (exclude_from_sim no) (at {sx:.1f} {sy:.1f} 0) (effects (font (size 1.5 1.5))))')
         for pad in p.pads:
             if pad.net and pad.net != "NC":
                 sch_lines.append(f'  (label "{pad.net}" (at {sx + 2.0:.1f} {sy + 4.0:.1f} 0) (effects (font (size 1.27 1.27))))')
     sch_lines.append(')')
     sch_txt = "\n".join(sch_lines) + "\n"
-    _assert_balanced(sch_txt, "HydroCap_V2.kicad_sch")
+    _assert_balanced(sch_txt, "DrinkLog_V2.kicad_sch")
     with open(sch_path, "w", encoding="utf-8") as f:
         f.write(sch_txt)
 
     cx, cy = 100.0, 100.0
     pcb_lines = [
-        '(kicad_pcb (version 20240108) (generator "HydroCapGenerator")',
+        '(kicad_pcb (version 20240108) (generator "DrinkLogGenerator")',
         '  (general (thickness 0.8))',
         '  (paper "A4")',
         '  (layers',
@@ -418,7 +418,7 @@ def write_kicad_project(kicad_dir: str, parts: List[PartDef], routes: List[Tuple
         layer_str = "F.Cu" if p.layer == "Top" else "B.Cu"
         silk_str = "F.SilkS" if p.layer == "Top" else "B.SilkS"
         px, py = cx + p.x, cy - p.y
-        pcb_lines.append(f'  (footprint "HydroCap:{p.pkg}" (layer "{layer_str}") (at {px:.3f} {py:.3f} {p.rot:.1f})')
+        pcb_lines.append(f'  (footprint "DrinkLog:{p.pkg}" (layer "{layer_str}") (at {px:.3f} {py:.3f} {p.rot:.1f})')
         pcb_lines.append(f'    (property "Reference" "{p.ref}" (at 0 0 0) (layer "{silk_str}"))')
         pcb_lines.append(f'    (property "Value" "{p.value}" (at 0 1.5 0) (layer "{silk_str}"))')
         for pad in p.pads:
@@ -436,7 +436,7 @@ def write_kicad_project(kicad_dir: str, parts: List[PartDef], routes: List[Tuple
 
     pcb_lines.append(')')
     pcb_txt = "\n".join(pcb_lines) + "\n"
-    _assert_balanced(pcb_txt, "HydroCap_V2.kicad_pcb")
+    _assert_balanced(pcb_txt, "DrinkLog_V2.kicad_pcb")
     with open(pcb_path, "w", encoding="utf-8") as f:
         f.write(pcb_txt)
 
@@ -446,7 +446,7 @@ def _fmt_g(val_mm: float) -> str:
 
 
 def _gerber_header(title: str) -> List[str]:
-    return [f"G04 HydroCap V2.1 28mm {title}*", "%FSLAX46Y46*%", "%MOMM*%", "%LPD*%"]
+    return [f"G04 DrinkLog V2.1 28mm {title}*", "%FSLAX46Y46*%", "%MOMM*%", "%LPD*%"]
 
 
 def write_gerbers_and_zip(fab_dir: str, parts: List[PartDef], routes: List[Tuple[str, float, List[Tuple[float, float]]]]) -> str:
@@ -522,24 +522,24 @@ def write_gerbers_and_zip(fab_dir: str, parts: List[PartDef], routes: List[Tuple
         return lines
 
     files: Dict[str, List[str]] = {
-        "HydroCap_V2.GTL": emit_copper_layer("F.Cu", "Top Copper"),
-        "HydroCap_V2.G2":  emit_plane("Inner1 GND Plane"),
-        "HydroCap_V2.G3":  emit_plane("Inner2 3V3 Power Plane"),
-        "HydroCap_V2.GBL": emit_copper_layer("B.Cu", "Bottom Copper"),
-        "HydroCap_V2.GTS": emit_copper_layer("F.Cu", "Top Solder Mask", include_mask=True),
-        "HydroCap_V2.GBS": emit_copper_layer("B.Cu", "Bottom Solder Mask", include_mask=True),
-        "HydroCap_V2.GTP": emit_copper_layer("F.Cu", "Top Solder Paste", include_paste=True),
-        "HydroCap_V2.GTO": emit_silk("Top", "Top Silkscreen"),
-        "HydroCap_V2.GBO": emit_silk("Bottom", "Bottom Silkscreen"),
-        "HydroCap_V2.GM1": gm1,
-        "HydroCap_V2-PTH.drl": [
-            "M48", "; HydroCap V2.1 Plated Through-Hole Vias", "METRIC,TZ",
+        "DrinkLog_V2.GTL": emit_copper_layer("F.Cu", "Top Copper"),
+        "DrinkLog_V2.G2":  emit_plane("Inner1 GND Plane"),
+        "DrinkLog_V2.G3":  emit_plane("Inner2 3V3 Power Plane"),
+        "DrinkLog_V2.GBL": emit_copper_layer("B.Cu", "Bottom Copper"),
+        "DrinkLog_V2.GTS": emit_copper_layer("F.Cu", "Top Solder Mask", include_mask=True),
+        "DrinkLog_V2.GBS": emit_copper_layer("B.Cu", "Bottom Solder Mask", include_mask=True),
+        "DrinkLog_V2.GTP": emit_copper_layer("F.Cu", "Top Solder Paste", include_paste=True),
+        "DrinkLog_V2.GTO": emit_silk("Top", "Top Silkscreen"),
+        "DrinkLog_V2.GBO": emit_silk("Bottom", "Bottom Silkscreen"),
+        "DrinkLog_V2.GM1": gm1,
+        "DrinkLog_V2-PTH.drl": [
+            "M48", "; DrinkLog V2.1 Plated Through-Hole Vias", "METRIC,TZ",
             "T1C0.300", "%", "T1",
             "X-4.200Y-7.800", "X0.000Y0.000", "X5.000Y2.400", "X-3.000Y1.800",
             "M30",
         ],
-        "HydroCap_V2-NPTH.drl": [
-            "M48", "; HydroCap V2.1 4x M1.6 Universal Core Mounting Holes", "METRIC,TZ",
+        "DrinkLog_V2-NPTH.drl": [
+            "M48", "; DrinkLog V2.1 4x M1.6 Universal Core Mounting Holes", "METRIC,TZ",
             "T1C1.600", "%", "T1",
         ] + [f"X{hx:.3f}Y{hy:.3f}" for hx, hy in MOUNT_HOLES_MM] + ["M30"],
     }
@@ -548,7 +548,7 @@ def write_gerbers_and_zip(fab_dir: str, parts: List[PartDef], routes: List[Tuple
         with open(os.path.join(gerb_dir, fname), "w", encoding="utf-8") as f:
             f.write("\n".join(content) + "\n")
 
-    zip_path = os.path.join(fab_dir, "HydroCap_V2_PCBWay_Gerbers.zip")
+    zip_path = os.path.join(fab_dir, "DrinkLog_V2_PCBWay_Gerbers.zip")
     with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         for fname in sorted(files):
             zf.write(os.path.join(gerb_dir, fname), arcname=fname)
@@ -557,13 +557,13 @@ def write_gerbers_and_zip(fab_dir: str, parts: List[PartDef], routes: List[Tuple
 
 def write_pcba_csvs(pcba_dir: str, parts: List[PartDef]) -> None:
     os.makedirs(pcba_dir, exist_ok=True)
-    with open(os.path.join(pcba_dir, "HydroCap_V2_PCBWay_BOM.csv"), "w", newline="", encoding="utf-8") as f:
+    with open(os.path.join(pcba_dir, "DrinkLog_V2_PCBWay_BOM.csv"), "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(["Line#", "Designator", "Qty", "Manufacturer", "Part Number", "Description", "Package", "Type", "Distributor Ref"])
         for idx, p in enumerate(parts, start=1):
             w.writerow([idx, p.ref, 1, p.mfg, p.mpn, p.desc, p.pkg, p.assy_type, p.dist_ref])
 
-    with open(os.path.join(pcba_dir, "HydroCap_V2_PCBWay_CPL_PickAndPlace.csv"), "w", newline="", encoding="utf-8") as f:
+    with open(os.path.join(pcba_dir, "DrinkLog_V2_PCBWay_CPL_PickAndPlace.csv"), "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(["Designator", "Mid X (mm)", "Mid Y (mm)", "Layer", "Rotation", "Package", "Value"])
         for p in parts:
@@ -574,7 +574,7 @@ def render_pcb_views(out_png: str, parts: List[PartDef], routes: List[Tuple[str,
     fig, (ax_t, ax_b) = plt.subplots(1, 2, figsize=(14.5, 7.2), dpi=200)
     fig.patch.set_facecolor("#FFFFFF")
     fig.suptitle(
-        "HydroCap V2.1 Universal Core PCB (Ø 28.0 mm × 0.8 mm, 4L ENIG) — Fits 1.1x D_cap (33.6 mm PET -> 69.3 mm Wide)",
+        "DrinkLog V2.1 Universal Core PCB (Ø 28.0 mm × 0.8 mm, 4L ENIG) — Fits 1.1x D_cap (33.6 mm PET -> 69.3 mm Wide)",
         fontsize=12.5, fontweight="bold", color="#1A252C", y=0.97
     )
 

@@ -1,12 +1,12 @@
 // ============================================================================
-// HydroCap: 1.1x D_cap Proportioned Waterproof Universal Bottle-Cap CAD
+// DrinkLog: 1.1x D_cap Proportioned Waterproof Universal Bottle-Cap CAD
 // Parametric OpenSCAD Design:
 //   - Universal Ø28.0 mm PCBWay Core + Ø30.0 mm 301-SS 3-Spoke Flexure
 //   - Outer Diameter = 1.10 x D_cap across 4 bottle tiers:
-//       "pet_30"   : 30.5 mm cap -> 33.6 mm HydroCap (zero overhang!)
-//       "sport_40" : 41.0 mm cap -> 45.1 mm HydroCap
-//       "flask_48" : 48.0 mm cap -> 52.8 mm HydroCap
-//       "wide_63"  : 63.0 mm cap -> 69.3 mm HydroCap
+//       "pet_30"   : 30.5 mm cap -> 33.6 mm DrinkLog (zero overhang!)
+//       "sport_40" : 41.0 mm cap -> 45.1 mm DrinkLog
+//       "flask_48" : 48.0 mm cap -> 52.8 mm DrinkLog
+//       "wide_63"  : 63.0 mm cap -> 69.3 mm DrinkLog
 // ============================================================================
 
 CAP_TIER    = "pet_30";         // "pet_30" | "sport_40" | "flask_48" | "wide_63"

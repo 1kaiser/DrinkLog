@@ -8,7 +8,7 @@
 #include "hydration_core.h"
 #include "sensor_drivers.h"
 
-using namespace caphydro;
+using namespace drinklog;
 
 static BLEService        hydrationSvc(SVC_HYDRATION_UUID);
 static BLECharacteristic eventChar(CHR_EVENT_UUID);

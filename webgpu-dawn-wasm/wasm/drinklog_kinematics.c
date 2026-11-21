@@ -1,5 +1,5 @@
 /*
- * HydroCap Relocation-Free wasm32 Kinematics, MVP Matrix & Physics Kernel.
+ * DrinkLog Relocation-Free wasm32 Kinematics, MVP Matrix & Physics Kernel.
  * Updated for 1.10x D_cap Proportioned Shell Family (pet_30: 33.6 mm on 30.5 mm cap)
  * + Universal Ø28.0 mm PCBWay Core & Ø30.0 mm 3-Spoke Flexure.
  */
@@ -37,8 +37,8 @@ static inline float wasm_tanf(float x) {
 }
 
 /*
- * Evaluate analytical HydroCap state at time t_sec over duration_sec (12.0s).
- * Proportions: D_cap = 30.5 mm (r = 1.525 u), D_hydrocap = 33.6 mm (1.10x, r = 1.68 u).
+ * Evaluate analytical DrinkLog state at time t_sec over duration_sec (12.0s).
+ * Proportions: D_cap = 30.5 mm (r = 1.525 u), D_drinklog = 33.6 mm (1.10x, r = 1.68 u).
  */
 void wasm_eval_stage(float t_sec, float duration_sec, float* out_state) {
     float dur = (duration_sec > 0.1f) ? duration_sec : 12.0f;

@@ -1,7 +1,7 @@
-# 💧 HydroCap — Concept Universal Waterproof BLE Smart Bottle-Cap Hydration Tracker
+# 💧 DrinkLog — Concept Universal Waterproof BLE Smart Bottle-Cap Hydration Tracker
 
 <p align="center">
-  <img src="outputs/hydrocap_attachment_animation.gif" alt="HydroCap Node.js + Clang WASM + Dawn WebGPU 3D Animation" width="820"/>
+  <img src="outputs/drinklog_attachment_animation.gif" alt="DrinkLog Node.js + Clang WASM + Dawn WebGPU 3D Animation" width="820"/>
 </p>
 
 <p align="center">
@@ -16,9 +16,9 @@
 </p>
 
 > [!NOTE]
-> **Concept & Reference Design:** HydroCap is currently a **pre-prototype hardware and software concept**. No physical PCB, enclosure, strain-gauge flexure, or live BLE/USB-C unit has been fabricated or bench-tested yet. All power budgets, mechanical tolerances, PCBWay deliverables, firmware modules, and companion code are validated in software/simulation only (`C++17` unit tests, `pytest`, programmatic DRC/STL/DXF checks, and Dawn WebGPU/WASM + Three.js renders). Review KiCad footprints, RF antenna clearance, IP67 seal compression, and mechanical fits before ordering prototype hardware.
+> **Concept & Reference Design:** DrinkLog is currently a **pre-prototype hardware and software concept**. No physical PCB, enclosure, strain-gauge flexure, or live BLE/USB-C unit has been fabricated or bench-tested yet. All power budgets, mechanical tolerances, PCBWay deliverables, firmware modules, and companion code are validated in software/simulation only (`C++17` unit tests, `pytest`, programmatic DRC/STL/DXF checks, and Dawn WebGPU/WASM + Three.js renders). Review KiCad footprints, RF antenna clearance, IP67 seal compression, and mechanical fits before ordering prototype hardware.
 
-**HydroCap** is a conceptual, ultra-thin (`11.0 mm` added cap height), rechargeable, **IP67 waterproof USB-C** smart bottle-cap gripper proportioned at **`1.10 × D_cap`** (`33.6 mm` for standard PET water bottles up to `69.3 mm` for wide-mouth flasks) around a **universal `Ø 28.0 mm` drop-in PCBWay core** designed to measure fluid consumed from **pick-up / put-down gravimetric weight differences** and log every sip into **Android Health Connect** (`HydrationRecord`).
+**DrinkLog** is a conceptual, ultra-thin (`11.0 mm` added cap height), rechargeable, **IP67 waterproof USB-C** smart bottle-cap gripper proportioned at **`1.10 × D_cap`** (`33.6 mm` for standard PET water bottles up to `69.3 mm` for wide-mouth flasks) around a **universal `Ø 28.0 mm` drop-in PCBWay core** designed to measure fluid consumed from **pick-up / put-down gravimetric weight differences** and log every sip into **Android Health Connect** (`HydrationRecord`).
 
 Everything needed to review, simulate, and prototype the concept — **3D-printable STLs**, **laser-cut flexure DXF**, **PCBWay Gerber/BOM/CPL & KiCad 8 files**, **firmware**, **Node.js + Clang `wasm32` + Native Dawn WebGPU animation (`webgpu-dawn-wasm/`)**, **interactive Three.js viewer (`web-threejs/`)**, and **BLE/Health Connect companion code** — lives in this repository.
 
@@ -26,8 +26,8 @@ Everything needed to review, simulate, and prototype the concept — **3D-printa
 
 ## ✨ Key Highlights
 
-* 📐 **`1.10 × D_cap` Zero-Overhang Proportions:** Instead of a bulky universal puck overhanging a small PET bottle, HydroCap scales cleanly across 4 standard cap tiers (`33.6 / 45.1 / 52.8 / 69.3 mm`) while sharing **one universal `Ø 28.0 mm` PCBWay PCBA + `Ø 30.0 mm` 301-SS flexure core** across all 4 shells:
-  | Tier Preset | Bottle Type | Nominal Cap OD (`D_cap`) | HydroCap OD (`1.10 × D_cap`) | Battery |
+* 📐 **`1.10 × D_cap` Zero-Overhang Proportions:** Instead of a bulky universal puck overhanging a small PET bottle, DrinkLog scales cleanly across 4 standard cap tiers (`33.6 / 45.1 / 52.8 / 69.3 mm`) while sharing **one universal `Ø 28.0 mm` PCBWay PCBA + `Ø 30.0 mm` 301-SS flexure core** across all 4 shells:
+  | Tier Preset | Bottle Type | Nominal Cap OD (`D_cap`) | DrinkLog OD (`1.10 × D_cap`) | Battery |
   | :--- | :--- | :---: | :---: | :---: |
   | **`pet_30`** *(Default)* | Standard PET Water / Soda (`28 mm` neck) | `30.5 mm` | **`33.6 mm`** | `401520` (`100 mAh`, ~`8.0 mo`) |
   | **`sport_40`** | Sports / Wide PET (`38 mm` neck) | `41.0 mm` | **`45.1 mm`** | `302030` (`150 mAh`, ~`11.8 mo`) |
@@ -43,13 +43,13 @@ Everything needed to review, simulate, and prototype the concept — **3D-printa
 ## 🧩 Hardware Components & Architecture
 
 <p align="center">
-  <img src="hardware/diagrams/system_circuit_schematic.png" alt="HydroCap Circuit & Power-Gating Schematic" width="840"/>
+  <img src="hardware/diagrams/system_circuit_schematic.png" alt="DrinkLog Circuit & Power-Gating Schematic" width="840"/>
 </p>
 
 <details>
 <summary><b>🔬 1. Physics & Gravimetric Sensing Mechanics (Why Cap-Lift Works)</b></summary>
 
-1. **Cap-Lift Load Path (`100%` Bottle Mass):** When a bottle rests on a desk, its cap carries zero load. HydroCap embeds a **flush-folding finger bail** on the upper housing; lifting the bottle by the bail routes `100%` of gravity through the `0.8 mm` flexure between the upper puck and lower cap clamp.
+1. **Cap-Lift Load Path (`100%` Bottle Mass):** When a bottle rests on a desk, its cap carries zero load. DrinkLog embeds a **flush-folding finger bail** on the upper housing; lifting the bottle by the bail routes `100%` of gravity through the `0.8 mm` flexure between the upper puck and lower cap clamp.
 2. **Pre-Drink vs. Post-Drink Delta:** Because screw caps are removed while drinking, each stabilized lift records $m_k$:
    $$\Delta V_{\text{mL}} = \frac{m_{k-1} - m_k}{\rho_{\text{water}}}, \qquad \rho_{\text{water}} \approx 1.00\text{ g/mL}$$
    * **$\Delta m \ge +15\text{ g}$:** Logged as **fluid consumed** (`delta_ml > 0`).
@@ -68,9 +68,9 @@ Everything needed to review, simulate, and prototype the concept — **3D-printa
 | 🔌 | **Waterproof USB-C** | **Amphenol `12402448E512A`** + `USBLC6-2SC6` + `2× 5.1kΩ` | IPX8 mid-mount O-ring USB-C, ESD/TVS protection, CC1/CC2 5V negotiation | [`PCBWAY_ORDER_GUIDE.md`](hardware/pcbway/PCBWAY_ORDER_GUIDE.md) |
 | 🔋 | **Charger & LDO** | **TI `BQ25180YBGR`** + **`TPS7A0233PDBVR`** + **`302030` 150 mAh LiPo** | `15 nA` ship mode, I²C programmable `VBATREG`, `25 nA` 3.3V LDO, `3.0 mm` pouch | [`DESIGN_SPEC.md`](docs/DESIGN_SPEC.md) |
 | 📡 | **Wake IMU** | **Bosch `BMA400`** (`I2C 0x14`) | `0.9 µA` at `25 Hz` auto-wake interrupt (`INT1 -> D1`); validates vertical hold | [`sensor_drivers.h`](firmware/include/sensor_drivers.h) |
-| ⚖️ | **24-bit Bridge ADC** | **Nuvoton `NAU7802SGI`** (`I2C 0x2A`) | Internal `2.4 V AVDD` LDO goes **High-Z** in sleep (`0 µA` bridge leak) | [`circuit_pinout_v1.md`](hardware/netlist/circuit_pinout_v1.md) |
+| ⚖️ | **24-bit Bridge ADC** | **Nuvoton `NAU7802YG`** (`QFN-16`, `I2C 0x2A`) | Internal `2.4 V AVDD` LDO goes **High-Z** in sleep (`0 µA` bridge leak) | [`circuit_pinout_v1.md`](hardware/netlist/circuit_pinout_v1.md) |
 | 📏 | **Strain / Load Cell** | **`4× BF1000-3AA` (`1000 Ω`)** on `0.8 mm` `301-SS` flexure *(Alt: TE `FX29` I²C)* | `2.4 mA` active bridge draw (`3×` lower than `350 Ω` cells); `0.35 mm` hard-stop | [`09_flexure_3spoke_0p8mm_301SS.dxf`](cad/stl_print_parts/09_flexure_3spoke_0p8mm_301SS.dxf) |
-| 🐛 | **Debug Header** | **Tag-Connect `TC2030-IDC-NL`** (Bottom Pads) + `SW1` DFU button | Zero added thickness 6-pin SWD + UART pogo interface | [`HydroCap_V2.kicad_pcb`](hardware/pcbway/kicad/HydroCap_V2.kicad_pcb) |
+| 🐛 | **Debug Header** | **Tag-Connect `TC2030-IDC-NL`** (Bottom Pads) + `SW1` DFU button | Zero added thickness 6-pin SWD + UART pogo interface | [`DrinkLog_V2.kicad_pcb`](hardware/pcbway/kicad/DrinkLog_V2.kicad_pcb) |
 
 *Note: **Adafruit SHT4x Trinkey (`ATSAMD21E18`)** has no BLE/battery support and **RP2040/Pico W** leaks `~500–1500 µA` in sleep (~4–10 days battery); see [`docs/DESIGN_SPEC.md`](docs/DESIGN_SPEC.md) for the full 7-board power benchmark.*
 
@@ -98,11 +98,11 @@ Everything needed to review, simulate, and prototype the concept — **3D-printa
 ## 🏭 PCBWay Fabrication, PCBA & 3D Printing Package
 
 <p align="center">
-  <img src="hardware/pcbway/pcb_layout_top_bottom.png" alt="HydroCap V2 PCBWay 4-Layer Top & Bottom Layout" width="840"/>
+  <img src="hardware/pcbway/pcb_layout_top_bottom.png" alt="DrinkLog V2 PCBWay 4-Layer Top & Bottom Layout" width="840"/>
 </p>
 
 <p align="center">
-  <img src="cad/outputs/mechanical_orthographic_views.png" alt="HydroCap Mechanical Cross-Section, 3-Spoke Flexure, Universal Scroll Chuck & 3D Mesh" width="840"/>
+  <img src="cad/outputs/mechanical_orthographic_views.png" alt="DrinkLog Mechanical Cross-Section, 3-Spoke Flexure, Universal Scroll Chuck & 3D Mesh" width="840"/>
 </p>
 
 <details>
@@ -110,9 +110,9 @@ Everything needed to review, simulate, and prototype the concept — **3D-printa
 
 | Service | File(s) to Upload | Key Order Settings |
 | :--- | :--- | :--- |
-| **PCB Fabrication** | [`hardware/pcbway/fab/HydroCap_V2_PCBWay_Gerbers.zip`](hardware/pcbway/fab/HydroCap_V2_PCBWay_Gerbers.zip) | `4 Layers`, `Ø 42.0 mm`, **`0.8 mm` thick**, **ENIG-RoHS** |
-| **Turnkey PCBA** | [`HydroCap_V2_PCBWay_BOM.csv`](hardware/pcbway/pcba/HydroCap_V2_PCBWay_BOM.csv) + [`HydroCap_V2_PCBWay_CPL_PickAndPlace.csv`](hardware/pcbway/pcba/HydroCap_V2_PCBWay_CPL_PickAndPlace.csv) | **Top-side SMT only** (`17` SMT parts; `J2/J3/J4` marked `PCB_PAD_DNP`) |
-| **KiCad 8 Source** | [`hardware/pcbway/kicad/`](hardware/pcbway/kicad/) (`HydroCap_V2.kicad_pro/.kicad_sch/.kicad_pcb`) | Generated & verified via [`generate_pcbway_package.py`](hardware/pcbway/generate_pcbway_package.py) |
+| **PCB Fabrication** | [`hardware/pcbway/fab/DrinkLog_V2_PCBWay_Gerbers.zip`](hardware/pcbway/fab/DrinkLog_V2_PCBWay_Gerbers.zip) | `4 Layers`, `Ø 28.0 mm`, **`0.8 mm` thick**, **ENIG-RoHS** |
+| **Turnkey PCBA** | [`DrinkLog_V2_PCBWay_BOM.csv`](hardware/pcbway/pcba/DrinkLog_V2_PCBWay_BOM.csv) + [`DrinkLog_V2_PCBWay_CPL_PickAndPlace.csv`](hardware/pcbway/pcba/DrinkLog_V2_PCBWay_CPL_PickAndPlace.csv) | **Top-side SMT only** (`17` SMT parts; `J2/J3/J4` marked `PCB_PAD_DNP`) |
+| **KiCad 8 Source** | [`hardware/pcbway/kicad/`](hardware/pcbway/kicad/) (`DrinkLog_V2.kicad_pro/.kicad_sch/.kicad_pcb`) | Generated & verified via [`generate_pcbway_package.py`](hardware/pcbway/generate_pcbway_package.py) |
 | **Sheet Metal Laser** | [`cad/stl_print_parts/09_flexure_3spoke_0p8mm_301SS.dxf`](cad/stl_print_parts/09_flexure_3spoke_0p8mm_301SS.dxf) | **`0.8 mm` 301 Stainless Steel (Full Hard)**, laser cut |
 
 Full step-by-step instructions: [`hardware/pcbway/PCBWAY_ORDER_GUIDE.md`](hardware/pcbway/PCBWAY_ORDER_GUIDE.md).
@@ -128,7 +128,7 @@ Full step-by-step instructions: [`hardware/pcbway/PCBWAY_ORDER_GUIDE.md`](hardwa
 | [`02_chuck_hub_plate_u65.stl`](cad/stl_print_parts/02_chuck_hub_plate_u65.stl) | 1 | PA12 / PETG | Concentric 3-jaw carrier w/ `4 mm` RTV wire gland |
 | [`03_gripper_jaw_x3.stl`](cad/stl_print_parts/03_gripper_jaw_x3.stl) | **3** | PA12 / PETG | Sliding clamp jaws |
 | [`04_jaw_grip_pad_tpu_x3.stl`](cad/stl_print_parts/04_jaw_grip_pad_tpu_x3.stl) | **3** | **TPU 85A** | High-friction bottle-cap grip pads |
-| [`05_upper_puck_housing_usbc_ip67.stl`](cad/stl_print_parts/05_upper_puck_housing_usbc_ip67.stl) | 1 | PA12 / PETG | Houses `Ø 42 mm` PCB, `302030` LiPo, IPX8 USB-C bezel & O-ring groove |
+| [`05_upper_puck_housing_usbc_ip67.stl`](cad/stl_print_parts/05_upper_puck_housing_usbc_ip67.stl) | 1 | PA12 / PETG | Houses `Ø 28 mm` PCB, `401520 / 302030` LiPo, IPX8 USB-C bezel & O-ring groove |
 | [`06_top_waterproof_lid.stl`](cad/stl_print_parts/06_top_waterproof_lid.stl) | 1 | PA12 / PETG | O-ring compression lid + 4× M2 countersunk screws |
 | [`07_folding_finger_bail.stl`](cad/stl_print_parts/07_folding_finger_bail.stl) | 1 | PA12 / CF-PETG | Flush-folding bottle-lift bail |
 | [`08_usbc_waterproof_plug_tpu.stl`](cad/stl_print_parts/08_usbc_waterproof_plug_tpu.stl) | 1 | **TPU 85A** | Secondary captive IP67 USB-C washdown plug |
@@ -143,7 +143,7 @@ Full 3D assemblies are also exported as color-coded `.glb` / `.stl` in [`cad/out
 ## 💻 Firmware, Power Model & Google Health Connect App
 
 <p align="center">
-  <img src="outputs/power_budget_and_sip_simulation.png" alt="HydroCap Power Budget & 24-Hour Sip Simulation" width="840"/>
+  <img src="outputs/power_budget_and_sip_simulation.png" alt="DrinkLog Power Budget & 24-Hour Sip Simulation" width="840"/>
 </p>
 
 <details>
@@ -165,9 +165,9 @@ Full 3D assemblies are also exported as color-coded `.glb` / `.stl` in [`cad/out
 <summary><b>📱 7. Android Health Connect (<code>HydrationRecord</code>) &amp; Python BLE Bridge</b></summary>
 
 Because legacy Google Fit APIs reach end-of-service in late 2026, [`companion/android-health-connect/`](companion/android-health-connect/) writes directly to on-device **Android Health Connect**:
-* [`BleGattProtocol.kt`](companion/android-health-connect/src/main/java/com/caphydro/app/BleGattProtocol.kt) — Little-endian packet codec & offline timestamp reconstruction (`sipEnd = now - (deviceUptimeS - ev.uptimeS)`).
-* [`HealthConnectSyncManager.kt`](companion/android-health-connect/src/main/java/com/caphydro/app/HealthConnectSyncManager.kt) — Inserts `HydrationRecord(volume = Volume.milliliters(...))` with idempotent `clientRecordId = "caphydro-$mac-$seq"`.
-* [`CapHydroBleClient.kt`](companion/android-health-connect/src/main/java/com/caphydro/app/CapHydroBleClient.kt) — Writes BLE ACK (`0003`) **only after** Health Connect confirms persistence.
+* [`BleGattProtocol.kt`](companion/android-health-connect/src/main/java/com/drinklog/app/BleGattProtocol.kt) — Little-endian packet codec & offline timestamp reconstruction (`sipEnd = now - (deviceUptimeS - ev.uptimeS)`).
+* [`HealthConnectSyncManager.kt`](companion/android-health-connect/src/main/java/com/drinklog/app/HealthConnectSyncManager.kt) — Inserts `HydrationRecord(volume = Volume.milliliters(...))` with idempotent `clientRecordId = "drinklog-$mac-$seq"`.
+* [`DrinkLogBleClient.kt`](companion/android-health-connect/src/main/java/com/drinklog/app/DrinkLogBleClient.kt) — Writes BLE ACK (`0003`) **only after** Health Connect confirms persistence.
 * [`companion/python-ble-bridge/cap_ble_receiver.py`](companion/python-ble-bridge/cap_ble_receiver.py) — Desktop `bleak` receiver + `--simulate` binary loopback test.
 
 </details>
@@ -183,7 +183,7 @@ g++ -std=c++17 -Wall -Wextra -Werror -Ifirmware/include \
 
 # 2. Render 3D Animation via Node.js + Clang wasm32 + Native Dawn WebGPU (Zero Browser)
 cd webgpu-dawn-wasm && npm run build:wasm && npm run build:hud && npm run render && cd ..
-# Keyframe sheet saved to outputs/hydrocap_dawn_webgpu_keyframes.png
+# Keyframe sheet saved to outputs/drinklog_dawn_webgpu_keyframes.png
 
 # 3. OR Launch Interactive Three.js WebGL Browser Viewer
 node web-threejs/serve.mjs --port 8080

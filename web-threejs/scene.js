@@ -175,13 +175,13 @@ capCyl.castShadow = true;
 screwCapGroup.add(capCyl);
 
 // ---------------------------------------------------------------------------
-// 2. HydroCap 1.1x D_cap Proportioned Puck Assembly (33.6 mm on 30.5 mm cap)
+// 2. DrinkLog 1.1x D_cap Proportioned Puck Assembly (33.6 mm on 30.5 mm cap)
 // ---------------------------------------------------------------------------
-const hydroCapGroup = new THREE.Group();
-scene.add(hydroCapGroup);
+const drinkLogGroup = new THREE.Group();
+scene.add(drinkLogGroup);
 
 const scrollCollarGroup = new THREE.Group();
-hydroCapGroup.add(scrollCollarGroup);
+drinkLogGroup.add(scrollCollarGroup);
 
 const collarRing = new THREE.Mesh(new THREE.CylinderGeometry(1.68, 1.68, 0.54, 64, 1, true), matCollar);
 collarRing.position.y = 0.27;
@@ -217,19 +217,19 @@ for (let k = 0; k < 6; k++) {
   silPad.position.set(0.0, 0.27, 0);
   slider.add(silPad);
   arm.add(slider);
-  hydroCapGroup.add(arm);
+  drinkLogGroup.add(arm);
   jawPivots.push(slider);
 }
 
 const hubPlate = new THREE.Mesh(new THREE.CylinderGeometry(1.60, 1.60, 0.18, 64), matHub);
 hubPlate.position.y = 0.63;
 hubPlate.castShadow = true;
-hydroCapGroup.add(hubPlate);
+drinkLogGroup.add(hubPlate);
 
 // Universal Ø30.0 mm x 0.8 mm 3-Spoke Stainless Flexure + Gold Strain Gauges
 const flexureGroup = new THREE.Group();
 flexureGroup.position.y = 0.78;
-hydroCapGroup.add(flexureGroup);
+drinkLogGroup.add(flexureGroup);
 
 const flexOuter = new THREE.Mesh(new THREE.TorusGeometry(1.44, 0.10, 12, 64), matFlexure);
 flexOuter.rotation.x = Math.PI / 2;
@@ -255,7 +255,7 @@ for (let k = 0; k < 3; k++) {
 // Upper Electronics Puck Group (1.1x D_cap outer shell around Ø28.0 mm PCB Core)
 const upperPuckGroup = new THREE.Group();
 upperPuckGroup.position.y = 0.88;
-hydroCapGroup.add(upperPuckGroup);
+drinkLogGroup.add(upperPuckGroup);
 
 const puckShell = new THREE.Mesh(new THREE.CylinderGeometry(1.68, 1.68, 0.58, 64), matPuckShell);
 puckShell.position.y = 0.29;
@@ -422,7 +422,7 @@ function drawPhoneScreen(loggedMl, synced) {
   ctx.fillRect(22, 368, 212, 92);
   ctx.fillStyle = '#154360';
   ctx.font = 'bold 14px sans-serif';
-  ctx.fillText('CapHydro GATT 0002', 128, 405);
+  ctx.fillText('DrinkLog GATT 0002', 128, 405);
   ctx.font = '12px sans-serif';
   ctx.fillStyle = '#2980b9';
   ctx.fillText('Idempotent Seq #002', 128, 430);
@@ -592,15 +592,15 @@ function applyState(tSec) {
   waterCyl.position.y = 0.22 + hWater / 2.0;
   waterMeniscus.position.y = 0.22 + hWater;
 
-  // Unscrewed cap lifts screwCapGroup + HydroCap together in Stage 3
+  // Unscrewed cap lifts screwCapGroup + DrinkLog together in Stage 3
   const capLiftOffset = stage === 3 ? capDropY : 0.0;
   screwCapGroup.position.y = 13.65 + capLiftOffset;
   screwCapGroup.rotation.y = capRotY;
   screwCapGroup.scale.set(tierScale, 1.0, tierScale);
 
   const capY = bottleLiftY + 14.35 + (stage === 1 ? capDropY : capLiftOffset);
-  hydroCapGroup.position.y = capY;
-  hydroCapGroup.rotation.y = capRotY;
+  drinkLogGroup.position.y = capY;
+  drinkLogGroup.rotation.y = capRotY;
 
   // Scale outer shell cleanly to selected 1.1x tier while keeping universal Ø28/Ø30 mm core fixed
   scrollCollarGroup.scale.set(tierScale, 1.0, tierScale);

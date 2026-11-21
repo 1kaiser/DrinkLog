@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.caphydro.app"
+    namespace = "com.drinklog.app"
     compileSdk = 35
 
     defaultConfig {

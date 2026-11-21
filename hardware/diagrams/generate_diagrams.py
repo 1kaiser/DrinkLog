@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Generate zero-overlap Draw.io XML schematics/flowcharts and matching high-DPI
-matplotlib PNG renders for the CapHydro Smart Bottle-Cap Hydration Tracker.
+matplotlib PNG renders for the DrinkLog Smart Bottle-Cap Hydration Tracker.
 """
 
 from __future__ import annotations
@@ -93,7 +93,7 @@ def write_drawio_xml(
     nodes: List[NodeDef],
     edges: List[EdgeDef],
 ) -> None:
-    mxfile = ET.Element("mxfile", host="CapHydroGenerator", type="device")
+    mxfile = ET.Element("mxfile", host="DrinkLogGenerator", type="device")
     diagram = ET.SubElement(mxfile, "diagram", id="cap_diagram", name=title)
     model = ET.SubElement(
         diagram,
@@ -344,10 +344,10 @@ def build_circuit_schematic(out_dir: str) -> None:
 
     xml_path = os.path.join(out_dir, "system_circuit_schematic.drawio")
     png_path = os.path.join(out_dir, "system_circuit_schematic.png")
-    write_drawio_xml(xml_path, "CapHydro_System_Circuit", W, H, nodes, edges)
+    write_drawio_xml(xml_path, "DrinkLog_System_Circuit", W, H, nodes, edges)
     render_png(
         png_path,
-        "HydroCap Hardware Architecture, IPX8 USB-C Debug & Power-Gating Schematic",
+        "DrinkLog Hardware Architecture, IPX8 USB-C Debug & Power-Gating Schematic",
         "Standby ~6.4 uA (MDBT50Q / XIAO nRF52840 + BMA400 + NAU7802 High-Z AVDD) | PCBWay 4-Layer V2",
         W,
         H,
@@ -377,12 +377,12 @@ def build_firmware_pipeline(out_dir: str) -> None:
 
         # Center-right branch from d_unscrew (No -> Inertial Comp + Classify)
         NodeDef("n_comp", "Inertial Mass & Delta Classifier", ["m = Fz / clamp(az, 0.85, 1.15)", "Sip >= +15g | Refill <= -25g"], 390, 705, 360, 75, "#FFFFFF", "#2980B9", parent="grp_cap"),
-        NodeDef("n_ring", "Push to 64-Event Ring Buffer", ["Packed 12-byte event <IIhH>", "Advertise BLE 'CapHydro' (6 s window)"], 390, 825, 360, 78, "#EBF5FB", "#1F618D", parent="grp_cap"),
+        NodeDef("n_ring", "Push to 64-Event Ring Buffer", ["Packed 12-byte event <IIhH>", "Advertise BLE 'DrinkLog' (6 s window)"], 390, 825, 360, 78, "#EBF5FB", "#1F618D", parent="grp_cap"),
 
         # Phone column
         NodeDef("n_scan", "Android BLE GATT Client", ["Connect & Read Status (0004): <IHH>", "Map uptime_s -> Instant"], 890, 200, 320, 95, "#FFFFFF", "#8E44AD", parent="grp_phone"),
         NodeDef("n_notify", "Receive Event Notify (0002)", ["Decode 12-B HydrationEvent", "Filter delta_ml > 0 (ignore refills)"], 890, 390, 320, 95, "#FFFFFF", "#8E44AD", parent="grp_phone"),
-        NodeDef("n_hc", "Write Health Connect Record", ["HydrationRecord(Volume.milliliters)", "clientRecordId = caphydro-MAC-seq"], 890, 580, 320, 100, "#EAFAF1", "#27AE60", parent="grp_phone"),
+        NodeDef("n_hc", "Write Health Connect Record", ["HydrationRecord(Volume.milliliters)", "clientRecordId = drinklog-MAC-seq"], 890, 580, 320, 100, "#EAFAF1", "#27AE60", parent="grp_phone"),
         NodeDef("n_ack", "Send BLE ACK (0003)", ["Write 4-byte uint32 last_acked_seq", "Cap clears ring up to seq"], 890, 770, 320, 90, "#F4ECF7", "#8E44AD", kind="terminator", parent="grp_phone"),
     ]
 
@@ -405,10 +405,10 @@ def build_firmware_pipeline(out_dir: str) -> None:
 
     xml_path = os.path.join(out_dir, "firmware_ble_pipeline.drawio")
     png_path = os.path.join(out_dir, "firmware_ble_pipeline.png")
-    write_drawio_xml(xml_path, "CapHydro_Firmware_BLE_Pipeline", W, H, nodes, edges)
+    write_drawio_xml(xml_path, "DrinkLog_Firmware_BLE_Pipeline", W, H, nodes, edges)
     render_png(
         png_path,
-        "CapHydro End-to-End Firmware DSP, Ring Buffer & Health Connect Pipeline",
+        "DrinkLog End-to-End Firmware DSP, Ring Buffer & Health Connect Pipeline",
         "Auto-Tare on Unscrew + Inertial Mass Compensation (m = Fz/az) + Reliable Idempotent BLE Sync",
         W,
         H,

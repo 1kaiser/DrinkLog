@@ -1,4 +1,4 @@
-package com.caphydro.app
+package com.drinklog.app
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
@@ -14,12 +14,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
- * Connects to CapHydro over BLE, reads DeviceStatus (0004) for offline clock
+ * Connects to DrinkLog over BLE, reads DeviceStatus (0004) for offline clock
  * reconstruction, subscribes to Event (0002), inserts HydrationRecord into Health
  * Connect, and writes ACK (0003) ONLY after Health Connect confirms persistence.
  */
 @SuppressLint("MissingPermission")
-class CapHydroBleClient(
+class DrinkLogBleClient(
     private val context: Context,
     private val syncManager: HealthConnectSyncManager,
     private val scope: CoroutineScope

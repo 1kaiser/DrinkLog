@@ -9,10 +9,10 @@ All manufacturing deliverables in this repository were generated from a single s
 
 ## 1. Universal `Ø 28.0 mm` V2.1 PCB + SMT Assembly (`PCBWay Standard PCB + PCBA`)
 
-One single **`Ø 28.0 mm`** circular PCB core drops cleanly into **every `1.1 × D_cap` HydroCap shell tier** (`33.6 mm` PET cap up to `69.3 mm` wide-mouth Nalgene/Hydro Flask).
+One single **`Ø 28.0 mm`** circular PCB core drops cleanly into **every `1.1 × D_cap` DrinkLog shell tier** (`33.6 mm` PET cap up to `69.3 mm` wide-mouth Nalgene/Hydro Flask).
 
 ### A. PCB Fabrication Quote Settings
-* **Upload Gerber Archive:** [`hardware/pcbway/fab/HydroCap_V2_PCBWay_Gerbers.zip`](fab/HydroCap_V2_PCBWay_Gerbers.zip)
+* **Upload Gerber Archive:** [`hardware/pcbway/fab/DrinkLog_V2_PCBWay_Gerbers.zip`](fab/DrinkLog_V2_PCBWay_Gerbers.zip)
 * **Board Dimensions:** Circular **`Ø 28.0 mm`** (`28 × 28 mm` bounding box)
 * **Layers:** `4 Layers` (`GTL` Top, `G2` GND, `G3` 3V3, `GBL` Bottom)
 * **Board Thickness:** **`0.8 mm`**
@@ -20,8 +20,8 @@ One single **`Ø 28.0 mm`** circular PCB core drops cleanly into **every `1.1 ×
 * **Copper Weight:** `1 oz` outer / `0.5 oz` inner
 
 ### B. Turnkey PCBA Assembly Upload
-* **BOM CSV:** [`hardware/pcbway/pcba/HydroCap_V2_PCBWay_BOM.csv`](pcba/HydroCap_V2_PCBWay_BOM.csv)
-* **Centroid / Pick-and-Place CPL CSV:** [`hardware/pcbway/pcba/HydroCap_V2_PCBWay_CPL_PickAndPlace.csv`](pcba/HydroCap_V2_PCBWay_CPL_PickAndPlace.csv)
+* **BOM CSV:** [`hardware/pcbway/pcba/DrinkLog_V2_PCBWay_BOM.csv`](pcba/DrinkLog_V2_PCBWay_BOM.csv)
+* **Centroid / Pick-and-Place CPL CSV:** [`hardware/pcbway/pcba/DrinkLog_V2_PCBWay_CPL_PickAndPlace.csv`](pcba/DrinkLog_V2_PCBWay_CPL_PickAndPlace.csv)
 * **Assembly Side:** **Top Side Only (Single-Side SMT)** — all `17` active SMT components (`U1` `MDBT50Q`, `U2` `NAU7802YG` QFN-16, `U3` `BMA400`, `U4` `BQ25180`, `U5` `USBLC6`, `U6` `TPS7A0233`, `J1` IPX8 USB-C, `SW1`, `D1`, `R1–R5`, `C1–C6`) are Top-side. Bottom (`B.Cu`) has `PCB_PAD_DNP` pads only (`J2` `TC2030`, `J3` flexure bridge, `J4` `401520` LiPo).
 
 ---

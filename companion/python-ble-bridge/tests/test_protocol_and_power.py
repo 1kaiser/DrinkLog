@@ -77,7 +77,7 @@ def test_offline_cli_loopback(tmp_path):
 
 def test_pcbway_manufacturing_package_integrity():
     pcbway_dir = os.path.join(REPO_ROOT, "hardware", "pcbway")
-    zip_path = os.path.join(pcbway_dir, "fab", "HydroCap_V2_PCBWay_Gerbers.zip")
+    zip_path = os.path.join(pcbway_dir, "fab", "DrinkLog_V2_PCBWay_Gerbers.zip")
     assert os.path.isfile(zip_path)
 
     required_exts = (".GTL", ".G2", ".G3", ".GBL", ".GTS", ".GBS", ".GTO", ".GBO", ".GTP", ".GM1", "-PTH.drl", "-NPTH.drl")
@@ -87,8 +87,8 @@ def test_pcbway_manufacturing_package_integrity():
             assert any(n.endswith(ext) for n in names), f"Missing Gerber/Drill layer {ext}"
 
     # Verify 1:1 designator parity between BOM and Pick-and-Place CPL
-    bom_path = os.path.join(pcbway_dir, "pcba", "HydroCap_V2_PCBWay_BOM.csv")
-    cpl_path = os.path.join(pcbway_dir, "pcba", "HydroCap_V2_PCBWay_CPL_PickAndPlace.csv")
+    bom_path = os.path.join(pcbway_dir, "pcba", "DrinkLog_V2_PCBWay_BOM.csv")
+    cpl_path = os.path.join(pcbway_dir, "pcba", "DrinkLog_V2_PCBWay_CPL_PickAndPlace.csv")
     with open(bom_path, newline="", encoding="utf-8") as f:
         bom_refs = [row["Designator"] for row in csv.DictReader(f)]
     with open(cpl_path, newline="", encoding="utf-8") as f:
@@ -100,7 +100,7 @@ def test_pcbway_manufacturing_package_integrity():
         float(row["Mid Y (mm)"])
 
     # Verify KiCad 8 schematic & PCB files have balanced parentheses
-    for fname in ("HydroCap_V2.kicad_sch", "HydroCap_V2.kicad_pcb"):
+    for fname in ("DrinkLog_V2.kicad_sch", "DrinkLog_V2.kicad_pcb"):
         fpath = os.path.join(pcbway_dir, "kicad", fname)
         assert os.path.isfile(fpath)
         txt = open(fpath, encoding="utf-8").read()
@@ -127,15 +127,15 @@ def test_split_stl_dxf_and_animation_assets():
     doc = ezdxf.readfile(dxf_path)
     assert len(list(doc.modelspace())) >= 9
 
-    gif_path = os.path.join(REPO_ROOT, "outputs", "hydrocap_attachment_animation.gif")
-    mp4_path = os.path.join(REPO_ROOT, "outputs", "hydrocap_attachment_animation.mp4")
+    gif_path = os.path.join(REPO_ROOT, "outputs", "drinklog_attachment_animation.gif")
+    mp4_path = os.path.join(REPO_ROOT, "outputs", "drinklog_attachment_animation.mp4")
     assert os.path.isfile(gif_path) and 10_000 < os.path.getsize(gif_path) < 1_887_436
     assert os.path.isfile(mp4_path) and os.path.getsize(mp4_path) > 10_000
 
 
 def test_wasm_kernel_and_dawn_pipeline():
-    wasm_path = os.path.join(REPO_ROOT, "webgpu-dawn-wasm", "wasm", "hydrocap_kinematics.wasm")
-    kf_sheet = os.path.join(REPO_ROOT, "outputs", "hydrocap_dawn_webgpu_keyframes.png")
+    wasm_path = os.path.join(REPO_ROOT, "webgpu-dawn-wasm", "wasm", "drinklog_kinematics.wasm")
+    kf_sheet = os.path.join(REPO_ROOT, "outputs", "drinklog_dawn_webgpu_keyframes.png")
     assert os.path.isfile(wasm_path) and os.path.getsize(wasm_path) > 200
     assert os.path.isfile(kf_sheet) and os.path.getsize(kf_sheet) > 10_000
 
@@ -158,7 +158,7 @@ def test_wasm_kernel_and_dawn_pipeline():
 
 def test_1p1x_cap_ratio_and_compact_pcb_specs():
     # Verify Ø28.0 mm PCBWay core CPL coordinates fit strictly inside R=14.0 mm (except mid-mount USB-C J1)
-    cpl_path = os.path.join(REPO_ROOT, "hardware", "pcbway", "pcba", "HydroCap_V2_PCBWay_CPL_PickAndPlace.csv")
+    cpl_path = os.path.join(REPO_ROOT, "hardware", "pcbway", "pcba", "DrinkLog_V2_PCBWay_CPL_PickAndPlace.csv")
     with open(cpl_path, newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
             x, y = float(row["Mid X (mm)"]), float(row["Mid Y (mm)"])

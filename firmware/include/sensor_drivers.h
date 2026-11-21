@@ -8,7 +8,7 @@
 #include "SparkFun_Qwiic_Scale_NAU7802_Arduino_Library.h"
 #endif
 
-namespace caphydro {
+namespace drinklog {
 
 // ===========================================================================
 // 1. Load-Sensing Drivers (NAU7802 w/ High-Z AVDD Gate OR TE FX29 I2C Sleep)
@@ -177,4 +177,4 @@ public:
 };
 #endif
 
-} // namespace caphydro
+} // namespace drinklog

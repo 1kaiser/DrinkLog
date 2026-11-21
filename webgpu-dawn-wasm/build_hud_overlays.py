@@ -89,7 +89,7 @@ def build_stage_huds(out_dir: str, width: int = 960, height: int = 540) -> None:
         # Top-Left Stage Card (keeps pure transparent margin at corners)
         lx0, ly0, lx1, ly1 = 18, 16, 344, 116
         d.rounded_rectangle([lx0, ly0, lx1, ly1], radius=12, fill=(255, 255, 255, 232), outline=(213, 221, 229, 255), width=2)
-        d.text((lx0 + 14, ly0 + 12), "HydroCap 3D", font=f_title, fill=(21, 67, 96, 255))
+        d.text((lx0 + 14, ly0 + 12), "DrinkLog 3D", font=f_title, fill=(21, 67, 96, 255))
         d.rounded_rectangle([lx0 + 126, ly0 + 11, lx0 + 212, ly0 + 30], radius=9, fill=(27, 79, 114, 255))
         d.text((lx0 + 136, ly0 + 14), f"STAGE {num}/5", font=f_badge, fill=(255, 255, 255, 255))
         d.text((lx0 + 14, ly0 + 37), head, font=f_head, fill=(27, 38, 49, 255))
@@ -136,7 +136,7 @@ def build_phone_texture(out_path: str) -> None:
     d.text((128, 294), "1180 g -> 970 g", font=f_mono, fill=(86, 101, 115, 255), anchor="mm")
 
     d.rounded_rectangle([20, 366, 236, 468], radius=12, fill=(235, 245, 251, 255), outline=(133, 193, 233, 255), width=2)
-    d.text((128, 402), "CapHydro GATT 0002", font=f_ok, fill=(21, 67, 96, 255), anchor="mm")
+    d.text((128, 402), "DrinkLog GATT 0002", font=f_ok, fill=(21, 67, 96, 255), anchor="mm")
     d.text((128, 434), "clientRecordId #002", font=f_sub, fill=(41, 128, 185, 255), anchor="mm")
     im.save(out_path)
     with open(out_path.replace(".png", ".rgba.zlib"), "wb") as fz:

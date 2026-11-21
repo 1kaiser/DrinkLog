@@ -1,12 +1,12 @@
 #pragma once
 #include <cstdint>
 
-namespace caphydro {
+namespace drinklog {
 
 // ---------------------------------------------------------------------------
 // BLE GATT Identifiers (Custom Hydration Service + Standard Battery Service)
 // ---------------------------------------------------------------------------
-static constexpr const char* BLE_DEVICE_NAME   = "CapHydro";
+static constexpr const char* BLE_DEVICE_NAME   = "DrinkLog";
 static constexpr const char* SVC_HYDRATION_UUID = "7a4b0001-3c9e-4f1a-9b2d-8e5c10293847";
 static constexpr const char* CHR_EVENT_UUID     = "7a4b0002-3c9e-4f1a-9b2d-8e5c10293847";
 static constexpr const char* CHR_ACK_UUID       = "7a4b0003-3c9e-4f1a-9b2d-8e5c10293847";
@@ -64,4 +64,4 @@ static constexpr uint32_t BLE_SYNC_WINDOW_MS         = 6000;
 #endif
 static constexpr uint32_t USB_DEBUG_BAUD             = 115200;
 
-} // namespace caphydro
+} // namespace drinklog

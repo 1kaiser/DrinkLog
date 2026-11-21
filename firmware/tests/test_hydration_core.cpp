@@ -5,7 +5,7 @@
 #include <iostream>
 #include "hydration_core.h"
 
-using namespace caphydro;
+using namespace drinklog;
 
 static void fill_samples(int32_t out[15], int32_t center, int32_t noise_step = 2) {
     for (int i = 0; i < 15; ++i) {
@@ -118,6 +118,6 @@ int main() {
     assert(tracker.ack_up_to(tracker.head_seq()));
     assert(tracker.pending_count() == 0);
 
-    std::cout << "[PASS] All CapHydro C++17 firmware core unit tests passed (6/6 groups).\n";
+    std::cout << "[PASS] All DrinkLog C++17 firmware core unit tests passed (6/6 groups).\n";
     return 0;
 }

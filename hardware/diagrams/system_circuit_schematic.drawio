@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<mxfile host="CapHydroGenerator" type="device">
-  <diagram id="cap_diagram" name="CapHydro_System_Circuit">
+<mxfile host="DrinkLogGenerator" type="device">
+  <diagram id="cap_diagram" name="DrinkLog_System_Circuit">
     <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="780" math="0" shadow="0">
       <root>
         <mxCell id="0" />

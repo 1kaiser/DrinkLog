@@ -5,7 +5,7 @@
 #include <cstdint>
 #include "config.h"
 
-namespace caphydro {
+namespace drinklog {
 
 // ---------------------------------------------------------------------------
 // Wire-Format BLE GATT Structs (Little-Endian, Packed)
@@ -201,4 +201,4 @@ private:
     HydrationEvent ring_buf_[RING_CAPACITY]{};
 };
 
-} // namespace caphydro
+} // namespace drinklog

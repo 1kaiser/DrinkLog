@@ -1,4 +1,4 @@
-# CapHydro — Hardware, Mechanical & Firmware Design Specification
+# DrinkLog — Hardware, Mechanical & Firmware Design Specification
 
 > [!NOTE]
 > **Concept Status:** This document specifies a pre-prototype engineering concept. Power consumption figures, battery runtimes, gravimetric resolution (`±5 mL`), and mechanical load-path tolerances are analytical/simulated design targets pending physical PCB, flexure, and enclosure bring-up.
@@ -14,14 +14,14 @@
 | Sip Resolution | `±5 mL` (`±5 g`) | 15-sample median filter + `m = F_z / a_z` inertial correction + cap-off auto-tare |
 | Standby Power | `~6.5 µA` (`V1`), `< 4 µA` (`V2`) | `XIAO nRF52840` + `BMA400` (`0.9 µA`) + `NAU7802` High-Z `AVDD` gate (`0 µA` bridge off) |
 | Battery Life | `~12 months` / charge (`150 mAh` `302030`) | Event-driven wake (`30 lifts/day × 1.2 s` active) + 64-event non-volatile ring buffer |
-| Health Sync | Android **Health Connect** (`HydrationRecord`) | Idempotent `clientRecordId = "caphydro-{MAC}-{seq}"` + reliable BLE ACK clearing |
+| Health Sync | Android **Health Connect** (`HydrationRecord`) | Idempotent `clientRecordId = "drinklog-{MAC}-{seq}"` + reliable BLE ACK clearing |
 
 ---
 
 ## 2. Mechanical Stackup & Load-Path Isolation
 
 ### Why a Top-Mounted Gripper Requires an Outer Lift Bail
-A cap sensor cannot measure bottle mass while the bottle rests on a desk or is gripped by its cylindrical wall. The CapHydro puck places the **load-sensing flexure strictly between**:
+A cap sensor cannot measure bottle mass while the bottle rests on a desk or is gripped by its cylindrical wall. The DrinkLog puck places the **load-sensing flexure strictly between**:
 1. **Bottom Frame (Bottle-Side):** 3-jaw scroll-chuck clamp gripped tightly onto the bottle screw cap (`26–65 mm` OD).
 2. **Top Frame (Hand-Side):** Flush-folding pivoted finger bail and chamfered outer lift rim.
 
@@ -53,7 +53,7 @@ When the user lifts the bottle by the bail or outer lift collar, **100% of bottl
 
 ## 4. BLE GATT Protocol Specification
 
-* **Advertised Name:** `CapHydro`
+* **Advertised Name:** `DrinkLog`
 * **Custom Hydration Service UUID:** `7a4b0001-3c9e-4f1a-9b2d-8e5c10293847`
 * **Standard Battery Service:** `0x180F` → Battery Level Characteristic `0x2A19` (`uint8`, `0–100%`)
 
@@ -67,7 +67,7 @@ When the user lifts the bottle by the bail or outer lift collar, **100% of bottl
 * Legacy **Google Fit APIs** closed new sign-ups May 2024 and reach end-of-service in late 2026.
 * Android writes `androidx.health.connect.client.records.HydrationRecord` with:
   * `volume = Volume.milliliters(deltaMl.toDouble())`
-  * `metadata = Metadata.autoRecorded(device = Device(type = Device.TYPE_UNKNOWN), clientRecordId = "caphydro-$mac-$seq")`
+  * `metadata = Metadata.autoRecorded(device = Device(type = Device.TYPE_UNKNOWN), clientRecordId = "drinklog-$mac-$seq")`
   * Deduplication via `clientRecordId` ensures re-transmitted BLE packets never double-count fluid intake.
 
 ---

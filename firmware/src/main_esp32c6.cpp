@@ -9,7 +9,7 @@
 #include "hydration_core.h"
 #include "sensor_drivers.h"
 
-using namespace caphydro;
+using namespace drinklog;
 
 // Persist tracker state & 64-event ring buffer across ESP32-C6 deep sleep (~15-20 uA)
 RTC_DATA_ATTR static HydrationTracker rtc_tracker(DEFAULT_SCALE_COUNTS_PER_G, 0);

@@ -2,7 +2,7 @@
 """
 Generate an animated multi-stage demonstration GIF (< 1.8 MiB) & MP4 showing:
   1. Universal 3-jaw scroll chuck closing onto a bottle cap (65 -> 32 mm OD)
-  2. HydroCap drop-on clamping & flush finger bail flip-up
+  2. DrinkLog drop-on clamping & flush finger bail flip-up
   3. Bottle lift weighing via 0.8 mm 3-spoke flexure (1180 g -> LED lock)
   4. Unscrew Auto-Tare (0 g) -> Sip (-210 mL) -> Re-cap lift (970 g) -> BLE Health Connect ACK
   5. Side IP67 TPU USB-C plug opening + USB-C 5V Charge & Native CDC/DFU Debug
@@ -150,7 +150,7 @@ def draw_frame(frame_idx: int, total_frames: int) -> Image.Image:
     # Global vertical banner
     fig.text(
         0.5, 0.945,
-        "HydroCap — Universal Bottle-Cap Attachment, Hydration Tracking & IP67 USB-C Debug",
+        "DrinkLog — Universal Bottle-Cap Attachment, Hydration Tracking & IP67 USB-C Debug",
         ha="center", va="center", fontsize=11.5, fontweight="bold", color="#1A252C"
     )
 
@@ -174,7 +174,7 @@ def draw_frame(frame_idx: int, total_frames: int) -> Image.Image:
     ax_mech.add_patch(Rectangle((-13, by0 + 44), 26, 6, facecolor="#D6EAF8", edgecolor="#2980B9", lw=1.5, zorder=3))
     ax_mech.add_patch(Rectangle((-15, by0 + 50), 30, 8, facecolor="#5D6D7E", edgecolor="#1B2631", lw=1.4, zorder=3))
 
-    # --- HydroCap Assembly (shifted by lift_y + cap_drop_y) ---
+    # --- DrinkLog Assembly (shifted by lift_y + cap_drop_y) ---
     cy0 = by0 + 51.0 + cap_drop_y
     # Scroll collar & sliding jaws
     ax_mech.add_patch(Rectangle((-35, cy0), 70, 5.2, facecolor="#34495E", edgecolor="#1B2631", lw=1.1, zorder=4))
@@ -294,7 +294,7 @@ def main() -> None:
         frames_rgb.append(im)
         frames_pal.append(im.quantize(colors=96, method=Image.Quantize.MEDIANCUT))
 
-    gif_path = os.path.join(out_dir, "hydrocap_attachment_animation.gif")
+    gif_path = os.path.join(out_dir, "drinklog_attachment_animation.gif")
     frames_pal[0].save(
         gif_path,
         save_all=True,
@@ -307,10 +307,10 @@ def main() -> None:
 
     # Save 4 storyboard frames to /tmp for visual inspection
     for idx, tag in [(12, "stage1"), (38, "stage2"), (84, "stage4"), (112, "stage5")]:
-        frames_rgb[idx].save(f"/tmp/hydrocap_anim_{tag}.png")
+        frames_rgb[idx].save(f"/tmp/drinklog_anim_{tag}.png")
 
     # Encode MP4 via ffmpeg using pipe
-    mp4_path = os.path.join(out_dir, "hydrocap_attachment_animation.mp4")
+    mp4_path = os.path.join(out_dir, "drinklog_attachment_animation.mp4")
     w, h = frames_rgb[0].size
     cmd = [
         "ffmpeg", "-y", "-f", "rawvideo", "-vcodec", "rawvideo",

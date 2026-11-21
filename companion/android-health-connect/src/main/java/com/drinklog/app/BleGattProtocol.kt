@@ -1,4 +1,4 @@
-package com.caphydro.app
+package com.drinklog.app
 
 import java.nio.ByteBuffer
 import java.nio.ByteOrder

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Zero-dependency local HTTP static server for the HydroCap Three.js 3D viewer.
+ * Zero-dependency local HTTP static server for the DrinkLog Three.js 3D viewer.
  * Rewrites CDN Three.js importmap URLs to /vendor/three/ from local node_modules
  * so the scene runs 100% offline.
  */
@@ -34,7 +34,7 @@ export function resolveThreeRoot() {
   throw new Error('Could not locate Three.js package directory.');
 }
 
-export function startHydroCapServer(port = 8080) {
+export function startDrinkLogServer(port = 8080) {
   const threeRoot = resolveThreeRoot();
   return new Promise((resolve) => {
     const server = http.createServer((req, res) => {
@@ -95,6 +95,6 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const portArg = process.argv.includes('--port')
     ? Number(process.argv[process.argv.indexOf('--port') + 1])
     : 8080;
-  const { url } = await startHydroCapServer(portArg);
-  console.log(`HydroCap 3D Three.js server listening at ${url}`);
+  const { url } = await startDrinkLogServer(portArg);
+  console.log(`DrinkLog 3D Three.js server listening at ${url}`);
 }

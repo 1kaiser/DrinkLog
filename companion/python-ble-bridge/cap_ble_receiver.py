@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Desktop/Linux BLE GATT receiver for CapHydro (using bleak) with an offline
+Desktop/Linux BLE GATT receiver for DrinkLog (using bleak) with an offline
 --simulate mode for testing the binary codec, Health Connect payload mapping,
 and ACK flow without physical BLE hardware.
 """
@@ -73,9 +73,9 @@ async def run_live_ble(csv_path: str, timeout_s: float = 15.0) -> None:
             "Install via 'pip install bleak' or run with '--simulate'."
         ) from exc
 
-    dev = await BleakScanner.find_device_by_name("CapHydro", timeout=timeout_s)
+    dev = await BleakScanner.find_device_by_name("DrinkLog", timeout=timeout_s)
     if dev is None:
-        print("CapHydro not found; lift bottle by its cap to wake BLE advertising.")
+        print("DrinkLog not found; lift bottle by its cap to wake BLE advertising.")
         return
 
     os.makedirs(os.path.dirname(csv_path), exist_ok=True)
@@ -100,7 +100,7 @@ async def run_live_ble(csv_path: str, timeout_s: float = 15.0) -> None:
 
 def main() -> None:
     default_csv = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs", "hydration_log.csv")
-    parser = argparse.ArgumentParser(description="CapHydro BLE Hydration Receiver")
+    parser = argparse.ArgumentParser(description="DrinkLog BLE Hydration Receiver")
     parser.add_argument("--simulate", action="store_true", help="Run offline binary protocol loopback simulation")
     parser.add_argument("--csv", default=default_csv, help="Output CSV path")
     parser.add_argument("--timeout", type=float, default=15.0, help="BLE scan timeout (seconds)")

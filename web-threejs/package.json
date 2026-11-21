@@ -1,7 +1,7 @@
 {
-  "name": "hydrocap-3d-viewer",
+  "name": "drinklog-3d-viewer",
   "version": "1.0.0",
-  "description": "Interactive Three.js 3D studio viewer and headless MP4/GIF animation renderer for HydroCap.",
+  "description": "Interactive Three.js 3D studio viewer and headless MP4/GIF animation renderer for DrinkLog.",
   "type": "module",
   "private": true,
   "scripts": {

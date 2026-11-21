@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Power-budget & 24-hour gravimetric sip-detection simulator for CapHydro.
+Power-budget & 24-hour gravimetric sip-detection simulator for DrinkLog.
 Models standby leakage + event wake currents across 5 MCU/sensor topologies
 and renders outputs/power_budget_and_sip_simulation.png.
 """
@@ -90,7 +90,7 @@ def generate_summary_figure(out_png: str) -> None:
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14.5, 5.8), dpi=200)
     fig.patch.set_facecolor("#FFFFFF")
     fig.suptitle(
-        "CapHydro Power-Budget Analysis (150 mAh 302030 LiPo) & 24-Hour Gravimetric Sip Tracking",
+        "DrinkLog Power-Budget Analysis (150 mAh 302030 LiPo) & 24-Hour Gravimetric Sip Tracking",
         fontsize=13, fontweight="bold", color="#1A252C", y=0.98
     )
 
@@ -156,7 +156,7 @@ def generate_summary_figure(out_png: str) -> None:
 
 
 def main() -> None:
-    print("=== HydroCap Power Budget Model (30 lifts/day: 100mAh 401520 [pet_30] & 150mAh 302030) ===")
+    print("=== DrinkLog Power Budget Model (30 lifts/day: 100mAh 401520 [pet_30] & 150mAh 302030) ===")
     for p in PROFILES:
         r150 = compute_battery_metrics(p, battery_mah=150.0)
         r100 = compute_battery_metrics(p, battery_mah=100.0)
