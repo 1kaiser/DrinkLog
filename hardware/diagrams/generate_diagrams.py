@@ -307,14 +307,14 @@ def build_circuit_schematic(out_dir: str) -> None:
         NodeDef("grp_mcu", "BLE MCU CORE & MOTION WAKE", [], 370, 30, 440, 710, "#EBF5FB", "#2980B9", "#1B4F72", kind="group"),
         NodeDef("grp_afe", "LOAD-SENSING ANALOG FRONT END", [], 860, 30, 490, 710, "#EAFAF1", "#27AE60", "#145A32", kind="group"),
 
-        # Left column: Power
-        NodeDef("pogo", "USB-C / 3-Pin Mag Pogo", ["5.0V VBUS + ESD TVS", "Waterproof Top Contacts"], 60, 90, 230, 85, "#FFFDF5", "#D4AC0D", parent="grp_pwr"),
+        # Left column: Power + Waterproof USB-C
+        NodeDef("pogo", "IPX8 USB-C (12402448E512A)", ["Mid-Mount O-Ring + TPU Plug", "5.1k CC1/CC2 + USBLC6 ESD"], 60, 90, 230, 88, "#FFFDF5", "#D4AC0D", parent="grp_pwr"),
         NodeDef("charger", "LiPo Charger PMIC", ["V1: XIAO BQ25101", "V2: TI BQ25180 (I2C, 3 uA Iq)", "15 nA Ship Mode"], 60, 235, 230, 100, "#FFFDF5", "#D4AC0D", parent="grp_pwr"),
         NodeDef("lipo", "302030 LiPo (150 mAh)", ["3.7V Pouch w/ Built-in PCM", "Alt V2: Varta CP1254 (4.00V)", "3.0 mm Thick"], 60, 395, 230, 100, "#FDF2E9", "#D35400", parent="grp_pwr"),
-        NodeDef("ldo", "3.3V Rail & VBAT ADC", ["P0.14 LOW 1ms -> P0.31 ADC", "Zero Idle Divider Leakage"], 60, 565, 230, 105, "#FFFDF5", "#2980B9", parent="grp_pwr"),
+        NodeDef("ldo", "3.3V LDO & VBAT Monitor", ["V2: TPS7A0233 (25 nA Iq)", "V1: P0.14 LOW 1ms -> P0.31"], 60, 565, 230, 105, "#FFFDF5", "#2980B9", parent="grp_pwr"),
 
         # Center column: MCU + Wake IMU
-        NodeDef("mcu", "Seeed XIAO nRF52840", ["Primary V1 (~5 uA sleep, BLE 5.0)", "Alt V1B: XIAO Sense (LSM6DS3)", "Alt V1C: XIAO ESP32-C6 (17 uA)", "V2 PCB: Nordic nRF54L15"], 410, 90, 360, 140, "#FFFFFF", "#2980B9", parent="grp_mcu"),
+        NodeDef("mcu", "nRF52840 (XIAO / MDBT50Q)", ["Primary V1: XIAO nRF52840 (~5 uA)", "V2 PCBWay: MDBT50Q + TC2030 SWD", "Native USB 2.0 D+/D- CDC & DFU", "Alt V1C: XIAO ESP32-C6 (17 uA)"], 410, 90, 360, 140, "#FFFFFF", "#2980B9", parent="grp_mcu"),
         NodeDef("imu", "Bosch BMA400 Wake IMU", ["I2C Addr 0x14 (SDO=GND)", "25 Hz Auto-Wake (~0.9 uA)", "INT1 -> D1 (Wake on Lift)", "Static Hold Gate (az ~ 1.0g)"], 410, 305, 360, 125, "#FFFFFF", "#2980B9", parent="grp_mcu"),
         NodeDef("ble", "BLE 5.0 GATT + 64-Event Ring", ["0 dBm TX (~5-8 mA burst)", "Svc 0001 | Ev 0002 (12 B)", "ACK 0003 (4 B) | Stat 0004 (8 B)"], 410, 515, 360, 125, "#F4ECF7", "#8E44AD", parent="grp_mcu"),
 
@@ -328,10 +328,11 @@ def build_circuit_schematic(out_dir: str) -> None:
 
     # Carefully assigned non-colliding orthogonal waypoints in open channels
     edges = [
-        EdgeDef("e_vbus", "pogo", "charger", [(175, 175), (175, 235)], "#B7950B", "5V VBUS"),
+        EdgeDef("e_vbus", "pogo", "charger", [(175, 178), (175, 235)], "#B7950B", "5V VBUS"),
+        EdgeDef("e_usbc_data", "pogo", "mcu", [(290, 128), (410, 128)], "#8E44AD", "USB D+/D-", label_pos=(350, 113)),
         EdgeDef("e_bat", "charger", "lipo", [(175, 335), (175, 395)], "#D35400", "Charge / PCM", label_pos=(225, 365)),
         EdgeDef("e_ldo", "lipo", "ldo", [(175, 495), (175, 565)], "#2980B9", "VBAT 3.7V", label_pos=(225, 530)),
-        EdgeDef("e_3v3_mcu", "ldo", "mcu", [(290, 617), (345, 617), (345, 155), (410, 155)], "#2980B9", "3.3V + P0.31", label_pos=(345, 380)),
+        EdgeDef("e_3v3_mcu", "ldo", "mcu", [(290, 617), (345, 617), (345, 180), (410, 180)], "#2980B9", "3.3V + P0.31", label_pos=(345, 380)),
         EdgeDef("e_int1", "imu", "mcu", [(485, 305), (485, 230)], "#C0392B", "INT1 -> D1 (Wake)", label_pos=(485, 268)),
         EdgeDef("e_i2c_imu", "mcu", "imu", [(695, 230), (695, 305)], "#1F618D", "I2C SDA/SCL (D4/D5)", label_pos=(732, 268)),
         EdgeDef("e_ble", "mcu", "ble", [(590, 230), (590, 265), (390, 265), (390, 577), (410, 577)], "#8E44AD", "Ring Events", label_pos=(390, 440)),
@@ -346,8 +347,8 @@ def build_circuit_schematic(out_dir: str) -> None:
     write_drawio_xml(xml_path, "CapHydro_System_Circuit", W, H, nodes, edges)
     render_png(
         png_path,
-        "CapHydro Hardware Architecture & Zero-Leakage Power-Gating Schematic",
-        "Standby ~6.5 uA (XIAO nRF52840 + BMA400 + NAU7802 High-Z AVDD Cutoff) | Supports Flexure Bridge & TE FX29 I2C",
+        "HydroCap Hardware Architecture, IPX8 USB-C Debug & Power-Gating Schematic",
+        "Standby ~6.4 uA (MDBT50Q / XIAO nRF52840 + BMA400 + NAU7802 High-Z AVDD) | PCBWay 4-Layer V2",
         W,
         H,
         nodes,

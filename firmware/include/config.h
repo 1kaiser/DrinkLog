@@ -56,4 +56,12 @@ static constexpr float    INERTIAL_AZ_MAX_G          = 1.15f;
 static constexpr float    MAX_GYRO_STILL_DPS         = 5.0f;
 static constexpr uint32_t BLE_SYNC_WINDOW_MS         = 6000;
 
+// ---------------------------------------------------------------------------
+// USB-C Native CDC Debug & Calibration CLI (Zero Idle Draw Unplugged)
+// ---------------------------------------------------------------------------
+#ifndef ENABLE_USB_DEBUG_CLI
+#define ENABLE_USB_DEBUG_CLI 1
+#endif
+static constexpr uint32_t USB_DEBUG_BAUD             = 115200;
+
 } // namespace caphydro

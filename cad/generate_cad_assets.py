@@ -239,11 +239,15 @@ def render_orthographic_views(out_png: str, mesh_u65: trimesh.Trimesh) -> None:
     axA.add_patch(Rectangle((-15, 9.65), 30, 3.0, facecolor="#F39C12", edgecolor="#B9770E"))
     axA.text(0, 11.15, "302030 LiPo (150mAh)", ha="center", va="center", fontsize=6.5, fontweight="bold", color="#FFFFFF")
     axA.add_patch(Rectangle((-20, 12.95), 40, 1.0, facecolor="#1E8449", edgecolor="#145A32"))
-    # Top lid + bail + pogo pads
+    # Top lid + bail + IP67 side USB-C bezel + O-ring callout
     axA.add_patch(Rectangle((-33, 13.95), 66, 2.2, facecolor="#2980B9", edgecolor="#1B4F72"))
     axA.add_patch(Rectangle((-35.8, 14.85), 2.8, 1.3, facecolor="#D0D3D4", edgecolor="#566573"))
     axA.add_patch(Rectangle((33.0, 14.85), 2.8, 1.3, facecolor="#D0D3D4", edgecolor="#566573"))
-    axA.add_patch(Rectangle((-4, 16.0), 8, 0.6, facecolor="#F1C40F", edgecolor="#B7950B"))
+    # Radial O-ring seal cross-sections & left-side IPX8 USB-C port + red TPU plug
+    axA.add_patch(Circle((-29.5, 13.2), 0.7, facecolor="#1C2833", edgecolor="none"))
+    axA.add_patch(Circle((29.5, 13.2), 0.7, facecolor="#1C2833", edgecolor="none"))
+    axA.add_patch(Rectangle((-36.8, 10.1), 4.8, 3.0, facecolor="#E74C3C", edgecolor="#922B21"))
+    axA.text(-34.4, 11.6, "USB-C", ha="center", va="center", fontsize=5.2, fontweight="bold", color="#FFFFFF")
 
     # Callouts
     axA.annotate("Flush Bail & Lift Collar\n(100% Gravity Load Path)", xy=(34.5, 15.5), xytext=(15, 20.5),
@@ -252,10 +256,13 @@ def render_orthographic_views(out_png: str, mesh_u65: trimesh.Trimesh) -> None:
     axA.annotate("0.8 mm 301-SS Flexure\n+ 0.35 mm Drop Hard-Stop", xy=(-29, 7.6), xytext=(-45, 19.2),
                  fontsize=7.5, fontweight="bold", color="#7D6608",
                  arrowprops=dict(arrowstyle="->", color="#7D6608", lw=1.0))
-    axA.annotate("Shore 40A Silicone Pads", xy=(-17, 2.5), xytext=(-44, -9.5),
+    axA.annotate("IPX8 USB-C + TPU Plug\n(Charge & Native Debug)", xy=(-36.8, 11.6), xytext=(-46, -3.5),
+                 fontsize=7.0, color="#922B21", fontweight="bold",
+                 arrowprops=dict(arrowstyle="->", color="#922B21", lw=1.0))
+    axA.annotate("Shore 40A Silicone Pads", xy=(-17, 2.5), xytext=(-46, -11.5),
                  fontsize=7.5, color="#D35400", fontweight="bold",
                  arrowprops=dict(arrowstyle="->", color="#D35400", lw=1.0))
-    axA.annotate("Ø40 mm PCB (nRF52840+NAU7802)", xy=(12, 13.4), xytext=(14, -9.5),
+    axA.annotate("Ø42 mm V2 PCB (nRF52840+NAU7802)", xy=(12, 13.4), xytext=(12, -9.5),
                  fontsize=7.5, color="#145A32", fontweight="bold",
                  arrowprops=dict(arrowstyle="->", color="#145A32", lw=1.0))
 

@@ -21,6 +21,7 @@ static WakeImuDriver     wakeImu;
 static HydrationTracker  tracker(DEFAULT_SCALE_COUNTS_PER_G, 0);
 
 static volatile bool     motionWakeFlag = false;
+static float             activeCountsPerGram = DEFAULT_SCALE_COUNTS_PER_G;
 
 static void onMotionISR() {
     motionWakeFlag = true;
@@ -113,7 +114,55 @@ static bool wait_for_static_vertical_hold(float& az_out) {
     return false;
 }
 
+#if ENABLE_USB_DEBUG_CLI
+// Active ONLY when a USB-C host is attached (Serial evaluates true); 0 uA impact unplugged
+static void service_usb_debug_cli() {
+    if (!Serial || !Serial.available()) return;
+    String cmd = Serial.readStringUntil('\n');
+    cmd.trim();
+    if (cmd == "s") {
+        Serial.printf("{\"uptime_s\":%lu,\"vbat_mv\":%u,\"last_g\":%.1f,\"zero\":%ld,\"cpg\":%.2f,\"pending\":%lu}\n",
+                      millis() / 1000UL, read_vbat_mv(), tracker.last_valid_mass_g(),
+                      static_cast<long>(tracker.zero_offset()), activeCountsPerGram,
+                      static_cast<unsigned long>(tracker.pending_count()));
+    } else if (cmd == "t") {
+        int32_t raw[15]{};
+        loadCell.read_15_samples(raw);
+        tracker.set_calibration(activeCountsPerGram, median_filter_15(raw));
+        Serial.printf("OK TARE zero_offset=%ld\n", static_cast<long>(tracker.zero_offset()));
+    } else if (cmd.startsWith("c ")) {
+        float known_g = cmd.substring(2).toFloat();
+        if (known_g >= 50.0f) {
+            int32_t raw[15]{};
+            loadCell.read_15_samples(raw);
+            int32_t delta = median_filter_15(raw) - tracker.zero_offset();
+            activeCountsPerGram = static_cast<float>(delta) / known_g;
+            tracker.set_calibration(activeCountsPerGram, tracker.zero_offset());
+            Serial.printf("OK CAL known_g=%.1f counts_per_g=%.3f\n", known_g, activeCountsPerGram);
+        }
+    } else if (cmd == "d") {
+        HydrationEvent ev{};
+        for (uint32_t i = 0; i < tracker.pending_count(); ++i) {
+            if (tracker.peek_pending_at(i, ev)) {
+                Serial.printf("seq=%lu t=%lus delta_ml=%d mass_g=%u\n",
+                              static_cast<unsigned long>(ev.seq), static_cast<unsigned long>(ev.uptime_s),
+                              ev.delta_ml, ev.bottle_mass_g);
+            }
+        }
+    } else if (cmd == "b") {
+        Serial.println("Rebooting into UF2/DFU USB-C bootloader...");
+        Serial.flush();
+        enterUf2Dfu();
+    } else if (cmd.length() > 0) {
+        Serial.println("Cmds: s (status) | t (tare) | c <grams> (calibrate) | d (dump ring) | b (UF2 bootloader)");
+    }
+}
+#endif
+
 void setup() {
+#if ENABLE_USB_DEBUG_CLI
+    Serial.begin(USB_DEBUG_BAUD);
+#endif
     Wire.begin();
     Wire.setClock(400000);
 
@@ -160,6 +209,13 @@ void setup() {
 }
 
 void loop() {
+#if ENABLE_USB_DEBUG_CLI
+    service_usb_debug_cli();
+    if (Serial) {
+        delay(25);
+        return; // Keep USB-C CDC active while plugged into PC for live debugging
+    }
+#endif
     if (!motionWakeFlag) {
         // Low-power Nordic System-ON idle (~5 uA) until BMA400 INT1 fires
         __WFE();

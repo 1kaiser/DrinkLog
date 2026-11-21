@@ -14,8 +14,8 @@
         <mxCell id="grp_afe" value="&lt;b&gt;LOAD-SENSING ANALOG FRONT END&lt;/b&gt;" style="rounded=1;arcSize=6;fillColor=#EAFAF1;strokeColor=#27AE60;strokeWidth=1.8;dashed=1;verticalAlign=top;align=left;spacingTop=8;spacingLeft=12;fontSize=13;fontStyle=1;fontColor=#145A32;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="1">
           <mxGeometry x="860" y="30" width="490" height="710" as="geometry" />
         </mxCell>
-        <mxCell id="pogo" value="&lt;b&gt;USB-C / 3-Pin Mag Pogo&lt;/b&gt;&lt;br/&gt;5.0V VBUS + ESD TVS&lt;br/&gt;Waterproof Top Contacts" style="rounded=1;arcSize=10;fillColor=#FFFDF5;strokeColor=#D4AC0D;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_pwr">
-          <mxGeometry x="30" y="60" width="230" height="85" as="geometry" />
+        <mxCell id="pogo" value="&lt;b&gt;IPX8 USB-C (12402448E512A)&lt;/b&gt;&lt;br/&gt;Mid-Mount O-Ring + TPU Plug&lt;br/&gt;5.1k CC1/CC2 + USBLC6 ESD" style="rounded=1;arcSize=10;fillColor=#FFFDF5;strokeColor=#D4AC0D;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_pwr">
+          <mxGeometry x="30" y="60" width="230" height="88" as="geometry" />
         </mxCell>
         <mxCell id="charger" value="&lt;b&gt;LiPo Charger PMIC&lt;/b&gt;&lt;br/&gt;V1: XIAO BQ25101&lt;br/&gt;V2: TI BQ25180 (I2C, 3 uA Iq)&lt;br/&gt;15 nA Ship Mode" style="rounded=1;arcSize=10;fillColor=#FFFDF5;strokeColor=#D4AC0D;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_pwr">
           <mxGeometry x="30" y="205" width="230" height="100" as="geometry" />
@@ -23,10 +23,10 @@
         <mxCell id="lipo" value="&lt;b&gt;302030 LiPo (150 mAh)&lt;/b&gt;&lt;br/&gt;3.7V Pouch w/ Built-in PCM&lt;br/&gt;Alt V2: Varta CP1254 (4.00V)&lt;br/&gt;3.0 mm Thick" style="rounded=1;arcSize=10;fillColor=#FDF2E9;strokeColor=#D35400;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_pwr">
           <mxGeometry x="30" y="365" width="230" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="ldo" value="&lt;b&gt;3.3V Rail &amp;amp; VBAT ADC&lt;/b&gt;&lt;br/&gt;P0.14 LOW 1ms -&amp;gt; P0.31 ADC&lt;br/&gt;Zero Idle Divider Leakage" style="rounded=1;arcSize=10;fillColor=#FFFDF5;strokeColor=#2980B9;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_pwr">
+        <mxCell id="ldo" value="&lt;b&gt;3.3V LDO &amp;amp; VBAT Monitor&lt;/b&gt;&lt;br/&gt;V2: TPS7A0233 (25 nA Iq)&lt;br/&gt;V1: P0.14 LOW 1ms -&amp;gt; P0.31" style="rounded=1;arcSize=10;fillColor=#FFFDF5;strokeColor=#2980B9;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_pwr">
           <mxGeometry x="30" y="535" width="230" height="105" as="geometry" />
         </mxCell>
-        <mxCell id="mcu" value="&lt;b&gt;Seeed XIAO nRF52840&lt;/b&gt;&lt;br/&gt;Primary V1 (~5 uA sleep, BLE 5.0)&lt;br/&gt;Alt V1B: XIAO Sense (LSM6DS3)&lt;br/&gt;Alt V1C: XIAO ESP32-C6 (17 uA)&lt;br/&gt;V2 PCB: Nordic nRF54L15" style="rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#2980B9;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_mcu">
+        <mxCell id="mcu" value="&lt;b&gt;nRF52840 (XIAO / MDBT50Q)&lt;/b&gt;&lt;br/&gt;Primary V1: XIAO nRF52840 (~5 uA)&lt;br/&gt;V2 PCBWay: MDBT50Q + TC2030 SWD&lt;br/&gt;Native USB 2.0 D+/D- CDC &amp;amp; DFU&lt;br/&gt;Alt V1C: XIAO ESP32-C6 (17 uA)" style="rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#2980B9;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_mcu">
           <mxGeometry x="40" y="60" width="360" height="140" as="geometry" />
         </mxCell>
         <mxCell id="imu" value="&lt;b&gt;Bosch BMA400 Wake IMU&lt;/b&gt;&lt;br/&gt;I2C Addr 0x14 (SDO=GND)&lt;br/&gt;25 Hz Auto-Wake (~0.9 uA)&lt;br/&gt;INT1 -&amp;gt; D1 (Wake on Lift)&lt;br/&gt;Static Hold Gate (az ~ 1.0g)" style="rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#2980B9;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_mcu">
@@ -49,8 +49,14 @@
         </mxCell>
         <mxCell id="e_vbus" value="5V VBUS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B7950B;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#B7950B;labelBackgroundColor=#FFFFFF;" edge="1" source="pogo" target="charger" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="175" y="175" as="sourcePoint" />
+            <mxPoint x="175" y="178" as="sourcePoint" />
             <mxPoint x="175" y="235" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_usbc_data" value="USB D+/D-" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#8E44AD;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#8E44AD;labelBackgroundColor=#FFFFFF;" edge="1" source="pogo" target="mcu" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="290" y="128" as="sourcePoint" />
+            <mxPoint x="410" y="128" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="e_bat" value="Charge / PCM" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D35400;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#D35400;labelBackgroundColor=#FFFFFF;" edge="1" source="charger" target="lipo" parent="1">
@@ -68,10 +74,10 @@
         <mxCell id="e_3v3_mcu" value="3.3V + P0.31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2980B9;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#2980B9;labelBackgroundColor=#FFFFFF;" edge="1" source="ldo" target="mcu" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="290" y="617" as="sourcePoint" />
-            <mxPoint x="410" y="155" as="targetPoint" />
+            <mxPoint x="410" y="180" as="targetPoint" />
             <Array as="points">
               <mxPoint x="345" y="617" />
-              <mxPoint x="345" y="155" />
+              <mxPoint x="345" y="180" />
             </Array>
           </mxGeometry>
         </mxCell>

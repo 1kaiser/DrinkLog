@@ -1,21 +1,22 @@
 Variant,Subsystem,Part_Name,Manufacturer,MPN_or_Spec,Package_or_Dim_mm,Qty,Unit_USD,Sleep_uA,Active_mA,Notes
-V1_DIY_Flexure,MCU+BLE,Seeed Studio XIAO nRF52840,Seeed Studio,102010448 (nRF52840),21.0 x 17.5 x 3.5,1,9.90,5.0,8.0,Primary ultra-low-power BLE 5.0 MCU with BQ25101 charger
+V1_DIY_Flexure,MCU+BLE,Seeed Studio XIAO nRF52840,Seeed Studio,102010448 (nRF52840),21.0 x 17.5 x 3.5,1,9.90,5.0,8.0,Primary ultra-low-power BLE 5.0 MCU w/ native USB-C debug & BQ25101
 V1_DIY_Flexure,Wake_IMU,Bosch BMA400 Accelerometer Breakout,Bosch Sensortec,BMA400 (I2C 0x14),12 x 12 breakout (2x2 IC),1,6.95,0.9,0.015,25 Hz auto-wakeup interrupt on INT1 -> D1
 V1_DIY_Flexure,Bridge_ADC,SparkFun Qwiic Scale (NAU7802),Nuvoton / SparkFun,SEN-15242 (NAU7802 24-bit),25.4 x 25.4 breakout,1,15.95,0.5,1.6,Internal AVDD LDO goes High-Z in sleep (0 uA bridge leak)
 V1_DIY_Flexure,Strain_Sensor,1000 Ohm Foil Strain Gauge,Zemic / BF Series,BF1000-3AA (1000 Ohm),7.1 x 4.4 x 0.05,4,1.00,0.0,2.4,Wired as full Wheatstone bridge on 3-spoke flexure (2.4mA @ 2.4V)
-V1_DIY_Flexure,Flexure,0.8mm Spring Steel 3-Spoke Flexure,Custom Laser-Cut,301-SS Full Hard / 17-7PH,OD 44 x 0.8,1,3.50,0.0,0.0,120-deg moment-cancelling annular flexure
+V1_DIY_Flexure,Flexure,0.8mm Spring Steel 3-Spoke Flexure,PCBWay Sheet Metal,301-SS Full Hard / 17-7PH,OD 66 x 0.8,1,3.50,0.0,0.0,Cut from cad/stl_print_parts/09_flexure_3spoke_0p8mm_301SS.dxf
 V1_DIY_Flexure,Battery,3.7V 150mAh LiPo Pouch w/ PCM,Generic / EEMB,302030 (150 mAh),30.0 x 20.0 x 3.0,1,3.20,0.0,0.0,Fits flat inside cap puck; built-in protection IC
-V1_DIY_Flexure,Mechanical,3D Printed Scroll Chuck + Silicone Pads,PETG/PA12 + Shore 40A,Universal 26-65 mm Cap Clamp,OD 70 x 10.5,1,2.50,0.0,0.0,Print from cad/universal_cap_gripper.scad
+V1_DIY_Flexure,Mechanical,3D Printed Split Enclosure + TPU Plug,PCBWay 3D / Local FDM,PA12/PETG + TPU 85A,OD 72 x 11.0 added,1,3.00,0.0,0.0,8 split STLs in cad/stl_print_parts/ + radial O-ring
 V1_FX29,MCU+BLE,Seeed Studio XIAO nRF52840 Sense,Seeed Studio,102010469 (nRF52840+LSM6DS3),21.0 x 17.5 x 3.5,1,15.90,38.0,8.0,Zero-wiring IMU option (gyro OFF + 12.5Hz LP mode)
 V1_FX29,Load_Cell,TE FX29 I2C Sleep Load Cell (10 lbf),TE Connectivity,FX29K0-100A-0010-L,OD 19.7 x 5.0,1,32.00,0.5,2.5,Factory-calibrated 14-bit I2C (0x28); mounts in reverse yoke
 V1_FX29,Battery,3.7V 150mAh LiPo Pouch w/ PCM,Generic / EEMB,302030 (150 mAh),30.0 x 20.0 x 3.0,1,3.20,0.0,0.0,Connects directly to backside BAT+/BAT- pads
 V1_Budget_ESP32C6,MCU+BLE,Seeed Studio XIAO ESP32-C6,Seeed Studio,113991254 (ESP32-C6),21.0 x 17.5 x 3.5,1,5.20,17.0,25.0,Wi-Fi kept OFF; RTC memory retains ring buffer across sleep
 V1_Budget_ESP32C6,Wake_IMU,Bosch BMA400 Accelerometer Breakout,Bosch Sensortec,BMA400 (I2C 0x14),12 x 12 breakout,1,6.95,0.9,0.015,Wakes ESP32-C6 via GPIO1 ext wakeup
 V1_Budget_ESP32C6,Bridge_ADC,Bare NAU7802 Module + 4x BF1000-3AA,Nuvoton / Generic,NAU7802 + BF1000-3AA,15 x 15 + gauges,1,6.50,0.5,4.0,Total bridge + ADC active 4.0 mA @ 2.4V
-V1_Budget_ESP32C6,Battery,3.7V 150mAh LiPo Pouch w/ PCM,Generic / EEMB,302030 (150 mAh),30.0 x 20.0 x 3.0,1,3.20,0.0,0.0,~5-6 months battery life
-V2_Custom_PCB,MCU+BLE,Nordic nRF54L15 SoC / Module,Nordic / Raytac,nRF54L15-QFAA or MDBT54,6.0 x 6.0 QFN48,1,3.80,2.5,4.8,BLE 6.0 custom 4-layer 0.8mm circular PCB (OD 40 mm)
-V2_Custom_PCB,Bridge_ADC,Nuvoton NAU7802 24-bit Bridge ADC,Nuvoton,NAU7802SGI,SOP-16 / QFN-16,1,1.75,0.5,1.6,Direct AVDD gating + 100nF C0G differential filter
-V2_Custom_PCB,Wake_IMU,Bosch BMA400 Ultra-Low-Power IMU,Bosch Sensortec,BMA400,2.0 x 2.0 x 0.95 LGA-12,1,1.45,0.9,0.015,Auto-wake interrupt + static tilt validation
-V2_Custom_PCB,PMIC_Charger,TI BQ25180 I2C Linear Charger,Texas Instruments,BQ25180YBGR,1.6 x 1.1 DSBGA-8,1,1.35,3.0,50.0,15nA ship mode; I2C programmable VBATREG for LiPo or CoinPower
-V2_Custom_PCB,Battery,Varta CoinPower CP1254 A5X (Alt 302030),Varta,CP1254 A5X (77-80 mAh),OD 12.1 x 5.4,1,4.80,0.0,0.0,Set BQ25180 VBATREG = 4.00V if using CP1254 (4.20V for 302030)
-V2_Custom_PCB,Passives_Misc,1000 Ohm Gauges + Caps + Pogo Pads + LED,Various,BF1000-3AA + 0402 passives + 3-pin pogo,0402 + SMD,1,4.20,0.0,0.0,Total V2 BOM ~$17.35 @ low volume
+V1_Budget_ESP32C6,Battery,3.7V 150mAh LiPo Pouch w/ PCM,Generic / EEMB,302030 (150 mAh),30.0 x 20.0 x 3.0,1,3.20,0.0,0.0,~5.4 months battery life
+V2_PCBWay_PCBA,MCU+BLE,Raytac nRF52840 Module (Native USB),Raytac,MDBT50Q-1MV2,15.5 x 10.5 LGA,1,5.40,4.5,6.0,Dedicated USB 2.0 D+/D- CDC/DFU + SWD (no pin conflict; 0.8mm 4L PCB)
+V2_PCBWay_PCBA,USB_Port,IPX8 Waterproof Mid-Mount USB-C,Amphenol CS,12402448E512A,9.4 x 7.6 Mid-Mount,1,2.85,0.0,0.0,Integrated O-ring flange; alt budget GCT USB4510-03-1-A + TPU plug
+V2_PCBWay_PCBA,ESD_CC,USBLC6-2SC6 TVS + 2x 5.1k CC Resistors,ST / Yageo,USBLC6-2SC6 + RC0402 5.1k,SOT-23-6 + 0402,1,0.35,0.01,0.0,ESD protection + USB-C PD 5V CC1/CC2 negotiation
+V2_PCBWay_PCBA,PMIC_Charger,TI BQ25180 I2C Charger + TPS7A0233 LDO,Texas Instruments,BQ25180YBGR + TPS7A0233,DSBGA-8 + SOT-23-5,1,2.10,3.0,50.0,15nA ship mode + 25nA 3.3V LDO; safe for LiPo or CoinPower
+V2_PCBWay_PCBA,Bridge_ADC,Nuvoton NAU7802 24-bit Bridge ADC,Nuvoton,NAU7802SGI,SOP-16,1,1.75,0.5,1.6,Direct High-Z AVDD gating + 100nF C0G diff RC filter
+V2_PCBWay_PCBA,Wake_IMU,Bosch BMA400 Ultra-Low-Power IMU,Bosch Sensortec,BMA400,2.0 x 2.0 x 0.95 LGA-12,1,1.45,0.9,0.015,25 Hz auto-wake INT1 + static vertical hold check
+V2_PCBWay_PCBA,Debug_Passives,TC2030-IDC-NL + SW1 + LED + 0402 Caps,Tag-Connect / Murata,PCB Pads + EVQP7J01P + 0402,Bottom Pads + SMD,1,1.80,0.0,0.0,Bottom 6-pin SWD/UART pogo footprint adds 0 mm Z-height

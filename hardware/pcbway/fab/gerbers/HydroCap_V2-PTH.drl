@@ -1,0 +1,11 @@
+M48
+; HydroCap V2 Plated Through-Hole Vias
+METRIC,TZ
+T1C0.300
+%
+T1
+X-4.000Y-14.200
+X0.000Y0.000
+X6.000Y2.000
+X-8.000Y2.500
+M30

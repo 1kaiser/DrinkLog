@@ -1,0 +1,17 @@
+{
+  "board": {
+    "design_settings": {
+      "defaults": {
+        "board_outline_line_width": 0.1,
+        "copper_line_width": 0.2
+      }
+    }
+  },
+  "meta": {
+    "filename": "HydroCap_V2.kicad_pro",
+    "version": 1
+  },
+  "schematic": {
+    "meta": { "version": 1 }
+  }
+}

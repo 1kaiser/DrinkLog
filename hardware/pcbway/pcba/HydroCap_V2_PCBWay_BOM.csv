@@ -1,0 +1,24 @@
+Line#,Designator,Qty,Manufacturer,Part Number,Description,Package,Type,Distributor Ref
+1,U1,1,Raytac,MDBT50Q-1MV2,nRF52840 BLE 5.0 Module w/ Native USB 2.0 & PCB Antenna,MDBT50Q_15.5x10.5,SMT,DigiKey: 2097-MDBT50Q-1MV2-ND
+2,J1,1,Amphenol CS,12402448E512A,IPX8 Waterproof Mid-Mount USB Type-C Receptacle (O-Ring Sealed),USB_C_MidMount_IPX8,SMT,DigiKey: 12402448E512A
+3,U5,1,STMicroelectronics,USBLC6-2SC6,Very Low Capacitance ESD Protection (USB D+/D-/VBUS),SOT-23-6,SMT,LCSC: C7519
+4,R4,1,Yageo,RC0402FR-075K1L,USB-C CC1 5.1 kOhm 1% Pull-Down Resistor,0402,SMT,LCSC: C25905
+5,R5,1,Yageo,RC0402FR-075K1L,USB-C CC2 5.1 kOhm 1% Pull-Down Resistor,0402,SMT,LCSC: C25905
+6,U4,1,Texas Instruments,BQ25180YBGR,1A I2C Linear Li-Ion Charger w/ Power-Path & 15nA Ship Mode,DSBGA-8_1.6x1.1,SMT,DigiKey: 296-BQ25180YBGRCT-ND
+7,U6,1,Texas Instruments,TPS7A0233PDBVR,25 nA Ultra-Low-Iq 200 mA 3.3V LDO Regulator,SOT-23-5,SMT,DigiKey: 296-TPS7A0233PDBVRCT-ND
+8,U2,1,Nuvoton,NAU7802SGI,24-bit Dual-Ch Bridge ADC w/ Programmable High-Z AVDD LDO,SOP-16,SMT,DigiKey: 2152-NAU7802SGI-ND
+9,U3,1,Bosch Sensortec,BMA400,0.9 uA 25 Hz Auto-Wake 3-Axis Accelerometer,LGA-12_2x2,SMT,DigiKey: 828-1071-1-ND
+10,C1,1,Murata,GRM1555C1H104FA01,Differential Bridge Filter Cap,0402,SMT,LCSC: C1525
+11,C2,1,Murata,GRM1555C1H103JA01,VIN1P Common-Mode Cap,0402,SMT,LCSC: C15195
+12,C3,1,Murata,GRM1555C1H103JA01,VIN1N Common-Mode Cap,0402,SMT,LCSC: C15195
+13,C4,1,Samsung,CL05A105KA5NQNC,NAU7802 AVDD Decoupling Cap,0402,SMT,LCSC: C52923
+14,C5,1,Samsung,CL05B104KO5NNNC,NAU7802 VBG & MCU Decoupling,0402,SMT,LCSC: C1525
+15,C6,1,Samsung,CL05A475MP5NRNC,BQ25180 VSYS & VBAT Bulk Cap,0402,SMT,LCSC: C23733
+16,R1,1,Yageo,RC0402FR-074K7L,I2C SDA Pull-Up Resistor,0402,SMT,LCSC: C25900
+17,R2,1,Yageo,RC0402FR-074K7L,I2C SCL Pull-Up Resistor,0402,SMT,LCSC: C25900
+18,R3,1,Yageo,RC0402FR-071KL,Status LED Current Limit,0402,SMT,LCSC: C11702
+19,D1,1,Kingbright,APT1608ZGC,0603 Green Lock Status LED,0603,SMT,LCSC: C72043
+20,SW1,1,Panasonic,EVQP7J01P,Recessed Tactile Reset / DFU Button,3.5x2.9mm,SMT,DigiKey: P16758CT-ND
+21,J2,1,Tag-Connect,TC2030-IDC-NL_PAD,Bottom-Side 6-Pin Pogo SWD/UART Debug Footprint (No Connector Mounted),TC2030_6PAD,PCB_PAD_DNP,N/A (Copper Pads Only)
+22,J3,1,CapHydro,FLEXURE_WIRE_PADS,Bottom Solder Pads for 4x BF1000-3AA Wheatstone Bridge (E+/E-/S+/S-),PAD_4x2.0mm,PCB_PAD_DNP,N/A (Solder Pads)
+23,J4,1,CapHydro,BAT_SOLDER_PADS,Bottom Solder Pads for 302030 150 mAh LiPo Pouch (BAT+ / BAT-),PAD_2x2.5mm,PCB_PAD_DNP,N/A (Solder Pads)
