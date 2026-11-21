@@ -1,10 +1,11 @@
-# 💧 HydroCap — Universal Waterproof BLE Smart Bottle-Cap Hydration Tracker
+# 💧 HydroCap — Concept Universal Waterproof BLE Smart Bottle-Cap Hydration Tracker
 
 <p align="center">
   <img src="outputs/hydrocap_attachment_animation.gif" alt="HydroCap Node.js + Clang WASM + Dawn WebGPU 3D Animation" width="820"/>
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/Status-Concept%20Design%20%28Not%20Yet%20Fabricated%29-f59e0b?style=flat-square" alt="Concept Design"/>
   <img src="https://img.shields.io/badge/WebGPU-Node.js%20%2B%20Dawn%20%2B%20Clang%20WASM-005A9C?style=flat-square" alt="Dawn WebGPU"/>
   <img src="https://img.shields.io/badge/3D%20Viewer-Three.js%20WebGL-049EF4?style=flat-square" alt="Three.js"/>
   <img src="https://img.shields.io/badge/MCU-nRF52840%20%7C%20ESP32--C6-blue?style=flat-square" alt="MCU"/>
@@ -14,9 +15,12 @@
   <img src="https://img.shields.io/badge/Sync-Android%20Health%20Connect-purple?style=flat-square" alt="Health Connect"/>
 </p>
 
-**HydroCap** is an ultra-thin (`11.0 mm` added cap height), rechargeable, **IP67 waterproof USB-C** smart bottle-cap gripper proportioned at **`1.10 × D_cap`** (`33.6 mm` for standard PET water bottles up to `69.3 mm` for wide-mouth flasks) around a **universal `Ø 28.0 mm` drop-in PCBWay core** that measures fluid consumed from **pick-up / put-down gravimetric weight differences** and automatically logs every sip into **Android Health Connect** (`HydrationRecord`).
+> [!NOTE]
+> **Concept & Reference Design:** HydroCap is currently a **pre-prototype hardware and software concept**. No physical PCB, enclosure, strain-gauge flexure, or live BLE/USB-C unit has been fabricated or bench-tested yet. All power budgets, mechanical tolerances, PCBWay deliverables, firmware modules, and companion code are validated in software/simulation only (`C++17` unit tests, `pytest`, programmatic DRC/STL/DXF checks, and Dawn WebGPU/WASM + Three.js renders). Review KiCad footprints, RF antenna clearance, IP67 seal compression, and mechanical fits before ordering prototype hardware.
 
-Everything needed to **3D print**, **laser-cut**, **order assembled PCBs from PCBWay**, **flash firmware**, **render via Node.js + Clang `wasm32` + Native Dawn WebGPU (`webgpu-dawn-wasm/`)**, **explore interactively in Three.js (`web-threejs/`)**, and **sync via BLE** lives in this repository.
+**HydroCap** is a conceptual, ultra-thin (`11.0 mm` added cap height), rechargeable, **IP67 waterproof USB-C** smart bottle-cap gripper proportioned at **`1.10 × D_cap`** (`33.6 mm` for standard PET water bottles up to `69.3 mm` for wide-mouth flasks) around a **universal `Ø 28.0 mm` drop-in PCBWay core** designed to measure fluid consumed from **pick-up / put-down gravimetric weight differences** and log every sip into **Android Health Connect** (`HydrationRecord`).
+
+Everything needed to review, simulate, and prototype the concept — **3D-printable STLs**, **laser-cut flexure DXF**, **PCBWay Gerber/BOM/CPL & KiCad 8 files**, **firmware**, **Node.js + Clang `wasm32` + Native Dawn WebGPU animation (`webgpu-dawn-wasm/`)**, **interactive Three.js viewer (`web-threejs/`)**, and **BLE/Health Connect companion code** — lives in this repository.
 
 ---
 

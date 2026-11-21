@@ -1,5 +1,8 @@
 # CapHydro — Hardware, Mechanical & Firmware Design Specification
 
+> [!NOTE]
+> **Concept Status:** This document specifies a pre-prototype engineering concept. Power consumption figures, battery runtimes, gravimetric resolution (`±5 mL`), and mechanical load-path tolerances are analytical/simulated design targets pending physical PCB, flexure, and enclosure bring-up.
+
 ## 1. System Objectives & Physical Constraints
 
 | Requirement | Target Value | Design Solution |

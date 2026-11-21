@@ -1,5 +1,8 @@
 # PCBWay Fabrication, Turnkey PCBA, 3D Printing & Sheet-Metal Order Guide
 
+> [!IMPORTANT]
+> **Concept / Pre-Prototype Notice:** This repository is a **hardware concept** and has not yet undergone physical PCBWay fabrication, KiCad GUI ERC/DRC sign-off, RF tuning, or physical mechanical fit verification. Treat any initial build as an engineering prototype (`Rev 0 / Concept`) and inspect all Gerbers, footprints, polarity/pin-1 orientations, and mechanical clearances in KiCad and a Gerber/CAD viewer before ordering.
+
 All manufacturing deliverables in this repository were generated from a single source of truth ([`generate_pcbway_package.py`](generate_pcbway_package.py)) and verified against PCBWay's Gerber, Drill, BOM, Pick-and-Place, and mechanical clearance rules.
 
 ---
