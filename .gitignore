@@ -1,0 +1,10 @@
+.pio/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.o
+*.out
+*.exe
+test_hydration_core
+companion/python-ble-bridge/logs/*.csv
+.DS_Store

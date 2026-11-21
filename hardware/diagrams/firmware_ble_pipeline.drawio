@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="CapHydroGenerator" type="device">
+  <diagram id="cap_diagram" name="CapHydro_Firmware_BLE_Pipeline">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1280" pageHeight="980" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="grp_cap" value="&lt;b&gt;CAP FIRMWARE (nRF52840 / ESP32-C6)&lt;/b&gt;" style="rounded=1;arcSize=6;fillColor=#F8F9F9;strokeColor=#5D6D7E;strokeWidth=1.8;dashed=1;verticalAlign=top;align=left;spacingTop=8;spacingLeft=12;fontSize=13;fontStyle=1;fontColor=#1C2833;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="770" height="910" as="geometry" />
+        </mxCell>
+        <mxCell id="grp_phone" value="&lt;b&gt;ANDROID COMPANION &amp;amp; HEALTH CONNECT&lt;/b&gt;" style="rounded=1;arcSize=6;fillColor=#F4ECF7;strokeColor=#8E44AD;strokeWidth=1.8;dashed=1;verticalAlign=top;align=left;spacingTop=8;spacingLeft=12;fontSize=13;fontStyle=1;fontColor=#4A235A;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="850" y="30" width="400" height="910" as="geometry" />
+        </mxCell>
+        <mxCell id="n_sleep" value="&lt;b&gt;System-ON Deep Sleep (~6.5 uA)&lt;/b&gt;&lt;br/&gt;AVDD = High-Z (0 uA bridge), BMA400 @ 25 Hz" style="rounded=1;arcSize=50;fillColor=#EBF5FB;strokeColor=#2980B9;strokeWidth=2.0;align=center;verticalAlign=middle;spacing=6;fontSize=12;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_cap">
+          <mxGeometry x="170" y="60" width="390" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="n_wake" value="&lt;b&gt;BMA400 Motion Interrupt (INT1 -&amp;gt; D1)&lt;/b&gt;&lt;br/&gt;Wakes MCU; Poll IMU at 20 Hz for 300 ms hold" style="rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#2980B9;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_cap">
+          <mxGeometry x="170" y="170" width="390" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="d_still" value="&lt;b&gt;Static Vertical Hold?&lt;/b&gt;&lt;br/&gt;az in [0.85g, 1.15g] &amp;amp; tilt &amp;lt; 15 deg" style="rhombus;fillColor=#FEF9E7;strokeColor=#D4AC0D;strokeWidth=2.0;align=center;verticalAlign=middle;spacing=4;fontSize=11;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_cap">
+          <mxGeometry x="205" y="280" width="320" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="n_sample" value="&lt;b&gt;Power AVDD (2.4V) &amp;amp; Sample ADC&lt;/b&gt;&lt;br/&gt;80 ms settle, 15x NAU7802 -&amp;gt; median_filter_15()&lt;br/&gt;Power-Down AVDD -&amp;gt; High-Z immediately" style="rounded=1;arcSize=10;fillColor=#EAFAF1;strokeColor=#27AE60;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_cap">
+          <mxGeometry x="170" y="425" width="390" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="d_unscrew" value="&lt;b&gt;|raw_g| &amp;lt; 45 g?&lt;/b&gt;&lt;br/&gt;(Cap Unscrewed?)" style="rhombus;fillColor=#FEF9E7;strokeColor=#D4AC0D;strokeWidth=2.0;align=center;verticalAlign=middle;spacing=4;fontSize=11;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_cap">
+          <mxGeometry x="225" y="545" width="280" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="n_tare" value="&lt;b&gt;Auto-Tare Zero Offset&lt;/b&gt;&lt;br/&gt;zero_offset = 0.8*old + 0.2*median&lt;br/&gt;Cancels thermal drift" style="rounded=1;arcSize=10;fillColor=#E8F8F5;strokeColor=#16A085;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_cap">
+          <mxGeometry x="30" y="675" width="240" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="n_comp" value="&lt;b&gt;Inertial Mass &amp;amp; Delta Classifier&lt;/b&gt;&lt;br/&gt;m = Fz / clamp(az, 0.85, 1.15)&lt;br/&gt;Sip &amp;gt;= +15g | Refill &amp;lt;= -25g" style="rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#2980B9;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_cap">
+          <mxGeometry x="360" y="675" width="360" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="n_ring" value="&lt;b&gt;Push to 64-Event Ring Buffer&lt;/b&gt;&lt;br/&gt;Packed 12-byte event &amp;lt;IIhH&amp;gt;&lt;br/&gt;Advertise BLE &amp;#x27;CapHydro&amp;#x27; (6 s window)" style="rounded=1;arcSize=10;fillColor=#EBF5FB;strokeColor=#1F618D;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_cap">
+          <mxGeometry x="360" y="795" width="360" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="n_scan" value="&lt;b&gt;Android BLE GATT Client&lt;/b&gt;&lt;br/&gt;Connect &amp;amp; Read Status (0004): &amp;lt;IHH&amp;gt;&lt;br/&gt;Map uptime_s -&amp;gt; Instant" style="rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#8E44AD;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_phone">
+          <mxGeometry x="40" y="170" width="320" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="n_notify" value="&lt;b&gt;Receive Event Notify (0002)&lt;/b&gt;&lt;br/&gt;Decode 12-B HydrationEvent&lt;br/&gt;Filter delta_ml &amp;gt; 0 (ignore refills)" style="rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#8E44AD;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_phone">
+          <mxGeometry x="40" y="360" width="320" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="n_hc" value="&lt;b&gt;Write Health Connect Record&lt;/b&gt;&lt;br/&gt;HydrationRecord(Volume.milliliters)&lt;br/&gt;clientRecordId = caphydro-MAC-seq" style="rounded=1;arcSize=10;fillColor=#EAFAF1;strokeColor=#27AE60;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_phone">
+          <mxGeometry x="40" y="550" width="320" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="n_ack" value="&lt;b&gt;Send BLE ACK (0003)&lt;/b&gt;&lt;br/&gt;Write 4-byte uint32 last_acked_seq&lt;br/&gt;Cap clears ring up to seq" style="rounded=1;arcSize=50;fillColor=#F4ECF7;strokeColor=#8E44AD;strokeWidth=2.0;align=center;verticalAlign=middle;spacing=6;fontSize=12;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_phone">
+          <mxGeometry x="40" y="740" width="320" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="f1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2980B9;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#2980B9;labelBackgroundColor=#FFFFFF;" edge="1" source="n_sleep" target="n_wake" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="395" y="158" as="sourcePoint" />
+            <mxPoint x="395" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2980B9;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#2980B9;labelBackgroundColor=#FFFFFF;" edge="1" source="n_wake" target="d_still" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="395" y="268" as="sourcePoint" />
+            <mxPoint x="395" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f3_no" value="No (Timeout)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C0392B;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#C0392B;labelBackgroundColor=#FFFFFF;" edge="1" source="d_still" target="n_sleep" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="235" y="357" as="sourcePoint" />
+            <mxPoint x="200" y="124" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="105" y="357" />
+              <mxPoint x="105" y="124" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f3_yes" value="Yes (Steady)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#27AE60;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#27AE60;labelBackgroundColor=#FFFFFF;" edge="1" source="d_still" target="n_sample" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="395" y="405" as="sourcePoint" />
+            <mxPoint x="395" y="455" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#27AE60;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#27AE60;labelBackgroundColor=#FFFFFF;" edge="1" source="n_sample" target="d_unscrew" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="395" y="531" as="sourcePoint" />
+            <mxPoint x="395" y="575" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f5_yes" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A085;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#16A085;labelBackgroundColor=#FFFFFF;" edge="1" source="d_unscrew" target="n_tare" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="255" y="619" as="sourcePoint" />
+            <mxPoint x="180" y="705" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="180" y="619" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f5_no" value="No (Bottle Attached)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2980B9;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#2980B9;labelBackgroundColor=#FFFFFF;" edge="1" source="d_unscrew" target="n_comp" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="535" y="619" as="sourcePoint" />
+            <mxPoint x="570" y="705" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="570" y="619" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f6_loop" value="Return" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#16A085;strokeWidth=2.2;dashed=1;dashPattern=6 4;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#16A085;labelBackgroundColor=#FFFFFF;" edge="1" source="n_tare" target="n_sleep" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="60" y="742" as="sourcePoint" />
+            <mxPoint x="200" y="112" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="48" y="742" />
+              <mxPoint x="48" y="112" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f7" value="Sip / Refill" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1F618D;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#1F618D;labelBackgroundColor=#FFFFFF;" edge="1" source="n_comp" target="n_ring" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="570" y="780" as="sourcePoint" />
+            <mxPoint x="570" y="825" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f8_ble" value="BLE Notify" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#8E44AD;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#8E44AD;labelBackgroundColor=#FFFFFF;" edge="1" source="n_ring" target="n_notify" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="750" y="864" as="sourcePoint" />
+            <mxPoint x="890" y="437" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="822" y="864" />
+              <mxPoint x="822" y="437" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f9_scan" value="Subscribe 0002" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#8E44AD;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#8E44AD;labelBackgroundColor=#FFFFFF;" edge="1" source="n_scan" target="n_notify" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1050" y="295" as="sourcePoint" />
+            <mxPoint x="1050" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f10_hc" value="Insert Record" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#27AE60;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#27AE60;labelBackgroundColor=#FFFFFF;" edge="1" source="n_notify" target="n_hc" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1050" y="485" as="sourcePoint" />
+            <mxPoint x="1050" y="580" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f11_ack" value="On Success" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#8E44AD;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#8E44AD;labelBackgroundColor=#FFFFFF;" edge="1" source="n_hc" target="n_ack" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1050" y="680" as="sourcePoint" />
+            <mxPoint x="1050" y="770" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f12_ack_back" value="ACK seq" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#8E44AD;strokeWidth=2.2;dashed=1;dashPattern=6 4;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#8E44AD;labelBackgroundColor=#FFFFFF;" edge="1" source="n_ack" target="n_ring" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="890" y="815" as="sourcePoint" />
+            <mxPoint x="750" y="885" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="835" y="815" />
+              <mxPoint x="835" y="885" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

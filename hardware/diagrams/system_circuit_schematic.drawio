@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="CapHydroGenerator" type="device">
+  <diagram id="cap_diagram" name="CapHydro_System_Circuit">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="780" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="grp_pwr" value="&lt;b&gt;POWER &amp;amp; CHARGING STAGE&lt;/b&gt;" style="rounded=1;arcSize=6;fillColor=#FEF9E7;strokeColor=#D4AC0D;strokeWidth=1.8;dashed=1;verticalAlign=top;align=left;spacingTop=8;spacingLeft=12;fontSize=13;fontStyle=1;fontColor=#7D6608;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="290" height="710" as="geometry" />
+        </mxCell>
+        <mxCell id="grp_mcu" value="&lt;b&gt;BLE MCU CORE &amp;amp; MOTION WAKE&lt;/b&gt;" style="rounded=1;arcSize=6;fillColor=#EBF5FB;strokeColor=#2980B9;strokeWidth=1.8;dashed=1;verticalAlign=top;align=left;spacingTop=8;spacingLeft=12;fontSize=13;fontStyle=1;fontColor=#1B4F72;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="370" y="30" width="440" height="710" as="geometry" />
+        </mxCell>
+        <mxCell id="grp_afe" value="&lt;b&gt;LOAD-SENSING ANALOG FRONT END&lt;/b&gt;" style="rounded=1;arcSize=6;fillColor=#EAFAF1;strokeColor=#27AE60;strokeWidth=1.8;dashed=1;verticalAlign=top;align=left;spacingTop=8;spacingLeft=12;fontSize=13;fontStyle=1;fontColor=#145A32;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="860" y="30" width="490" height="710" as="geometry" />
+        </mxCell>
+        <mxCell id="pogo" value="&lt;b&gt;USB-C / 3-Pin Mag Pogo&lt;/b&gt;&lt;br/&gt;5.0V VBUS + ESD TVS&lt;br/&gt;Waterproof Top Contacts" style="rounded=1;arcSize=10;fillColor=#FFFDF5;strokeColor=#D4AC0D;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_pwr">
+          <mxGeometry x="30" y="60" width="230" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="charger" value="&lt;b&gt;LiPo Charger PMIC&lt;/b&gt;&lt;br/&gt;V1: XIAO BQ25101&lt;br/&gt;V2: TI BQ25180 (I2C, 3 uA Iq)&lt;br/&gt;15 nA Ship Mode" style="rounded=1;arcSize=10;fillColor=#FFFDF5;strokeColor=#D4AC0D;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_pwr">
+          <mxGeometry x="30" y="205" width="230" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="lipo" value="&lt;b&gt;302030 LiPo (150 mAh)&lt;/b&gt;&lt;br/&gt;3.7V Pouch w/ Built-in PCM&lt;br/&gt;Alt V2: Varta CP1254 (4.00V)&lt;br/&gt;3.0 mm Thick" style="rounded=1;arcSize=10;fillColor=#FDF2E9;strokeColor=#D35400;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_pwr">
+          <mxGeometry x="30" y="365" width="230" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="ldo" value="&lt;b&gt;3.3V Rail &amp;amp; VBAT ADC&lt;/b&gt;&lt;br/&gt;P0.14 LOW 1ms -&amp;gt; P0.31 ADC&lt;br/&gt;Zero Idle Divider Leakage" style="rounded=1;arcSize=10;fillColor=#FFFDF5;strokeColor=#2980B9;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_pwr">
+          <mxGeometry x="30" y="535" width="230" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="mcu" value="&lt;b&gt;Seeed XIAO nRF52840&lt;/b&gt;&lt;br/&gt;Primary V1 (~5 uA sleep, BLE 5.0)&lt;br/&gt;Alt V1B: XIAO Sense (LSM6DS3)&lt;br/&gt;Alt V1C: XIAO ESP32-C6 (17 uA)&lt;br/&gt;V2 PCB: Nordic nRF54L15" style="rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#2980B9;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_mcu">
+          <mxGeometry x="40" y="60" width="360" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="imu" value="&lt;b&gt;Bosch BMA400 Wake IMU&lt;/b&gt;&lt;br/&gt;I2C Addr 0x14 (SDO=GND)&lt;br/&gt;25 Hz Auto-Wake (~0.9 uA)&lt;br/&gt;INT1 -&amp;gt; D1 (Wake on Lift)&lt;br/&gt;Static Hold Gate (az ~ 1.0g)" style="rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#2980B9;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_mcu">
+          <mxGeometry x="40" y="275" width="360" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="ble" value="&lt;b&gt;BLE 5.0 GATT + 64-Event Ring&lt;/b&gt;&lt;br/&gt;0 dBm TX (~5-8 mA burst)&lt;br/&gt;Svc 0001 | Ev 0002 (12 B)&lt;br/&gt;ACK 0003 (4 B) | Stat 0004 (8 B)" style="rounded=1;arcSize=10;fillColor=#F4ECF7;strokeColor=#8E44AD;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_mcu">
+          <mxGeometry x="40" y="485" width="360" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="nau" value="&lt;b&gt;Nuvoton NAU7802 (24-bit ADC)&lt;/b&gt;&lt;br/&gt;I2C Addr 0x2A | DVDD = 3.3V&lt;br/&gt;Internal AVDD LDO = 2.4V (&amp;gt;=10mA)&lt;br/&gt;Sleep PUA=0, PUD=0 (&amp;lt; 1 uA)&lt;br/&gt;AVDD -&amp;gt; High-Z (0 uA Bridge Leak)" style="rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#27AE60;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_afe">
+          <mxGeometry x="40" y="60" width="415" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="filter" value="&lt;b&gt;Differential Analog RC Filter&lt;/b&gt;&lt;br/&gt;100 nF C0G across VIN1P-VIN1N&lt;br/&gt;10 nF C0G CM caps to AGND&lt;br/&gt;1 uF on AVDD | 100 nF on VBG" style="rounded=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#27AE60;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_afe">
+          <mxGeometry x="40" y="260" width="415" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="bridge" value="&lt;b&gt;1000 Ohm Full Wheatstone Bridge&lt;/b&gt;&lt;br/&gt;4x BF1000-3AA on 0.8mm 301-SS&lt;br/&gt;3-Spoke 120-deg Moment Flexure&lt;br/&gt;Active Draw: 2.4mA @ 2.4V&lt;br/&gt;Hard-Stop Guard at 0.35 mm" style="rounded=1;arcSize=10;fillColor=#EAFAF1;strokeColor=#1E8449;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_afe">
+          <mxGeometry x="40" y="430" width="415" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="fx29" value="&lt;b&gt;Alt V1A: TE FX29 I2C Load Cell&lt;/b&gt;&lt;br/&gt;14-bit I2C (0x28), 10 lbf / 4.5 kg&lt;br/&gt;0.5 uA Sleep | Pull-to-Compress Yoke" style="rounded=1;arcSize=10;fillColor=#FEF9E7;strokeColor=#B7950B;strokeWidth=1.8;align=center;verticalAlign=middle;spacingTop=6;spacingBottom=6;spacingLeft=8;spacingRight=8;fontSize=11.5;fontColor=#1B2631;html=1;whiteSpace=wrap;overflow=hidden;fontFamily=Helvetica;" vertex="1" parent="grp_afe">
+          <mxGeometry x="40" y="595" width="415" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="e_vbus" value="5V VBUS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B7950B;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#B7950B;labelBackgroundColor=#FFFFFF;" edge="1" source="pogo" target="charger" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="175" y="175" as="sourcePoint" />
+            <mxPoint x="175" y="235" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_bat" value="Charge / PCM" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D35400;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#D35400;labelBackgroundColor=#FFFFFF;" edge="1" source="charger" target="lipo" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="175" y="335" as="sourcePoint" />
+            <mxPoint x="175" y="395" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_ldo" value="VBAT 3.7V" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2980B9;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#2980B9;labelBackgroundColor=#FFFFFF;" edge="1" source="lipo" target="ldo" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="175" y="495" as="sourcePoint" />
+            <mxPoint x="175" y="565" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_3v3_mcu" value="3.3V + P0.31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#2980B9;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#2980B9;labelBackgroundColor=#FFFFFF;" edge="1" source="ldo" target="mcu" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="290" y="617" as="sourcePoint" />
+            <mxPoint x="410" y="155" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="345" y="617" />
+              <mxPoint x="345" y="155" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_int1" value="INT1 -&gt; D1 (Wake)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#C0392B;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#C0392B;labelBackgroundColor=#FFFFFF;" edge="1" source="imu" target="mcu" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="485" y="305" as="sourcePoint" />
+            <mxPoint x="485" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_i2c_imu" value="I2C SDA/SCL (D4/D5)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1F618D;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#1F618D;labelBackgroundColor=#FFFFFF;" edge="1" source="mcu" target="imu" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="695" y="230" as="sourcePoint" />
+            <mxPoint x="695" y="305" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_ble" value="Ring Events" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#8E44AD;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#8E44AD;labelBackgroundColor=#FFFFFF;" edge="1" source="mcu" target="ble" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="590" y="230" as="sourcePoint" />
+            <mxPoint x="410" y="577" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="590" y="265" />
+              <mxPoint x="390" y="265" />
+              <mxPoint x="390" y="577" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_i2c_nau" value="I2C 0x2A + DRDY" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E8449;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#1E8449;labelBackgroundColor=#FFFFFF;" edge="1" source="mcu" target="nau" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="770" y="145" as="sourcePoint" />
+            <mxPoint x="900" y="145" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_i2c_fx" value="Alt I2C 0x28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B7950B;strokeWidth=2.2;dashed=1;dashPattern=6 4;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#B7950B;labelBackgroundColor=#FFFFFF;" edge="1" source="mcu" target="fx29" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="770" y="185" as="sourcePoint" />
+            <mxPoint x="900" y="667" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="835" y="185" />
+              <mxPoint x="835" y="667" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_nau_flt" value="VIN1P/N + AVDD" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#27AE60;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#27AE60;labelBackgroundColor=#FFFFFF;" edge="1" source="nau" target="filter" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1107" y="220" as="sourcePoint" />
+            <mxPoint x="1107" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_flt_br" value="2.4V Gated Exc." style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1E8449;strokeWidth=2.2;endArrow=classic;endFill=1;endSize=7;fontSize=10.5;fontStyle=1;fontColor=#1E8449;labelBackgroundColor=#FFFFFF;" edge="1" source="filter" target="bridge" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1107" y="395" as="sourcePoint" />
+            <mxPoint x="1107" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
