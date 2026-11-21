@@ -1,5 +1,6 @@
 import csv
 import os
+import subprocess
 import sys
 import zipfile
 from datetime import datetime, timedelta, timezone
@@ -130,3 +131,26 @@ def test_split_stl_dxf_and_animation_assets():
     mp4_path = os.path.join(REPO_ROOT, "outputs", "hydrocap_attachment_animation.mp4")
     assert os.path.isfile(gif_path) and 10_000 < os.path.getsize(gif_path) < 1_887_436
     assert os.path.isfile(mp4_path) and os.path.getsize(mp4_path) > 10_000
+
+
+def test_wasm_kernel_and_dawn_pipeline():
+    wasm_path = os.path.join(REPO_ROOT, "webgpu-dawn-wasm", "wasm", "hydrocap_kinematics.wasm")
+    kf_sheet = os.path.join(REPO_ROOT, "outputs", "hydrocap_dawn_webgpu_keyframes.png")
+    assert os.path.isfile(wasm_path) and os.path.getsize(wasm_path) > 200
+    assert os.path.isfile(kf_sheet) and os.path.getsize(kf_sheet) > 10_000
+
+    js_probe = (
+        "const fs = require('fs');"
+        "const bytes = fs.readFileSync(process.argv[1]);"
+        "if (!WebAssembly.validate(bytes)) process.exit(2);"
+        "const mem = new WebAssembly.Memory({ initial: 4 });"
+        "WebAssembly.instantiate(bytes, { env: { __linear_memory: mem } }).then(({ instance }) => {"
+        "  const f = new Float32Array(mem.buffer);"
+        "  instance.exports.wasm_eval_stage(3.8, 12.0, 1024);"
+        "  if (Math.round(f[256]) !== 2 || Math.round(f[256 + 9]) !== 1180) process.exit(3);"
+        "  instance.exports.wasm_eval_physics(1067.0, 1.10, 1180.0, 2400);"
+        "  if (Math.abs(f[600] - 970.0) > 0.5 || Math.abs(f[601] - 210.0) > 0.5) process.exit(4);"
+        "});"
+    )
+    proc = subprocess.run(["node", "-e", js_probe, wasm_path], capture_output=True, text=True, check=False)
+    assert proc.returncode == 0, f"WASM probe failed: {proc.stderr}"

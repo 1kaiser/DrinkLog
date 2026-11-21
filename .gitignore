@@ -7,4 +7,6 @@ __pycache__/
 *.exe
 test_hydration_core
 companion/python-ble-bridge/logs/*.csv
+webgpu-dawn-wasm/node_modules/
+web-threejs/node_modules/
 .DS_Store

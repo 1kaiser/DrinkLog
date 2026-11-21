@@ -1,10 +1,12 @@
 # 💧 HydroCap — Universal Waterproof BLE Smart Bottle-Cap Hydration Tracker
 
 <p align="center">
-  <img src="outputs/hydrocap_attachment_animation.gif" alt="HydroCap Attachment, Hydration Tracking, BLE Health Connect Sync & IP67 USB-C Debug Animation" width="820"/>
+  <img src="outputs/hydrocap_attachment_animation.gif" alt="HydroCap Node.js + Clang WASM + Dawn WebGPU 3D Animation" width="820"/>
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/WebGPU-Node.js%20%2B%20Dawn%20%2B%20Clang%20WASM-005A9C?style=flat-square" alt="Dawn WebGPU"/>
+  <img src="https://img.shields.io/badge/3D%20Viewer-Three.js%20WebGL-049EF4?style=flat-square" alt="Three.js"/>
   <img src="https://img.shields.io/badge/MCU-nRF52840%20%7C%20ESP32--C6-blue?style=flat-square" alt="MCU"/>
   <img src="https://img.shields.io/badge/Standby-6.4%20%C2%B5A%20(~12%20mo)-brightgreen?style=flat-square" alt="Standby"/>
   <img src="https://img.shields.io/badge/USB--C-IPX8%20Waterproof%20%2B%20CDC%2FDFU-red?style=flat-square" alt="USB-C"/>
@@ -14,7 +16,7 @@
 
 **HydroCap** is an ultra-thin (`11.0 mm` added cap height), rechargeable, **IP67 waterproof USB-C** universal bottle-cap gripper (`26–65 mm` cap OD) that measures fluid consumed from **pick-up / put-down gravimetric weight differences** and automatically logs every sip into **Android Health Connect** (`HydrationRecord`).
 
-Everything needed to **3D print**, **laser-cut**, **order assembled PCBs from PCBWay**, **flash firmware**, and **sync via BLE** lives in this repository.
+Everything needed to **3D print**, **laser-cut**, **order assembled PCBs from PCBWay**, **flash firmware**, **render via Node.js + Clang `wasm32` + Native Dawn WebGPU (`webgpu-dawn-wasm/`)**, **explore interactively in Three.js (`web-threejs/`)**, and **sync via BLE** lives in this repository.
 
 ---
 
@@ -169,14 +171,20 @@ Because legacy Google Fit APIs reach end-of-service in late 2026, [`companion/an
 g++ -std=c++17 -Wall -Wextra -Werror -Ifirmware/include \
   firmware/tests/test_hydration_core.cpp -o /tmp/test_hydration_core && /tmp/test_hydration_core
 
-# 2. Generate PCBWay Gerbers, KiCad 8 Files, BOM/CPL, CAD STLs/DXF, Diagrams & Animation
+# 2. Render 3D Animation via Node.js + Clang wasm32 + Native Dawn WebGPU (Zero Browser)
+cd webgpu-dawn-wasm && npm run build:wasm && npm run build:hud && npm run render && cd ..
+# Keyframe sheet saved to outputs/hydrocap_dawn_webgpu_keyframes.png
+
+# 3. OR Launch Interactive Three.js WebGL Browser Viewer
+node web-threejs/serve.mjs --port 8080
+
+# 3. Generate PCBWay Gerbers, KiCad 8 Files, BOM/CPL, CAD STLs/DXF & Diagrams
 python hardware/pcbway/generate_pcbway_package.py
 python hardware/diagrams/generate_diagrams.py
 python cad/generate_cad_assets.py
 python cad/export_print_parts.py
-python cad/generate_animation.py
 
-# 3. Run Python Protocol, Power Model & Manufacturing Package Integrity Tests
+# 4. Run Python Protocol, Power Model & Manufacturing Package Integrity Tests
 python companion/python-ble-bridge/power_budget_model.py
 python companion/python-ble-bridge/cap_ble_receiver.py --simulate
 pytest -v companion/python-ble-bridge/tests/

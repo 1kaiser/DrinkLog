@@ -1,0 +1,14 @@
+{
+  "name": "hydrocap-dawn-wasm-renderer",
+  "version": "1.0.0",
+  "description": "Pure Node.js + LLVM Clang wasm32 C Kinematics + Native Dawn WebGPU GPU Renderer for HydroCap (zero browser).",
+  "private": true,
+  "scripts": {
+    "build:wasm": "/home/kaiser/.miniforge/envs/num_python/bin/python /home/kaiser/projects/weather-latex-writing-skills/tools/wasm-worker-folded-timeline/scripts/link_clang_wasm.py wasm/hydrocap_kinematics.c wasm/hydrocap_kinematics.wasm --exports wasm_eval_stage,wasm_build_mvp,wasm_eval_physics --verify-node",
+    "build:hud": "/home/kaiser/.miniforge/envs/num_python/bin/python build_hud_overlays.py",
+    "render": "node render_hydrocap_dawn_wasm.cjs"
+  },
+  "dependencies": {
+    "webgpu": "^0.3.8"
+  }
+}

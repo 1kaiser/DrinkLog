@@ -1,0 +1,16 @@
+{
+  "name": "hydrocap-3d-viewer",
+  "version": "1.0.0",
+  "description": "Interactive Three.js 3D studio viewer and headless MP4/GIF animation renderer for HydroCap.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "serve": "node serve.mjs",
+    "keyframes": "node render_threejs_animation.mjs --keyframes-only",
+    "render": "node render_threejs_animation.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "^1.65.1",
+    "three": "^0.175.0"
+  }
+}
