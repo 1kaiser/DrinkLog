@@ -1,12 +1,12 @@
 (export (version D)
   (design
-    (source "HydroCap_V2_Circular_42mm_0p8mm_4Layer.kicad_sch")
+    (source "HydroCap_V2_1_Circular_28mm_0p8mm_4Layer.kicad_sch")
     (date "2026-11-22")
-    (tool "HydroCap PCBWay Design Generator v2.0")
+    (tool "HydroCap PCBWay Design Generator v2.1")
   )
   (components
-    (comp (ref U1) (value "MDBT50Q-1MV2") (footprint "HydroCap:MDBT50Q_15.5x10.5") (description "Raytac nRF52840 BLE 5.0 Module w/ Native USB 2.0 D+/D- & SWD"))
-    (comp (ref U2) (value "NAU7802SGI") (footprint "HydroCap:SOP-16") (description "24-bit Bridge ADC w/ High-Z AVDD LDO"))
+    (comp (ref U1) (value "MDBT50Q-1MV2") (footprint "HydroCap:MDBT50Q_15.0x10.5") (description "Raytac nRF52840 BLE 5.0 Module w/ Native USB 2.0 D+/D- & SWD"))
+    (comp (ref U2) (value "NAU7802YG") (footprint "HydroCap:QFN-16_4x4mm") (description "24-bit Bridge ADC QFN-16 w/ High-Z AVDD LDO"))
     (comp (ref U3) (value "BMA400") (footprint "HydroCap:LGA-12_2x2") (description "0.9uA Auto-Wake 3-Axis Accelerometer"))
     (comp (ref U4) (value "BQ25180YBGR") (footprint "HydroCap:DSBGA-8_1.6x1.1") (description "I2C Linear Li-Ion Charger + Power Path, 15nA Ship Mode"))
     (comp (ref U5) (value "USBLC6-2SC6") (footprint "HydroCap:SOT-23-6") (description "ESD/TVS Protection on USB D+/D-/VBUS"))

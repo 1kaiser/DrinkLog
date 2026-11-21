@@ -26,8 +26,8 @@ def _font(path: str, size: int) -> ImageFont.FreeTypeFont:
 STAGES = [
     (
         1,
-        "Universal Scroll-Chuck Clamp",
-        "3-jaw scroll ring locks onto 26-65 mm\nbottle caps with Shore 40A grip pads.",
+        "1.1x Cap Gripper (33.6 mm Shell)",
+        "Compliant collet locks onto 30.5 mm PET\ncap around universal Ø28 mm PCB core.",
         "0 g",
         "+0 mL",
         "POWER: SLEEP 6.4 uA",
@@ -36,7 +36,7 @@ STAGES = [
     (
         2,
         "Bail-Lift Baseline Weighing",
-        "Folding bail routes 100% weight via\n0.8 mm 3-spoke flexure (m = Fz / az).",
+        "Slim folding bail routes 100% weight via\nØ30 mm 3-spoke flexure (m = Fz / az).",
         "1180 g",
         "+0 mL",
         "POWER: WEIGH 4.0 mA",

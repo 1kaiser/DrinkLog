@@ -154,3 +154,26 @@ def test_wasm_kernel_and_dawn_pipeline():
     )
     proc = subprocess.run(["node", "-e", js_probe, wasm_path], capture_output=True, text=True, check=False)
     assert proc.returncode == 0, f"WASM probe failed: {proc.stderr}"
+
+
+def test_1p1x_cap_ratio_and_compact_pcb_specs():
+    # Verify Ø28.0 mm PCBWay core CPL coordinates fit strictly inside R=14.0 mm (except mid-mount USB-C J1)
+    cpl_path = os.path.join(REPO_ROOT, "hardware", "pcbway", "pcba", "HydroCap_V2_PCBWay_CPL_PickAndPlace.csv")
+    with open(cpl_path, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            x, y = float(row["Mid X (mm)"]), float(row["Mid Y (mm)"])
+            assert (x * x + y * y) ** 0.5 < 13.5, f"{row['Designator']} outside compact Ø28mm core"
+
+    # Verify universal Ø30.0 mm flexure DXF outer circle radius == 15.0 mm
+    dxf_path = os.path.join(REPO_ROOT, "cad", "stl_print_parts", "09_flexure_3spoke_0p8mm_301SS.dxf")
+    doc = ezdxf.readfile(dxf_path)
+    outer_circles = [e for e in doc.modelspace() if e.dxftype() == "CIRCLE" and e.dxf.layer == "CUT_OUTER"]
+    assert len(outer_circles) == 1 and abs(outer_circles[0].dxf.radius - 15.0) < 1e-3
+
+    # Verify pet_30 1.1x STL dimensions (~33.6 mm OD)
+    import trimesh
+    stl_pet = os.path.join(REPO_ROOT, "cad", "outputs", "cap_gripper_pet_30_1p1x.stl")
+    assert os.path.isfile(stl_pet)
+    mesh = trimesh.load(stl_pet)
+    dx, dy, _ = mesh.bounds[1] - mesh.bounds[0]
+    assert 33.0 <= dx <= 36.0 and 33.0 <= dy <= 36.0

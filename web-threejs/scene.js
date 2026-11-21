@@ -161,13 +161,13 @@ const waterMeniscus = new THREE.Mesh(
 waterMeniscus.rotation.x = Math.PI / 2;
 bottleGroup.add(waterMeniscus);
 
-// Bottle Screw Cap Group (separates in Stage 3 unscrew)
+// Bottle Screw Cap Group (separates in Stage 3 unscrew) — standard 30.5 mm PET cap
 const screwCapGroup = new THREE.Group();
 screwCapGroup.position.y = 13.65;
 bottleGroup.add(screwCapGroup);
 
 const capCyl = new THREE.Mesh(
-  new THREE.CylinderGeometry(1.65, 1.65, 1.35, 48),
+  new THREE.CylinderGeometry(1.525, 1.525, 1.35, 48),
   new THREE.MeshStandardMaterial({ color: 0x485460, roughness: 0.45, metalness: 0.2 })
 );
 capCyl.position.y = 0.675;
@@ -175,159 +175,148 @@ capCyl.castShadow = true;
 screwCapGroup.add(capCyl);
 
 // ---------------------------------------------------------------------------
-// 2. HydroCap Universal 3-Jaw Scroll Puck Assembly
+// 2. HydroCap 1.1x D_cap Proportioned Puck Assembly (33.6 mm on 30.5 mm cap)
 // ---------------------------------------------------------------------------
 const hydroCapGroup = new THREE.Group();
 scene.add(hydroCapGroup);
 
-// Scroll Collar Ring + 36 Knurl Ribs
 const scrollCollarGroup = new THREE.Group();
 hydroCapGroup.add(scrollCollarGroup);
 
-const collarRing = new THREE.Mesh(new THREE.CylinderGeometry(3.60, 3.60, 0.54, 64, 1, true), matCollar);
+const collarRing = new THREE.Mesh(new THREE.CylinderGeometry(1.68, 1.68, 0.54, 64, 1, true), matCollar);
 collarRing.position.y = 0.27;
 collarRing.castShadow = true;
 scrollCollarGroup.add(collarRing);
 
-const collarInnerWall = new THREE.Mesh(new THREE.CylinderGeometry(3.32, 3.32, 0.54, 64, 1, true), matCollar);
+const collarInnerWall = new THREE.Mesh(new THREE.CylinderGeometry(1.55, 1.55, 0.54, 64, 1, true), matCollar);
 collarInnerWall.material = matCollar.clone();
 collarInnerWall.material.side = THREE.BackSide;
 collarInnerWall.position.y = 0.27;
 scrollCollarGroup.add(collarInnerWall);
 
-const collarTopRing = new THREE.Mesh(new THREE.RingGeometry(3.32, 3.60, 64), matCollar);
+const collarTopRing = new THREE.Mesh(new THREE.RingGeometry(1.55, 1.68, 64), matCollar);
 collarTopRing.rotation.x = -Math.PI / 2;
 collarTopRing.position.y = 0.54;
 scrollCollarGroup.add(collarTopRing);
 
 for (let i = 0; i < 36; i++) {
   const ang = (i / 36) * Math.PI * 2;
-  const rib = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.46, 0.16), matCollar);
-  rib.position.set(3.60 * Math.cos(ang), 0.27, 3.60 * Math.sin(ang));
+  const rib = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.46, 0.12), matCollar);
+  rib.position.set(1.68 * Math.cos(ang), 0.27, 1.68 * Math.sin(ang));
   rib.rotation.y = -ang;
   scrollCollarGroup.add(rib);
 }
 
-// 3 Radial Sliding Jaws + Orange Silicone Grip Pads
+// 6 Compliant Split Collet Petals (Orange TPU / Shore 50A)
 const jawPivots = [];
-for (let k = 0; k < 3; k++) {
+for (let k = 0; k < 6; k++) {
   const arm = new THREE.Group();
-  arm.rotation.y = (k * 2 * Math.PI) / 3;
+  arm.rotation.y = (k * 2 * Math.PI) / 6;
   const slider = new THREE.Group();
-  const jawBody = new THREE.Mesh(new THREE.BoxGeometry(1.50, 0.42, 0.92), matJaw);
-  jawBody.position.set(0.82, 0.27, 0);
-  jawBody.castShadow = true;
-  slider.add(jawBody);
-
-  const silPad = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.40, 0.84), matSilicone);
+  const silPad = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.42, 0.65), matSilicone);
   silPad.position.set(0.0, 0.27, 0);
   slider.add(silPad);
-
   arm.add(slider);
   hydroCapGroup.add(arm);
   jawPivots.push(slider);
 }
 
-// Hub Plate (at y = 0.54..0.74)
-const hubPlate = new THREE.Mesh(new THREE.CylinderGeometry(3.35, 3.35, 0.20, 64), matHub);
-hubPlate.position.y = 0.64;
+const hubPlate = new THREE.Mesh(new THREE.CylinderGeometry(1.60, 1.60, 0.18, 64), matHub);
+hubPlate.position.y = 0.63;
 hubPlate.castShadow = true;
 hydroCapGroup.add(hubPlate);
 
-// 0.8 mm 3-Spoke Stainless Flexure + 4 Gold Strain Gauges (y = 0.76..0.85)
+// Universal Ø30.0 mm x 0.8 mm 3-Spoke Stainless Flexure + Gold Strain Gauges
 const flexureGroup = new THREE.Group();
-flexureGroup.position.y = 0.80;
+flexureGroup.position.y = 0.78;
 hydroCapGroup.add(flexureGroup);
 
-const flexOuter = new THREE.Mesh(new THREE.TorusGeometry(3.05, 0.16, 12, 64), matFlexure);
+const flexOuter = new THREE.Mesh(new THREE.TorusGeometry(1.44, 0.10, 12, 64), matFlexure);
 flexOuter.rotation.x = Math.PI / 2;
 flexureGroup.add(flexOuter);
 
-const flexInner = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.05, 0.10, 48), matFlexure);
+const flexInner = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.09, 48), matFlexure);
 flexureGroup.add(flexInner);
 
 for (let k = 0; k < 3; k++) {
   const spokeG = new THREE.Group();
   spokeG.rotation.y = (k * 2 * Math.PI) / 3;
-  const spoke = new THREE.Mesh(new THREE.BoxGeometry(1.95, 0.10, 0.64), matFlexure);
-  spoke.position.x = 1.98;
+  const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.09, 0.42), matFlexure);
+  spoke.position.x = 0.92;
   spokeG.add(spoke);
   if (k < 2) {
-    const sg = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.12, 0.42), matGold);
-    sg.position.x = 1.95;
+    const sg = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.11, 0.28), matGold);
+    sg.position.x = 0.92;
     spokeG.add(sg);
   }
   flexureGroup.add(spokeG);
 }
 
-// Upper Electronics Puck Group (separates in Exploded view)
+// Upper Electronics Puck Group (1.1x D_cap outer shell around Ø28.0 mm PCB Core)
 const upperPuckGroup = new THREE.Group();
-upperPuckGroup.position.y = 0.90;
+upperPuckGroup.position.y = 0.88;
 hydroCapGroup.add(upperPuckGroup);
 
-const puckShell = new THREE.Mesh(new THREE.CylinderGeometry(3.60, 3.60, 0.58, 64), matPuckShell);
+const puckShell = new THREE.Mesh(new THREE.CylinderGeometry(1.68, 1.68, 0.58, 64), matPuckShell);
 puckShell.position.y = 0.29;
 puckShell.castShadow = true;
 upperPuckGroup.add(puckShell);
 
-// Visible Internals inside translucent upper puck: 302030 LiPo + Ø42 mm PCB + MDBT50Q shield
-const lipoMesh = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.28, 2.0), matLipo);
+const lipoMesh = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.32, 1.4), matLipo);
 lipoMesh.position.y = 0.22;
 upperPuckGroup.add(lipoMesh);
 
-const pcbMesh = new THREE.Mesh(new THREE.CylinderGeometry(2.10, 2.10, 0.10, 48), matPcb);
+const pcbMesh = new THREE.Mesh(new THREE.CylinderGeometry(1.40, 1.40, 0.09, 48), matPcb);
 pcbMesh.position.y = 0.44;
 upperPuckGroup.add(pcbMesh);
 
 const mcuShield = new THREE.Mesh(
-  new THREE.BoxGeometry(1.05, 0.12, 1.45),
+  new THREE.BoxGeometry(0.95, 0.12, 1.25),
   new THREE.MeshStandardMaterial({ color: 0xbdc3c7, roughness: 0.25, metalness: 0.9 })
 );
-mcuShield.position.set(0.0, 0.54, -0.35);
+mcuShield.position.set(0.0, 0.53, -0.15);
 upperPuckGroup.add(mcuShield);
 
-// Top Lid + Status LED
 const topLidGroup = new THREE.Group();
 topLidGroup.position.y = 0.58;
 upperPuckGroup.add(topLidGroup);
 
-const lidDisc = new THREE.Mesh(new THREE.CylinderGeometry(3.36, 3.56, 0.22, 64), matLid);
-lidDisc.position.y = 0.11;
+const lidDisc = new THREE.Mesh(new THREE.CylinderGeometry(1.56, 1.66, 0.20, 64), matLid);
+lidDisc.position.y = 0.10;
 lidDisc.castShadow = true;
 topLidGroup.add(lidDisc);
 
-const statusLed = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 12), matLed);
-statusLed.position.set(2.2, 0.24, 1.1);
+const statusLed = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 12), matLed);
+statusLed.position.set(1.05, 0.22, 0.55);
 topLidGroup.add(statusLed);
 
-// Pivoting Flush Finger Bail
 const bailPivot = new THREE.Group();
-bailPivot.position.set(0, 0.70, 0);
+bailPivot.position.set(0, 0.68, 0);
 upperPuckGroup.add(bailPivot);
 
-const bailArc = new THREE.Mesh(new THREE.TorusGeometry(3.48, 0.14, 14, 56, Math.PI), matBail);
-bailArc.rotation.x = -Math.PI / 2; // Lies flat around -Z half; +X rotation flips UPWARD (+Y)
+const bailArc = new THREE.Mesh(new THREE.TorusGeometry(1.64, 0.09, 14, 56, Math.PI), matBail);
+bailArc.rotation.x = -Math.PI / 2;
 bailArc.castShadow = true;
 bailPivot.add(bailArc);
 
-// Side IPX8 USB-C Port Bezel (-X side at x = -3.55), Captive Red TPU Plug, & Animated Cable
-const usbBezel = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.34, 0.96), matUsbMetal);
-usbBezel.position.set(-3.55, 0.30, 0.0);
+// Side IPX8 USB-C Port Bezel (-X side at x = -1.66), Captive Red TPU Plug, & Cable
+const usbBezel = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.28, 0.88), matUsbMetal);
+usbBezel.position.set(-1.66, 0.29, 0.0);
 upperPuckGroup.add(usbBezel);
 
 const usbVoid = new THREE.Mesh(
-  new THREE.BoxGeometry(0.34, 0.20, 0.74),
+  new THREE.BoxGeometry(0.30, 0.18, 0.68),
   new THREE.MeshBasicMaterial({ color: 0x111111 })
 );
-usbVoid.position.set(-3.57, 0.30, 0.0);
+usbVoid.position.set(-1.68, 0.29, 0.0);
 upperPuckGroup.add(usbVoid);
 
 const usbPlugPivot = new THREE.Group();
-usbPlugPivot.position.set(-3.72, 0.12, 0.0);
+usbPlugPivot.position.set(-1.78, 0.12, 0.0);
 upperPuckGroup.add(usbPlugPivot);
 
-const usbPlugMesh = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.36, 0.94), matRedTpu);
-usbPlugMesh.position.set(0.0, 0.18, 0.0);
+const usbPlugMesh = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.30, 0.86), matRedTpu);
+usbPlugMesh.position.set(0.0, 0.17, 0.0);
 usbPlugPivot.add(usbPlugMesh);
 
 // Animated USB-C Cable Assembly (world space relative to cap side in Stage 5)
@@ -468,12 +457,19 @@ const elValHc = document.getElementById('val-hc');
 const elPowerPill = document.getElementById('power-pill');
 const elScrubTime = document.getElementById('scrub-time');
 const elChkExplode = document.getElementById('chk-explode');
-const elScrubJaw = document.getElementById('scrub-jaw');
+const elSelTier = document.getElementById('sel-tier');
+
+const TIER_SCALE_FACTORS = {
+  pet_30: 1.00,   // 30.5 -> 33.6 mm
+  sport_40: 1.34, // 41.0 -> 45.1 mm
+  flask_48: 1.57, // 48.0 -> 52.8 mm
+  wide_63: 2.06,  // 63.0 -> 69.3 mm
+};
 
 let currentTime = 0.0;
 let playing = !IS_HEADLESS;
 let userExplode = false;
-let manualJawOverride = null;
+let tierScale = 1.00;
 let userControllingCamera = false;
 
 controls.addEventListener('start', () => { userControllingCamera = true; });
@@ -482,7 +478,7 @@ function applyState(tSec) {
   const t = ((tSec % DURATION_SEC) + DURATION_SEC) % DURATION_SEC;
 
   let stage = 1;
-  let jawDiaMm = 32;
+  let jawDiaMm = 30.5;
   let capDropY = 0;
   let capRotY = 0;
   let bottleLiftY = 0;
@@ -500,21 +496,21 @@ function applyState(tSec) {
   let cableOffset = 0;
   let blePhase = -1;
   let phoneAlpha = 0.0;
-  let camPos = new THREE.Vector3(14.5, 19.0, 21.0);
-  let camTarget = new THREE.Vector3(0.5, 9.5, 0.0);
+  let camPos = new THREE.Vector3(12.8, 19.0, 24.5);
+  let camTarget = new THREE.Vector3(0.0, 10.6, 0.0);
   let stageHead = '';
   let stageSub = '';
 
   if (t < 2.6) {
     stage = 1;
     const u = ease(t / 2.6);
-    jawDiaMm = 64.0 - 31.5 * u;
-    capDropY = 3.8 * (1.0 - u);
-    capRotY = 0.8 * (1.0 - u);
-    stageHead = 'Universal Scroll-Chuck Clamp';
-    stageSub = 'Rotating outer scroll ring closes 3 silicone-lined jaws onto 26–65 mm bottle caps.';
-    camPos.set(17.5 - 1.5 * u, 20.5 + 1.0 * u, 28.5);
-    camTarget.set(0.0, 9.8, 0.0);
+    jawDiaMm = 34.0 - 3.5 * u;
+    capDropY = 3.2 * (1.0 - u);
+    capRotY = 0.85 * (1.0 - u);
+    stageHead = '1.1x Cap Gripper (33.6 mm Shell)';
+    stageSub = 'Compliant split collet locks onto 30.5 mm PET cap around universal Ø28 mm PCB core.';
+    camPos.set(12.8 - 0.8 * u, 18.5 + 0.8 * u, 24.0);
+    camTarget.set(0.0, 11.0, 0.0);
     ledColor = 0x3498db;
     ledInt = 0.5;
   } else if (t < 5.2) {
@@ -522,7 +518,7 @@ function applyState(tSec) {
     const u = ease((t - 2.6) / 2.6);
     bailAngle = (Math.PI / 2) * Math.min(1, u * 1.9);
     const liftBell = Math.sin(Math.min(1, Math.max(0, (u - 0.22) / 0.78)) * Math.PI);
-    bottleLiftY = 2.6 * liftBell;
+    bottleLiftY = 2.4 * liftBell;
     flexStrain = liftBell;
     massG = liftBell > 0.15 ? 1180 : (u > 0.6 ? 1180 : 0);
     powerText = liftBell > 0.15 ? 'POWER: WEIGH 4.0 mA' : 'POWER: SLEEP 6.4 uA';
@@ -530,14 +526,14 @@ function applyState(tSec) {
     ledColor = 0x27ae60;
     ledInt = liftBell > 0.2 ? 2.2 : 0.6;
     stageHead = 'Bail-Lift Baseline Weighing';
-    stageSub = 'Folding finger bail routes 100% of weight via 0.8 mm 3-spoke flexure (m = Fz / az).';
-    camPos.set(17.5, 21.5, 32.5);
-    camTarget.set(0.0, 11.4, 0.0);
+    stageSub = 'Slim folding bail routes 100% weight via Ø30 mm 3-spoke flexure (m = Fz / az).';
+    camPos.set(13.5, 19.5, 26.5);
+    camTarget.set(0.0, 10.8, 0.0);
   } else if (t < 7.4) {
     stage = 3;
     const u = ease((t - 5.2) / 2.2);
     const unscrewArc = Math.sin(u * Math.PI);
-    capDropY = 3.2 * unscrewArc;
+    capDropY = 2.8 * unscrewArc;
     capRotY = Math.PI * 2.0 * u;
     waterFrac = 0.85 - 0.24 * Math.min(1, Math.max(0, (u - 0.22) / 0.55));
     massG = 0;
@@ -547,14 +543,14 @@ function applyState(tSec) {
     ledInt = 1.6;
     stageHead = 'Cap-Off Auto-Tare & Sip (-210 mL)';
     stageSub = 'Unscrewed cap updates zero-offset EMA (0.8 old + 0.2 raw), cancelling thermal drift.';
-    camPos.set(16.5, 20.5, 28.5);
+    camPos.set(13.0, 19.0, 24.5);
     camTarget.set(0.0, 10.2, 0.0);
   } else if (t < 9.8) {
     stage = 4;
     const u = ease((t - 7.4) / 2.4);
     bailAngle = Math.PI / 2;
     const liftBell = Math.sin(Math.min(1, u * 1.1) * Math.PI);
-    bottleLiftY = 2.4 * liftBell;
+    bottleLiftY = 2.2 * liftBell;
     flexStrain = 0.82 * liftBell;
     waterFrac = 0.61;
     massG = 970;
@@ -568,8 +564,8 @@ function applyState(tSec) {
     ledInt = 2.0;
     stageHead = 'BLE Sync to Google Health Connect';
     stageSub = '1180 g -> 970 g (+210 mL) pushed via GATT 0002; ring clears only after Health Connect ACK.';
-    camPos.set(14.5, 20.5, 34.5);
-    camTarget.set(1.8, 11.4, 0.0);
+    camPos.set(12.5, 18.8, 29.0);
+    camTarget.set(2.2, 10.2, 0.0);
   } else {
     stage = 5;
     const u = ease((t - 9.8) / 2.2);
@@ -585,11 +581,9 @@ function applyState(tSec) {
     ledInt = 2.2;
     stageHead = 'IP67 USB-C Charge & Native Debug';
     stageSub = 'Captive TPU plug opens to reveal IPX8 USB-C (BQ25180 5V + nRF52840 CDC/DFU CLI).';
-    camPos.set(-15.5, 18.8, 16.5);
-    camTarget.set(-1.8, 14.5, 0.0);
+    camPos.set(-10.5, 17.5, 11.5);
+    camTarget.set(-1.1, 14.8, 0.0);
   }
-
-  if (manualJawOverride !== null) jawDiaMm = manualJawOverride;
 
   // Apply bottle & cap transforms
   bottleGroup.position.y = bottleLiftY;
@@ -602,37 +596,39 @@ function applyState(tSec) {
   const capLiftOffset = stage === 3 ? capDropY : 0.0;
   screwCapGroup.position.y = 13.65 + capLiftOffset;
   screwCapGroup.rotation.y = capRotY;
+  screwCapGroup.scale.set(tierScale, 1.0, tierScale);
 
   const capY = bottleLiftY + 14.35 + (stage === 1 ? capDropY : capLiftOffset);
   hydroCapGroup.position.y = capY;
   hydroCapGroup.rotation.y = capRotY;
 
-  // Scroll collar & radial jaws
-  const jawRadius = (jawDiaMm / 10.0) / 2.0;
-  scrollCollarGroup.rotation.y = (jawDiaMm - 32) * 0.04;
+  // Scale outer shell cleanly to selected 1.1x tier while keeping universal Ø28/Ø30 mm core fixed
+  scrollCollarGroup.scale.set(tierScale, 1.0, tierScale);
+  puckShell.scale.set(tierScale, 1.0, tierScale);
+  topLidGroup.scale.set(tierScale, 1.0, tierScale);
+  scrollCollarGroup.rotation.y = (jawDiaMm - 30.5) * 0.10;
+  const jawRadius = ((jawDiaMm / 10.0) * 0.5) * tierScale;
   for (const s of jawPivots) {
     s.position.x = jawRadius;
   }
 
-  // Flexure stress glow + subtle elastic pull + optional Exploded View
   const exp = userExplode ? 2.4 : 0.0;
-  hubPlate.position.y = 0.64 + 0.4 * exp;
-  flexureGroup.position.y = 0.80 + 1.0 * exp - 0.06 * flexStrain;
+  hubPlate.position.y = 0.63 + 0.4 * exp;
+  flexureGroup.position.y = 0.78 + 1.0 * exp - 0.05 * flexStrain;
   matFlexure.emissiveIntensity = 0.9 * flexStrain;
-  upperPuckGroup.position.y = 0.90 + 2.0 * exp + 0.06 * flexStrain;
+  upperPuckGroup.position.y = 0.88 + 2.0 * exp + 0.05 * flexStrain;
   topLidGroup.position.y = 0.58 + 0.9 * exp;
-  bailPivot.rotation.x = bailAngle; // Flips semicircular bail UPWARD (+Y) from -Z rest
+  bailPivot.rotation.x = bailAngle;
 
   matLed.color.setHex(ledColor);
   matLed.emissive.setHex(ledColor);
   matLed.emissiveIntensity = ledInt;
 
-  // USB-C plug & engaging cable
   usbPlugPivot.rotation.z = usbPlugAngle;
-  const portWorldX = -3.72;
-  const portWorldY = capY + upperPuckGroup.position.y + 0.30;
+  const portWorldX = -1.78 * tierScale;
+  const portWorldY = capY + upperPuckGroup.position.y + 0.29;
   usbCableGroup.visible = stage === 5 || cableOffset > 0.01;
-  usbCableGroup.position.set(portWorldX - 4.0 * (1.0 - cableOffset) - 0.60, portWorldY, 0.0);
+  usbCableGroup.position.set(portWorldX - 3.6 * (1.0 - cableOffset) - 0.58, portWorldY, 0.0);
 
   // Android Phone + BLE Waves (Stage 4)
   phoneGroup.visible = phoneAlpha > 0.05;
@@ -709,8 +705,8 @@ elChkExplode?.addEventListener('change', () => {
   userExplode = elChkExplode.checked;
   applyState(currentTime);
 });
-elScrubJaw?.addEventListener('input', () => {
-  manualJawOverride = Number(elScrubJaw.value);
+elSelTier?.addEventListener('change', () => {
+  tierScale = TIER_SCALE_FACTORS[elSelTier.value] || 1.0;
   applyState(currentTime);
 });
 

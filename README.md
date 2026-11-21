@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/Sync-Android%20Health%20Connect-purple?style=flat-square" alt="Health Connect"/>
 </p>
 
-**HydroCap** is an ultra-thin (`11.0 mm` added cap height), rechargeable, **IP67 waterproof USB-C** universal bottle-cap gripper (`26–65 mm` cap OD) that measures fluid consumed from **pick-up / put-down gravimetric weight differences** and automatically logs every sip into **Android Health Connect** (`HydrationRecord`).
+**HydroCap** is an ultra-thin (`11.0 mm` added cap height), rechargeable, **IP67 waterproof USB-C** smart bottle-cap gripper proportioned at **`1.10 × D_cap`** (`33.6 mm` for standard PET water bottles up to `69.3 mm` for wide-mouth flasks) around a **universal `Ø 28.0 mm` drop-in PCBWay core** that measures fluid consumed from **pick-up / put-down gravimetric weight differences** and automatically logs every sip into **Android Health Connect** (`HydrationRecord`).
 
 Everything needed to **3D print**, **laser-cut**, **order assembled PCBs from PCBWay**, **flash firmware**, **render via Node.js + Clang `wasm32` + Native Dawn WebGPU (`webgpu-dawn-wasm/`)**, **explore interactively in Three.js (`web-threejs/`)**, and **sync via BLE** lives in this repository.
 
@@ -22,11 +22,17 @@ Everything needed to **3D print**, **laser-cut**, **order assembled PCBs from PC
 
 ## ✨ Key Highlights
 
-* 🗜️ **Universal Scroll-Chuck Gripper (`26–65 mm`):** Clamps standard `28 mm` PET caps, `40 mm` sports caps, and `63–65 mm` wide-mouth Hydro Flask / Nalgene caps concentrically using `Shore 40A` / `TPU 85A` pads.
-* ⚖️ **Moment-Cancelling 3-Spoke Flexure:** `0.8 mm` laser-cut `301-SS` flexure with `4× BF1000-3AA` (`1000 Ω`) full Wheatstone bridge and `0.35 mm` drop hard-stops rejects off-axis tilt moments and twisting torque.
-* 🔋 **~12 Months per Charge (`6.4 µA` Standby):** `NAU7802` switches its internal `2.4 V AVDD` LDO to **High-Z** between lifts (`0 µA` bridge leak), paired with a `0.9 µA` **Bosch BMA400** wake-on-lift IMU and a `3.0 mm` `150 mAh` `302030` LiPo.
+* 📐 **`1.10 × D_cap` Zero-Overhang Proportions:** Instead of a bulky universal puck overhanging a small PET bottle, HydroCap scales cleanly across 4 standard cap tiers (`33.6 / 45.1 / 52.8 / 69.3 mm`) while sharing **one universal `Ø 28.0 mm` PCBWay PCBA + `Ø 30.0 mm` 301-SS flexure core** across all 4 shells:
+  | Tier Preset | Bottle Type | Nominal Cap OD (`D_cap`) | HydroCap OD (`1.10 × D_cap`) | Battery |
+  | :--- | :--- | :---: | :---: | :---: |
+  | **`pet_30`** *(Default)* | Standard PET Water / Soda (`28 mm` neck) | `30.5 mm` | **`33.6 mm`** | `401520` (`100 mAh`, ~`8.0 mo`) |
+  | **`sport_40`** | Sports / Wide PET (`38 mm` neck) | `41.0 mm` | **`45.1 mm`** | `302030` (`150 mAh`, ~`11.8 mo`) |
+  | **`flask_48`** | Insulated Standard Flask | `48.0 mm` | **`52.8 mm`** | `302030` (`150 mAh`, ~`11.8 mo`) |
+  | **`wide_63`** | Wide-Mouth Hydro Flask / Nalgene | `63.0 mm` | **`69.3 mm`** | `302030` (`150 mAh`, ~`11.8 mo`) |
+* ⚖️ **Moment-Cancelling 3-Spoke Flexure:** Universal **`Ø 30.0 mm × 0.8 mm`** laser-cut `301-SS` flexure with `4× BF1000-2AA` (`1000 Ω`) full Wheatstone bridge and `0.35 mm` drop hard-stops rejects off-axis tilt moments and twisting torque.
+* 🔋 **8–12 Months per Charge (`6.4 µA` Standby):** `NAU7802YG` (`QFN-16`) switches its internal `2.4 V AVDD` LDO to **High-Z** between lifts (`0 µA` bridge leak), paired with a `0.9 µA` **Bosch BMA400** wake-on-lift IMU.
 * 🔌 **Waterproof USB-C Charging + Dual Debug:** Uses an **Amphenol `12402448E512A` IPX8 mid-mount USB-C** port + captive `TPU 85A` plug + **Raytac `MDBT50Q-1MV2` (`nRF52840`)** for native USB 2.0 CDC serial calibration (`s`, `t`, `c <g>`, `d`, `b` UF2/DFU) AND a zero-height bottom **Tag-Connect `TC2030` SWD** footprint.
-* 🏭 **Turnkey PCBWay Ready:** Full KiCad 8 project, RS-274X Gerbers + Excellon drills, matching 1:1 BOM & Centroid CPL CSVs, sheet-metal DXF, and 8 split 3D-printable STLs.
+* 🏭 **Turnkey PCBWay Ready:** Full KiCad 8 project (`Ø 28.0 mm`, `0.8 mm` 4L ENIG), RS-274X Gerbers + Excellon drills, matching 1:1 BOM & Centroid CPL CSVs, `Ø 30.0 mm` sheet-metal DXF, and 8 split 3D-printable STLs.
 
 ---
 

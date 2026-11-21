@@ -13,10 +13,10 @@ V1_Budget_ESP32C6,MCU+BLE,Seeed Studio XIAO ESP32-C6,Seeed Studio,113991254 (ESP
 V1_Budget_ESP32C6,Wake_IMU,Bosch BMA400 Accelerometer Breakout,Bosch Sensortec,BMA400 (I2C 0x14),12 x 12 breakout,1,6.95,0.9,0.015,Wakes ESP32-C6 via GPIO1 ext wakeup
 V1_Budget_ESP32C6,Bridge_ADC,Bare NAU7802 Module + 4x BF1000-3AA,Nuvoton / Generic,NAU7802 + BF1000-3AA,15 x 15 + gauges,1,6.50,0.5,4.0,Total bridge + ADC active 4.0 mA @ 2.4V
 V1_Budget_ESP32C6,Battery,3.7V 150mAh LiPo Pouch w/ PCM,Generic / EEMB,302030 (150 mAh),30.0 x 20.0 x 3.0,1,3.20,0.0,0.0,~5.4 months battery life
-V2_PCBWay_PCBA,MCU+BLE,Raytac nRF52840 Module (Native USB),Raytac,MDBT50Q-1MV2,15.5 x 10.5 LGA,1,5.40,4.5,6.0,Dedicated USB 2.0 D+/D- CDC/DFU + SWD (no pin conflict; 0.8mm 4L PCB)
+V2_PCBWay_PCBA,MCU+BLE,Raytac nRF52840 Module (Native USB),Raytac,MDBT50Q-1MV2,15.0 x 10.5 LGA,1,5.40,4.5,6.0,Dedicated USB 2.0 D+/D- CDC/DFU + SWD (Ø 28.0 mm 0.8mm 4L universal PCB)
 V2_PCBWay_PCBA,USB_Port,IPX8 Waterproof Mid-Mount USB-C,Amphenol CS,12402448E512A,9.4 x 7.6 Mid-Mount,1,2.85,0.0,0.0,Integrated O-ring flange; alt budget GCT USB4510-03-1-A + TPU plug
 V2_PCBWay_PCBA,ESD_CC,USBLC6-2SC6 TVS + 2x 5.1k CC Resistors,ST / Yageo,USBLC6-2SC6 + RC0402 5.1k,SOT-23-6 + 0402,1,0.35,0.01,0.0,ESD protection + USB-C PD 5V CC1/CC2 negotiation
-V2_PCBWay_PCBA,PMIC_Charger,TI BQ25180 I2C Charger + TPS7A0233 LDO,Texas Instruments,BQ25180YBGR + TPS7A0233,DSBGA-8 + SOT-23-5,1,2.10,3.0,50.0,15nA ship mode + 25nA 3.3V LDO; safe for LiPo or CoinPower
-V2_PCBWay_PCBA,Bridge_ADC,Nuvoton NAU7802 24-bit Bridge ADC,Nuvoton,NAU7802SGI,SOP-16,1,1.75,0.5,1.6,Direct High-Z AVDD gating + 100nF C0G diff RC filter
+V2_PCBWay_PCBA,PMIC_Charger,TI BQ25180 I2C Charger + TPS7A0233 LDO,Texas Instruments,BQ25180YBGR + TPS7A0233,DSBGA-8 + SOT-23-5,1,2.10,3.0,50.0,15nA ship mode + 25nA 3.3V LDO; pairs w/ 401520 100mAh LiPo (pet_30)
+V2_PCBWay_PCBA,Bridge_ADC,Nuvoton NAU7802YG 24-bit QFN-16 ADC,Nuvoton,NAU7802YG,QFN-16 4x4 mm,1,1.75,0.5,1.6,Compact QFN-16 for Ø 28 mm PCB; High-Z AVDD gating + 100nF C0G RC filter
 V2_PCBWay_PCBA,Wake_IMU,Bosch BMA400 Ultra-Low-Power IMU,Bosch Sensortec,BMA400,2.0 x 2.0 x 0.95 LGA-12,1,1.45,0.9,0.015,25 Hz auto-wake INT1 + static vertical hold check
 V2_PCBWay_PCBA,Debug_Passives,TC2030-IDC-NL + SW1 + LED + 0402 Caps,Tag-Connect / Murata,PCB Pads + EVQP7J01P + 0402,Bottom Pads + SMD,1,1.80,0.0,0.0,Bottom 6-pin SWD/UART pogo footprint adds 0 mm Z-height

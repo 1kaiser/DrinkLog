@@ -4,9 +4,10 @@
 
 | Requirement | Target Value | Design Solution |
 | :--- | :--- | :--- |
-| Added Cap Height | `7.5–11.0 mm` | Stacked pancake architecture (`0.8 mm` flexure + `3.0 mm` LiPo + `1.6 mm` PCB + housing) |
-| Supported Cap OD | `26–65 mm` (`universal_65`) / `26–45 mm` (`compact_45`) | 3-jaw planetary scroll chuck with `Shore 40A` silicone pads |
-| Bottle Mass Range | `45 g` to `4,500 g` | `1000 Ω` full bridge (`NAU7802` 24-bit) or `TE FX29` (`10 lbf / 4.5 kg`) |
+| Added Cap Height | `7.5–11.0 mm` | Stacked pancake architecture (`0.8 mm` flexure + `4.0 mm` LiPo + `0.8 mm` PCB + housing) |
+| Outer Diameter Ratio | **`1.10 × D_cap`** | 4-tier proportional shells (`33.6 mm` PET / `45.1 mm` Sport / `52.8 mm` Flask / `69.3 mm` Wide) |
+| Universal Electronics Core | **`Ø 28.0 mm` PCB + `Ø 30.0 mm` Flexure** | Single PCBWay PCBA & laser-cut flexure drops into every `1.1×` shell tier |
+| Bottle Mass Range | `45 g` to `4,500 g` | `1000 Ω` full bridge (`NAU7802YG` 24-bit QFN-16) or `TE FX29` (`10 lbf / 4.5 kg`) |
 | Sip Resolution | `±5 mL` (`±5 g`) | 15-sample median filter + `m = F_z / a_z` inertial correction + cap-off auto-tare |
 | Standby Power | `~6.5 µA` (`V1`), `< 4 µA` (`V2`) | `XIAO nRF52840` + `BMA400` (`0.9 µA`) + `NAU7802` High-Z `AVDD` gate (`0 µA` bridge off) |
 | Battery Life | `~12 months` / charge (`150 mAh` `302030`) | Event-driven wake (`30 lifts/day × 1.2 s` active) + 64-event non-volatile ring buffer |

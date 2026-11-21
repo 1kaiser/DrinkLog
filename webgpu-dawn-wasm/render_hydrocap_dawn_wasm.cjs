@@ -403,34 +403,31 @@ async function main() {
   const meshes = {
     shadowDisc: uploadMesh(makeCylinder(3.35, 3.35, 0.04, 48)),
     bottleGlass: uploadMesh(makeLathe([
-      [0.01, 0.0], [3.05, 0.0], [3.20, 0.35], [3.20, 9.8], [3.05, 10.6], [1.48, 12.2], [1.48, 13.7],
+      [0.01, 0.0], [3.05, 0.0], [3.20, 0.35], [3.20, 9.8], [3.05, 10.6], [1.42, 12.2], [1.42, 13.7],
     ], 56)),
     bottleBase: uploadMesh(makeCylinder(3.05, 3.05, 0.22, 48)),
     waterCyl: uploadMesh(makeCylinder(2.96, 2.96, 1.0, 48)),
     meniscus: uploadMesh(makeTorus(2.92, 0.07, 48, 10)),
-    screwCap: uploadMesh(makeCylinder(1.65, 1.65, 1.35, 48)),
-    collar: uploadMesh(makeCylinder(3.60, 3.60, 0.54, 56)),
-    jaw: uploadMesh(makeBox(1.50, 0.42, 0.92)),
-    silPad: uploadMesh(makeBox(0.24, 0.40, 0.84)),
-    hubPlate: uploadMesh(makeCylinder(3.35, 3.35, 0.20, 48)),
-    flexRing: uploadMesh(makeTorus(3.05, 0.16, 48, 12)),
-    flexInner: uploadMesh(makeCylinder(1.05, 1.05, 0.12, 36)),
-    flexSpoke: uploadMesh(makeBox(1.95, 0.10, 0.64)),
-    gaugePad: uploadMesh(makeBox(0.68, 0.12, 0.42)),
-    puckShell: uploadMesh(makeCylinder(3.60, 3.60, 0.58, 56)),
-    lipo: uploadMesh(makeBox(3.0, 0.28, 2.0)),
-    pcb: uploadMesh(makeCylinder(2.10, 2.10, 0.10, 48)),
-    lid: uploadMesh(makeCylinder(3.36, 3.56, 0.22, 56)),
-    led: uploadMesh(makeSphere(0.18, 12, 16)),
-    bail: uploadMesh(makeTorus(3.48, 0.14, 48, 14, Math.PI)),
-    usbBezel: uploadMesh(makeBox(0.35, 0.34, 0.96)),
-    usbPlug: uploadMesh(makeBox(0.26, 0.36, 0.94)),
-    cableHead: uploadMesh(makeBox(1.25, 0.34, 0.88)),
-    cableTip: uploadMesh(makeBox(0.55, 0.18, 0.68)),
-    cableCord: uploadMesh(makeCylinder(0.13, 0.13, 5.5, 16)),
-    bleWave: uploadMesh(makeTorus(1.0, 0.06, 36, 10)),
-    phoneBody: uploadMesh(makeBox(4.4, 8.8, 0.42)),
-    phoneScreen: uploadMesh(makeScreenQuad(3.96, 8.20)),
+    // Standard PET cap (Ø30.5 mm -> R = 1.525 u) & 1.10x HydroCap (Ø33.6 mm -> R = 1.68 u)
+    screwCap: uploadMesh(makeCylinder(1.525, 1.525, 1.35, 48)),
+    collar: uploadMesh(makeCylinder(1.68, 1.68, 0.54, 56)),
+    silPad: uploadMesh(makeBox(0.14, 0.42, 0.65)),
+    hubPlate: uploadMesh(makeCylinder(1.60, 1.60, 0.18, 48)),
+    flexRing: uploadMesh(makeTorus(1.44, 0.10, 48, 12)),
+    puckShell: uploadMesh(makeCylinder(1.68, 1.68, 0.58, 56)),
+    lipo: uploadMesh(makeBox(1.80, 0.32, 1.40)),
+    pcb: uploadMesh(makeCylinder(1.40, 1.40, 0.09, 48)),
+    lid: uploadMesh(makeCylinder(1.56, 1.66, 0.20, 56)),
+    led: uploadMesh(makeSphere(0.12, 12, 16)),
+    bail: uploadMesh(makeTorus(1.64, 0.09, 48, 14, Math.PI)),
+    usbBezel: uploadMesh(makeBox(0.28, 0.28, 0.88)),
+    usbPlug: uploadMesh(makeBox(0.22, 0.30, 0.86)),
+    cableHead: uploadMesh(makeBox(1.10, 0.30, 0.80)),
+    cableTip: uploadMesh(makeBox(0.45, 0.16, 0.62)),
+    cableCord: uploadMesh(makeCylinder(0.11, 0.11, 5.2, 16)),
+    bleWave: uploadMesh(makeTorus(0.9, 0.055, 36, 10)),
+    phoneBody: uploadMesh(makeBox(4.2, 8.4, 0.40)),
+    phoneScreen: uploadMesh(makeScreenQuad(3.78, 7.80)),
   };
 
   // Phone Screen GPU Texture + Sampler
@@ -622,63 +619,60 @@ async function main() {
     const capY = bottleLiftY + 14.35 + (stage === 1 ? capDropY : capLift);
     addDraw(opaqueList, meshes.collar, "opaque", [0, capY + 0.27, 0, 0, capRotY + scrollRot, 0, 1, 1, 1], [0.17, 0.24, 0.31, 1.0], [0,0,0,0], 0, eye, tgt);
 
-    // 3 Radial Sliding Jaws + Orange Silicone Pads
-    for (let k = 0; k < 3; k++) {
-      const ang = capRotY + (k * 2 * Math.PI) / 3;
+    // 6 Compliant Split Collet Petals wrapping 1.1x D_cap cleanly
+    for (let k = 0; k < 6; k++) {
+      const ang = capRotY + (k * 2 * Math.PI) / 6;
       const ca = Math.cos(ang), sa = Math.sin(ang);
-      const rJaw = jawRadius + 0.82;
-      const rPad = jawRadius;
-      addDraw(opaqueList, meshes.jaw, "opaque", [rJaw * ca, capY + 0.27, -rJaw * sa, 0, ang, 0, 1, 1, 1], [0.12, 0.16, 0.20, 1.0], [0,0,0,0], 0, eye, tgt);
-      addDraw(opaqueList, meshes.silPad, "opaque", [rPad * ca, capY + 0.27, -rPad * sa, 0, ang, 0, 1, 1, 1], [0.90, 0.49, 0.13, 1.0], [0,0,0,0], 0, eye, tgt);
+      addDraw(opaqueList, meshes.silPad, "opaque", [jawRadius * ca, capY + 0.26, -jawRadius * sa, 0, ang, 0, 1, 1, 1], [0.90, 0.49, 0.13, 1.0], [0,0,0,0], 0, eye, tgt);
     }
 
-    // Hub + 0.8 mm 3-Spoke Stainless Flexure (glows amber under lift strain!)
-    addDraw(opaqueList, meshes.hubPlate, "opaque", [0, capY + 0.64, 0, 0, capRotY, 0, 1, 1, 1], [0.36, 0.43, 0.49, 1.0], [0,0,0,0], 0, eye, tgt);
-    const flexY = capY + 0.80 - 0.06 * flexStrain;
+    // Hub + Universal Ø30 mm 3-Spoke Stainless Flexure
+    addDraw(opaqueList, meshes.hubPlate, "opaque", [0, capY + 0.63, 0, 0, capRotY, 0, 1, 1, 1], [0.36, 0.43, 0.49, 1.0], [0,0,0,0], 0, eye, tgt);
+    const flexY = capY + 0.78 - 0.05 * flexStrain;
     const flexGlow = [0.95, 0.61, 0.07, 0.9 * flexStrain];
     addDraw(opaqueList, meshes.flexRing, "opaque", [0, flexY, 0, Math.PI / 2, 0, capRotY, 1, 1, 1], [0.82, 0.85, 0.88, 1.0], flexGlow, 0, eye, tgt);
 
-    // Upper Puck Internals + Translucent Blue Shell + Top Lid + Status LED
-    const puckY = capY + 0.90 + 0.06 * flexStrain;
+    // Upper Puck Internals (401520 LiPo + Ø28 mm PCB) + 1.1x Shell + Lid + Status LED
+    const puckY = capY + 0.88 + 0.05 * flexStrain;
     addDraw(opaqueList, meshes.lipo, "opaque", [0, puckY + 0.22, 0, 0, capRotY, 0, 1, 1, 1], [0.95, 0.61, 0.07, 1.0], [0,0,0,0], 0, eye, tgt);
     addDraw(opaqueList, meshes.pcb, "opaque", [0, puckY + 0.44, 0, 0, capRotY, 0, 1, 1, 1], [0.05, 0.39, 0.31, 1.0], [0,0,0,0], 0, eye, tgt);
     addDraw(glassList, meshes.puckShell, "glass", [0, puckY + 0.29, 0, 0, capRotY, 0, 1, 1, 1], [0.11, 0.42, 0.66, 0.82], [0,0,0,0], 0, eye, tgt);
-    addDraw(opaqueList, meshes.lid, "opaque", [0, puckY + 0.69, 0, 0, capRotY, 0, 1, 1, 1], [0.16, 0.50, 0.73, 1.0], [0,0,0,0], 0, eye, tgt);
-    const ledX = 2.2 * Math.cos(capRotY) + 1.1 * Math.sin(capRotY);
-    const ledZ = -2.2 * Math.sin(capRotY) + 1.1 * Math.cos(capRotY);
-    addDraw(opaqueList, meshes.led, "opaque", [ledX, puckY + 0.82, ledZ, 0, 0, 0, 1, 1, 1], [ledRgb[0], ledRgb[1], ledRgb[2], 1.0], [ledRgb[0], ledRgb[1], ledRgb[2], 0.85], 0, eye, tgt);
+    addDraw(opaqueList, meshes.lid, "opaque", [0, puckY + 0.68, 0, 0, capRotY, 0, 1, 1, 1], [0.16, 0.50, 0.73, 1.0], [0,0,0,0], 0, eye, tgt);
+    const ledX = 1.05 * Math.cos(capRotY) + 0.55 * Math.sin(capRotY);
+    const ledZ = -1.05 * Math.sin(capRotY) + 0.55 * Math.cos(capRotY);
+    addDraw(opaqueList, meshes.led, "opaque", [ledX, puckY + 0.80, ledZ, 0, 0, 0, 1, 1, 1], [ledRgb[0], ledRgb[1], ledRgb[2], 1.0], [ledRgb[0], ledRgb[1], ledRgb[2], 0.85], 0, eye, tgt);
 
-    // Pivoting Brushed-Aluminum Finger Bail (rotates +90 deg UPWARD in Stages 2 & 4)
-    addDraw(opaqueList, meshes.bail, "opaque", [0, puckY + 0.70, 0, bailAngle - Math.PI / 2, 0, 0, 1, 1, 1], [0.85, 0.88, 0.90, 1.0], [0,0,0,0], 0, eye, tgt);
+    // Pivoting Slim Brushed-Aluminum Finger Bail (R = 1.64 u)
+    addDraw(opaqueList, meshes.bail, "opaque", [0, puckY + 0.68, 0, bailAngle - Math.PI / 2, 0, 0, 1, 1, 1], [0.85, 0.88, 0.90, 1.0], [0,0,0,0], 0, eye, tgt);
 
-    // Side IPX8 USB-C Port + Red TPU Plug + Animated Engaging USB-C Cable
-    const bx = -3.55 * Math.cos(capRotY);
-    const bz = 3.55 * Math.sin(capRotY);
-    addDraw(opaqueList, meshes.usbBezel, "opaque", [bx, puckY + 0.30, bz, 0, capRotY, 0, 1, 1, 1], [0.60, 0.65, 0.68, 1.0], [0,0,0,0], 0, eye, tgt);
-    const px = -3.72 * Math.cos(capRotY);
-    const pz = 3.72 * Math.sin(capRotY);
-    addDraw(opaqueList, meshes.usbPlug, "opaque", [px, puckY + 0.30 + 0.25 * Math.sin(usbPlugZ), pz, 0, capRotY, usbPlugZ, 1, 1, 1], [0.91, 0.30, 0.24, 1.0], [0,0,0,0], 0, eye, tgt);
+    // Side IPX8 USB-C Port at -1.68 u + Red TPU Plug + Animated Engaging USB-C Cable
+    const bx = -1.66 * Math.cos(capRotY);
+    const bz = 1.66 * Math.sin(capRotY);
+    addDraw(opaqueList, meshes.usbBezel, "opaque", [bx, puckY + 0.29, bz, 0, capRotY, 0, 1, 1, 1], [0.60, 0.65, 0.68, 1.0], [0,0,0,0], 0, eye, tgt);
+    const px = -1.78 * Math.cos(capRotY);
+    const pz = 1.78 * Math.sin(capRotY);
+    addDraw(opaqueList, meshes.usbPlug, "opaque", [px, puckY + 0.29 + 0.20 * Math.sin(usbPlugZ), pz, 0, capRotY, usbPlugZ, 1, 1, 1], [0.91, 0.30, 0.24, 1.0], [0,0,0,0], 0, eye, tgt);
 
     if (stage === 5 || cableProg > 0.01) {
-      const cxOff = -3.72 - 4.0 * (1.0 - cableProg) - 0.65;
-      addDraw(opaqueList, meshes.cableHead, "opaque", [cxOff, puckY + 0.30, 0, 0, 0, 0, 1, 1, 1], [0.17, 0.24, 0.31, 1.0], [0,0,0,0], 0, eye, tgt);
-      addDraw(opaqueList, meshes.cableTip, "opaque", [cxOff + 0.80, puckY + 0.30, 0, 0, 0, 0, 1, 1, 1], [0.75, 0.78, 0.80, 1.0], [0,0,0,0], 0, eye, tgt);
-      // rz = -1.15 rad: top end (+2.51, +1.12) seats flush inside rear of cableHead at (cxOff - 0.55, puckY + 0.30)
-      addDraw(opaqueList, meshes.cableCord, "opaque", [cxOff - 3.06, puckY - 0.82, 0, 0, 0, -1.15, 1, 1, 1], [0.12, 0.15, 0.18, 1.0], [0,0,0,0], 0, eye, tgt);
+      const cxOff = -1.78 - 3.6 * (1.0 - cableProg) - 0.58;
+      addDraw(opaqueList, meshes.cableHead, "opaque", [cxOff, puckY + 0.29, 0, 0, 0, 0, 1, 1, 1], [0.17, 0.24, 0.31, 1.0], [0,0,0,0], 0, eye, tgt);
+      addDraw(opaqueList, meshes.cableTip, "opaque", [cxOff + 0.72, puckY + 0.29, 0, 0, 0, 0, 1, 1, 1], [0.75, 0.78, 0.80, 1.0], [0,0,0,0], 0, eye, tgt);
+      // rz = -1.15 rad: top end (+2.37, +1.06) seats flush inside rear of cableHead at (cxOff - 0.50, puckY + 0.29)
+      addDraw(opaqueList, meshes.cableCord, "opaque", [cxOff - 2.87, puckY - 0.77, 0, 0, 0, -1.15, 1, 1, 1], [0.12, 0.15, 0.18, 1.0], [0,0,0,0], 0, eye, tgt);
     }
 
     // Stage 4: 3D Android Smartphone + Textured Health Connect Screen + Expanding BLE Waves
     if (phoneVis > 0.5) {
-      addDraw(opaqueList, meshes.phoneBody, "opaque", [8.2, 7.2, -0.6, 0, -0.38, 0, 1, 1, 1], [0.12, 0.15, 0.18, 1.0], [0,0,0,0], 0, eye, tgt);
-      const sx = 8.2 + 0.22 * Math.sin(-0.38);
-      const sz = -0.6 + 0.22 * Math.cos(-0.38);
-      addDraw(opaqueList, meshes.phoneScreen, "screen", [sx, 7.2, sz, 0, -0.38, 0, 1, 1, 1], [1, 1, 1, 1], [0,0,0,0], 0, eye, tgt);
+      addDraw(opaqueList, meshes.phoneBody, "opaque", [7.6, 6.8, -0.5, 0, -0.38, 0, 1, 1, 1], [0.12, 0.15, 0.18, 1.0], [0,0,0,0], 0, eye, tgt);
+      const sx = 7.6 + 0.21 * Math.sin(-0.38);
+      const sz = -0.5 + 0.21 * Math.cos(-0.38);
+      addDraw(opaqueList, meshes.phoneScreen, "screen", [sx, 6.8, sz, 0, -0.38, 0, 1, 1, 1], [1, 1, 1, 1], [0,0,0,0], 0, eye, tgt);
       if (blePhase >= 0) {
         for (let w = 0; w < 3; w++) {
           const p = (blePhase + w / 3.0) % 1.0;
-          const sc = 0.5 + 1.8 * p;
+          const sc = 0.45 + 1.5 * p;
           const al = Math.sin(p * Math.PI) * 0.85;
-          addDraw(glassList, meshes.bleWave, "glass", [3.2 + 4.0 * p, 14.0 - 4.0 * p, -0.3 * p, 0, Math.PI / 2 - 0.3, 0, sc, sc, sc], [0.56, 0.27, 0.68, al], [0.56, 0.27, 0.68, 0.4], 0, eye, tgt);
+          addDraw(glassList, meshes.bleWave, "glass", [2.1 + 4.4 * p, 14.0 - 4.2 * p, -0.3 * p, 0, Math.PI / 2 - 0.3, 0, sc, sc, sc], [0.56, 0.27, 0.68, al], [0.56, 0.27, 0.68, 0.4], 0, eye, tgt);
         }
       }
     }

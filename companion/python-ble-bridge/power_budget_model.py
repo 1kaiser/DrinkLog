@@ -156,13 +156,14 @@ def generate_summary_figure(out_png: str) -> None:
 
 
 def main() -> None:
-    print("=== CapHydro Power Budget Model (150 mAh 302030 LiPo, 30 lifts/day) ===")
+    print("=== HydroCap Power Budget Model (30 lifts/day: 100mAh 401520 [pet_30] & 150mAh 302030) ===")
     for p in PROFILES:
-        r = compute_battery_metrics(p)
+        r150 = compute_battery_metrics(p, battery_mah=150.0)
+        r100 = compute_battery_metrics(p, battery_mah=100.0)
         print(
-            f"{p.name:38s} | sleep={r['sleep_ua']:6.1f} uA | "
-            f"daily={r['total_mah_day']:.3f} mAh/d | "
-            f"realistic={r['realistic_days']:5.1f} d ({r['realistic_months']:.1f} mo)"
+            f"{p.name:38s} | sleep={r150['sleep_ua']:6.1f} uA | "
+            f"100mAh(pet_30)={r100['realistic_months']:4.1f} mo | "
+            f"150mAh(302030)={r150['realistic_months']:4.1f} mo"
         )
 
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

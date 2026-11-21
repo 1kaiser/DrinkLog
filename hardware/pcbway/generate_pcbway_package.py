@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """
 Generate complete PCBWay-ready manufacturing & KiCad 8 design package for
-HydroCap V2 (Ø 42.0 mm, 0.8 mm thick, 4-layer FR4, ENIG-RoHS):
+HydroCap V2.1 Universal Core (Ø 28.0 mm, 0.8 mm thick, 4-layer FR4, ENIG-RoHS)
+so ONE single PCBA fits ALL 1.1x D_cap shells (33.6 mm PET up to 69.3 mm Wide):
   - KiCad 8 project, schematic, and PCB (.kicad_pro, .kicad_sch, .kicad_pcb)
   - RS-274X Gerbers (.GTL, .G2, .G3, .GBL, .GTS, .GBS, .GTO, .GBO, .GTP, .GM1)
   - Excellon Drill files (-PTH.drl, -NPTH.drl) + zip archive for PCBWay upload
   - PCBWay PCBA BOM CSV & Centroid CPL Pick-and-Place CSV (1:1 designator parity)
+  - Automated DRC bounding-box & perimeter collision verification
   - Top/Bottom PCB layout verification render (pcb_layout_top_bottom.png)
 """
 
@@ -22,9 +24,10 @@ from typing import Dict, List, Tuple
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.patches import Circle, FancyBboxPatch, Polygon, Rectangle
+from matplotlib.patches import Circle, Rectangle
 
-BOARD_RADIUS_MM = 21.0  # Ø 42.0 mm circular V2 PCB
+BOARD_RADIUS_MM = 14.0  # Ø 28.0 mm universal core PCB (drops inside Ø33.6 mm pet_30 shell!)
+MOUNT_HOLES_MM = [(-11.4, 3.8), (11.8, 3.8), (-11.4, -4.8), (11.8, -3.2)]
 
 
 @dataclass(frozen=True)
@@ -47,7 +50,7 @@ class PartDef:
     mpn: str
     desc: str
     pkg: str
-    assy_type: str  # "SMT" | "Hybrid" | "DNP_PAD"
+    assy_type: str  # "SMT" | "PCB_PAD_DNP"
     dist_ref: str
     x: float        # mm relative to board center (0, 0)
     y: float
@@ -68,78 +71,77 @@ def _rect_pads_2pin(pitch: float, pw: float, ph: float, n1: str, n2: str) -> Lis
 def build_parts() -> List[PartDef]:
     parts: List[PartDef] = []
 
-    # U1: Raytac MDBT50Q-1MV2 (nRF52840 w/ native USB 2.0 D+/D- & dedicated SWD)
-    # Placed at top perimeter so antenna extends into copper-free keep-out (y > 14.5 mm)
+    # U1: Raytac MDBT50Q-1MV2 (nRF52840 BLE 5.0 + native USB 2.0 D+/D- + SWD, 10.5 x 15.0 mm)
     u1_pads = [
-        PadSpec("VBUS", -4.2, -3.5, 0.7, 1.1, True, 0.0, "VBUS_5V"),
-        PadSpec("DP",   -3.0, -3.5, 0.7, 1.1, True, 0.0, "USB_DP"),
-        PadSpec("DM",   -1.8, -3.5, 0.7, 1.1, True, 0.0, "USB_DM"),
-        PadSpec("VDD",  -0.6, -3.5, 0.7, 1.1, True, 0.0, "VDD_3V3"),
-        PadSpec("GND",   0.6, -3.5, 0.7, 1.1, True, 0.0, "GND"),
-        PadSpec("SDA",   1.8, -3.5, 0.7, 1.1, True, 0.0, "I2C_SDA"),
-        PadSpec("SCL",   3.0, -3.5, 0.7, 1.1, True, 0.0, "I2C_SCL"),
-        PadSpec("INT1",  4.2, -3.5, 0.7, 1.1, True, 0.0, "IMU_INT1"),
-        PadSpec("SWDIO", -4.2, -2.0, 0.7, 0.9, True, 0.0, "SWDIO"),
-        PadSpec("SWDCLK", -4.2, -0.6, 0.7, 0.9, True, 0.0, "SWDCLK"),
-        PadSpec("nRST",  -4.2,  0.8, 0.7, 0.9, True, 0.0, "nRESET"),
-        PadSpec("LED",    4.2, -2.0, 0.7, 0.9, True, 0.0, "LED_STAT"),
+        PadSpec("VBUS",  -4.2, -3.2, 0.65, 1.0, True, 0.0, "VBUS_5V"),
+        PadSpec("DP",    -3.0, -3.2, 0.65, 1.0, True, 0.0, "USB_DP"),
+        PadSpec("DM",    -1.8, -3.2, 0.65, 1.0, True, 0.0, "USB_DM"),
+        PadSpec("VDD",   -0.6, -3.2, 0.65, 1.0, True, 0.0, "VDD_3V3"),
+        PadSpec("GND",    0.6, -3.2, 0.65, 1.0, True, 0.0, "GND"),
+        PadSpec("SDA",    1.8, -3.2, 0.65, 1.0, True, 0.0, "I2C_SDA"),
+        PadSpec("SCL",    3.0, -3.2, 0.65, 1.0, True, 0.0, "I2C_SCL"),
+        PadSpec("INT1",   4.2, -3.2, 0.65, 1.0, True, 0.0, "IMU_INT1"),
+        PadSpec("SWDIO", -4.2, -1.8, 0.65, 0.8, True, 0.0, "SWDIO"),
+        PadSpec("SWDCLK",-4.2, -0.5, 0.65, 0.8, True, 0.0, "SWDCLK"),
+        PadSpec("nRST",  -4.2,  0.8, 0.65, 0.8, True, 0.0, "nRESET"),
+        PadSpec("LED",    4.2, -1.8, 0.65, 0.8, True, 0.0, "LED_STAT"),
     ]
     parts.append(PartDef(
         "U1", "MDBT50Q-1MV2", "Raytac", "MDBT50Q-1MV2",
         "nRF52840 BLE 5.0 Module w/ Native USB 2.0 & PCB Antenna",
-        "MDBT50Q_15.5x10.5", "SMT", "DigiKey: 2097-MDBT50Q-1MV2-ND",
-        0.0, 12.2, 0.0, "Top", 10.5, 15.5, u1_pads
+        "MDBT50Q_15.0x10.5", "SMT", "DigiKey: 2097-MDBT50Q-1MV2-ND",
+        0.0, 5.1, 0.0, "Top", 10.2, 14.8, u1_pads
     ))
 
-    # J1: Amphenol 12402448E512A IPX8 Waterproof Mid-Mount USB-C at bottom edge (y = -17.2)
+    # J1: Amphenol 12402448E512A IPX8 Waterproof Mid-Mount USB-C at -Y edge (y = -9.8)
     j1_pads = [
-        PadSpec("A1", -3.25, 1.6, 0.4, 1.4, True, 0.0, "GND"),
-        PadSpec("A4", -2.25, 1.6, 0.4, 1.4, True, 0.0, "VBUS_5V"),
-        PadSpec("A5", -1.25, 1.6, 0.35, 1.4, True, 0.0, "USB_CC1"),
-        PadSpec("A6", -0.40, 1.6, 0.35, 1.4, True, 0.0, "USB_DP"),
-        PadSpec("A7",  0.40, 1.6, 0.35, 1.4, True, 0.0, "USB_DM"),
-        PadSpec("B5",  1.25, 1.6, 0.35, 1.4, True, 0.0, "USB_CC2"),
-        PadSpec("B4",  2.25, 1.6, 0.4, 1.4, True, 0.0, "VBUS_5V"),
-        PadSpec("B12", 3.25, 1.6, 0.4, 1.4, True, 0.0, "GND"),
-        PadSpec("SH1", -4.45, 0.0, 1.2, 1.8, True, 0.0, "GND"),
-        PadSpec("SH2",  4.45, 0.0, 1.2, 1.8, True, 0.0, "GND"),
+        PadSpec("A1", -3.25, 1.6, 0.40, 1.3, True, 0.0, "GND"),
+        PadSpec("A4", -2.25, 1.6, 0.40, 1.3, True, 0.0, "VBUS_5V"),
+        PadSpec("A5", -1.25, 1.6, 0.35, 1.3, True, 0.0, "USB_CC1"),
+        PadSpec("A6", -0.40, 1.6, 0.35, 1.3, True, 0.0, "USB_DP"),
+        PadSpec("A7",  0.40, 1.6, 0.35, 1.3, True, 0.0, "USB_DM"),
+        PadSpec("B5",  1.25, 1.6, 0.35, 1.3, True, 0.0, "USB_CC2"),
+        PadSpec("B4",  2.25, 1.6, 0.40, 1.3, True, 0.0, "VBUS_5V"),
+        PadSpec("B12", 3.25, 1.6, 0.40, 1.3, True, 0.0, "GND"),
+        PadSpec("SH1", -4.45, 0.0, 1.0, 1.6, True, 0.0, "GND"),
+        PadSpec("SH2",  4.45, 0.0, 1.0, 1.6, True, 0.0, "GND"),
     ]
     parts.append(PartDef(
         "J1", "12402448E512A", "Amphenol CS", "12402448E512A",
         "IPX8 Waterproof Mid-Mount USB Type-C Receptacle (O-Ring Sealed)",
         "USB_C_MidMount_IPX8", "SMT", "DigiKey: 12402448E512A",
-        0.0, -16.8, 0.0, "Top", 9.4, 7.6, j1_pads
+        0.0, -9.8, 0.0, "Top", 9.4, 7.6, j1_pads
     ))
 
-    # U5: ST USBLC6-2SC6 ESD array near USB-C
+    # U5: ST USBLC6-2SC6 ESD array near USB-C (-7.4, -6.2)
     u5_pads = [
-        PadSpec("1", -1.2,  0.95, 0.6, 0.9, True, 0.0, "USB_DP"),
-        PadSpec("2", -1.2,  0.00, 0.6, 0.9, True, 0.0, "GND"),
-        PadSpec("3", -1.2, -0.95, 0.6, 0.9, True, 0.0, "USB_DM"),
-        PadSpec("4",  1.2, -0.95, 0.6, 0.9, True, 0.0, "USB_DM"),
-        PadSpec("5",  1.2,  0.00, 0.6, 0.9, True, 0.0, "VBUS_5V"),
-        PadSpec("6",  1.2,  0.95, 0.6, 0.9, True, 0.0, "USB_DP"),
+        PadSpec("1", -1.2,  0.95, 0.6, 0.85, True, 0.0, "USB_DP"),
+        PadSpec("2", -1.2,  0.00, 0.6, 0.85, True, 0.0, "GND"),
+        PadSpec("3", -1.2, -0.95, 0.6, 0.85, True, 0.0, "USB_DM"),
+        PadSpec("4",  1.2, -0.95, 0.6, 0.85, True, 0.0, "USB_DM"),
+        PadSpec("5",  1.2,  0.00, 0.6, 0.85, True, 0.0, "VBUS_5V"),
+        PadSpec("6",  1.2,  0.95, 0.6, 0.85, True, 0.0, "USB_DP"),
     ]
     parts.append(PartDef(
         "U5", "USBLC6-2SC6", "STMicroelectronics", "USBLC6-2SC6",
-        "Very Low Capacitance ESD Protection (USB D+/D-/VBUS)",
+        "Low Capacitance ESD/TVS Protection (USB D+/D-/VBUS)",
         "SOT-23-6", "SMT", "LCSC: C7519",
-        -6.8, -12.5, 0.0, "Top", 2.9, 2.8, u5_pads
+        -7.4, -6.2, 0.0, "Top", 2.9, 2.8, u5_pads
     ))
 
-    # R4, R5: CC1 & CC2 5.1k 0402 pull-down resistors (mandatory for USB-C 5V)
+    # R4, R5: CC1 & CC2 5.1k 0402 pull-downs in clear gap between J1 and U1
     parts.append(PartDef(
         "R4", "5.1k 1%", "Yageo", "RC0402FR-075K1L",
         "USB-C CC1 5.1 kOhm 1% Pull-Down Resistor", "0402", "SMT", "LCSC: C25905",
-        -4.0, -11.5, 90.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "USB_CC1", "GND")
+        -2.2, -4.4, 0.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "USB_CC1", "GND")
     ))
     parts.append(PartDef(
         "R5", "5.1k 1%", "Yageo", "RC0402FR-075K1L",
         "USB-C CC2 5.1 kOhm 1% Pull-Down Resistor", "0402", "SMT", "LCSC: C25905",
-        4.0, -11.5, 90.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "USB_CC2", "GND")
+        2.2, -4.4, 0.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "USB_CC2", "GND")
     ))
 
-    # U4: TI BQ25180YBGR Li-Ion Battery Charger (15 nA Ship Mode, I2C)
+    # U4: TI BQ25180YBGR Li-Ion Charger (-8.0, -2.5)
     u4_pads = [
         PadSpec("IN",  -0.45,  0.35, 0.35, 0.35, True, 0.0, "VBUS_5V"),
         PadSpec("SYS",  0.45,  0.35, 0.35, 0.35, True, 0.0, "VSYS"),
@@ -152,81 +154,87 @@ def build_parts() -> List[PartDef]:
         "U4", "BQ25180YBGR", "Texas Instruments", "BQ25180YBGR",
         "1A I2C Linear Li-Ion Charger w/ Power-Path & 15nA Ship Mode",
         "DSBGA-8_1.6x1.1", "SMT", "DigiKey: 296-BQ25180YBGRCT-ND",
-        -10.5, -6.5, 0.0, "Top", 1.6, 1.1, u4_pads
+        -8.0, -2.5, 0.0, "Top", 1.6, 1.1, u4_pads
     ))
 
-    # U6: TI TPS7A0233PDBVR (25 nA Iq 3.3V LDO)
+    # U6: TI TPS7A0233PDBVR (25 nA Iq 3.3V LDO) (-8.0, +0.8)
     u6_pads = [
-        PadSpec("IN",  -1.2,  0.95, 0.6, 0.9, True, 0.0, "VSYS"),
-        PadSpec("GND", -1.2,  0.00, 0.6, 0.9, True, 0.0, "GND"),
-        PadSpec("EN",  -1.2, -0.95, 0.6, 0.9, True, 0.0, "VSYS"),
-        PadSpec("OUT",  1.2,  0.95, 0.6, 0.9, True, 0.0, "VDD_3V3"),
+        PadSpec("IN",  -1.2,  0.95, 0.6, 0.85, True, 0.0, "VSYS"),
+        PadSpec("GND", -1.2,  0.00, 0.6, 0.85, True, 0.0, "GND"),
+        PadSpec("EN",  -1.2, -0.95, 0.6, 0.85, True, 0.0, "VSYS"),
+        PadSpec("OUT",  1.2,  0.95, 0.6, 0.85, True, 0.0, "VDD_3V3"),
     ]
     parts.append(PartDef(
         "U6", "TPS7A0233PDBVR", "Texas Instruments", "TPS7A0233PDBVR",
         "25 nA Ultra-Low-Iq 200 mA 3.3V LDO Regulator",
         "SOT-23-5", "SMT", "DigiKey: 296-TPS7A0233PDBVRCT-ND",
-        -11.0, -1.5, 0.0, "Top", 2.9, 2.8, u6_pads
+        -8.0, 0.8, 0.0, "Top", 2.9, 2.8, u6_pads
     ))
 
-    # U2: Nuvoton NAU7802SGI 24-bit Bridge ADC (High-Z AVDD Cutoff)
-    u2_pads = []
-    for idx in range(8):
-        y_off = (3.5 - idx) * 1.27 * 0.65
-        net_l = ["REFP", "VIN1N", "VIN1P", "AVDD", "VBG", "AGND", "DRDY", "DVDD"][idx]
-        net_r = ["REFN", "I2C_SDA", "I2C_SCL", "GND", "GND", "DVDD", "NC", "NC"][idx]
-        u2_pads.append(PadSpec(str(idx + 1), -2.6, y_off, 1.2, 0.45, True, 0.0, net_l))
-        u2_pads.append(PadSpec(str(16 - idx), +2.6, y_off, 1.2, 0.45, True, 0.0, net_r))
+    # U2: Nuvoton NAU7802YG (Compact QFN-16 4.0 x 4.0 mm) (+8.5, +0.2)
+    u2_pads = [
+        PadSpec("1",  -1.85,  0.75, 0.65, 0.30, True, 0.0, "REFP"),
+        PadSpec("2",  -1.85,  0.25, 0.65, 0.30, True, 0.0, "VIN1N"),
+        PadSpec("3",  -1.85, -0.25, 0.65, 0.30, True, 0.0, "VIN1P"),
+        PadSpec("4",  -1.85, -0.75, 0.65, 0.30, True, 0.0, "AVDD"),
+        PadSpec("5",  -0.75, -1.85, 0.30, 0.65, True, 0.0, "VBG"),
+        PadSpec("6",  -0.25, -1.85, 0.30, 0.65, True, 0.0, "AGND"),
+        PadSpec("7",   0.25, -1.85, 0.30, 0.65, True, 0.0, "DRDY"),
+        PadSpec("8",   0.75, -1.85, 0.30, 0.65, True, 0.0, "DVDD"),
+        PadSpec("14",  1.85, -0.25, 0.65, 0.30, True, 0.0, "I2C_SCL"),
+        PadSpec("15",  1.85,  0.25, 0.65, 0.30, True, 0.0, "I2C_SDA"),
+        PadSpec("16",  1.85,  0.75, 0.65, 0.30, True, 0.0, "REFN"),
+    ]
     parts.append(PartDef(
-        "U2", "NAU7802SGI", "Nuvoton", "NAU7802SGI",
-        "24-bit Dual-Ch Bridge ADC w/ Programmable High-Z AVDD LDO",
-        "SOP-16", "SMT", "DigiKey: 2152-NAU7802SGI-ND",
-        9.5, -1.5, 0.0, "Top", 6.0, 9.9, u2_pads
+        "U2", "NAU7802YG", "Nuvoton", "NAU7802YG",
+        "24-bit Dual-Ch Bridge ADC QFN-16 w/ High-Z AVDD Cutoff",
+        "QFN-16_4x4mm", "SMT", "DigiKey: 2152-NAU7802YG-ND",
+        8.5, 0.2, 0.0, "Top", 4.0, 4.0, u2_pads
     ))
 
-    # U3: Bosch BMA400 Ultra-Low-Power 0.9 uA Auto-Wake IMU
+    # U3: Bosch BMA400 Ultra-Low-Power 0.9 uA Auto-Wake IMU (-7.6, +4.6)
     u3_pads = [
-        PadSpec("SDO",  -0.9,  0.5, 0.35, 0.35, True, 0.0, "GND"),
-        PadSpec("SDA",  -0.9,  0.0, 0.35, 0.35, True, 0.0, "I2C_SDA"),
-        PadSpec("SCL",  -0.9, -0.5, 0.35, 0.35, True, 0.0, "I2C_SCL"),
-        PadSpec("VDD",   0.9,  0.5, 0.35, 0.35, True, 0.0, "VDD_3V3"),
-        PadSpec("GND",   0.9,  0.0, 0.35, 0.35, True, 0.0, "GND"),
-        PadSpec("INT1",  0.9, -0.5, 0.35, 0.35, True, 0.0, "IMU_INT1"),
+        PadSpec("SDO",  -0.8,  0.5, 0.35, 0.35, True, 0.0, "GND"),
+        PadSpec("SDA",  -0.8,  0.0, 0.35, 0.35, True, 0.0, "I2C_SDA"),
+        PadSpec("SCL",  -0.8, -0.5, 0.35, 0.35, True, 0.0, "I2C_SCL"),
+        PadSpec("VDD",   0.8,  0.5, 0.35, 0.35, True, 0.0, "VDD_3V3"),
+        PadSpec("GND",   0.8,  0.0, 0.35, 0.35, True, 0.0, "GND"),
+        PadSpec("INT1",  0.8, -0.5, 0.35, 0.35, True, 0.0, "IMU_INT1"),
     ]
     parts.append(PartDef(
         "U3", "BMA400", "Bosch Sensortec", "BMA400",
         "0.9 uA 25 Hz Auto-Wake 3-Axis Accelerometer",
         "LGA-12_2x2", "SMT", "DigiKey: 828-1071-1-ND",
-        -7.5, 4.5, 0.0, "Top", 2.0, 2.0, u3_pads
+        -7.6, 4.6, 0.0, "Top", 2.0, 2.0, u3_pads
     ))
 
-    # Analog Filter & Decoupling Capacitors (0402) + I2C Pull-Ups + Status LED + Reset Switch
+    # Compact 0402 Passives, 0603 LED, and Reset Switch — all verified inside Ø28.0 mm
     parts.extend([
         PartDef("C1", "100nF C0G", "Murata", "GRM1555C1H104FA01", "Differential Bridge Filter Cap", "0402", "SMT", "LCSC: C1525",
-                4.8, -1.0, 90.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "VIN1P", "VIN1N")),
+                5.8, -0.5, 90.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "VIN1P", "VIN1N")),
         PartDef("C2", "10nF C0G", "Murata", "GRM1555C1H103JA01", "VIN1P Common-Mode Cap", "0402", "SMT", "LCSC: C15195",
-                4.8, -3.2, 90.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "VIN1P", "AGND")),
+                5.8, -2.1, 90.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "VIN1P", "AGND")),
         PartDef("C3", "10nF C0G", "Murata", "GRM1555C1H103JA01", "VIN1N Common-Mode Cap", "0402", "SMT", "LCSC: C15195",
-                4.8, 1.2, 90.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "VIN1N", "AGND")),
+                5.8, 1.1, 90.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "VIN1N", "AGND")),
         PartDef("C4", "1uF X5R", "Samsung", "CL05A105KA5NQNC", "NAU7802 AVDD Decoupling Cap", "0402", "SMT", "LCSC: C52923",
-                6.5, 4.8, 0.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "AVDD", "AGND")),
+                8.0, 3.6, 0.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "AVDD", "AGND")),
         PartDef("C5", "100nF X7R", "Samsung", "CL05B104KO5NNNC", "NAU7802 VBG & MCU Decoupling", "0402", "SMT", "LCSC: C1525",
-                13.5, 4.0, 0.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "VBG", "AGND")),
+                8.0, 5.2, 0.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "VBG", "AGND")),
         PartDef("C6", "4.7uF X5R", "Samsung", "CL05A475MP5NRNC", "BQ25180 VSYS & VBAT Bulk Cap", "0402", "SMT", "LCSC: C23733",
-                -14.2, -5.0, 90.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "VSYS", "GND")),
+                -10.5, -2.5, 90.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "VSYS", "GND")),
         PartDef("R1", "4.7k 1%", "Yageo", "RC0402FR-074K7L", "I2C SDA Pull-Up Resistor", "0402", "SMT", "LCSC: C25900",
-                -3.0, 4.2, 0.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "VDD_3V3", "I2C_SDA")),
+                -6.6, 7.4, 0.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "VDD_3V3", "I2C_SDA")),
         PartDef("R2", "4.7k 1%", "Yageo", "RC0402FR-074K7L", "I2C SCL Pull-Up Resistor", "0402", "SMT", "LCSC: C25900",
-                -3.0, 2.2, 0.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "VDD_3V3", "I2C_SCL")),
+                -6.6, 9.0, 0.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "VDD_3V3", "I2C_SCL")),
         PartDef("R3", "1.0k 1%", "Yageo", "RC0402FR-071KL", "Status LED Current Limit", "0402", "SMT", "LCSC: C11702",
-                9.5, 6.2, 0.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "LED_STAT", "LED_A")),
+                7.2, 7.5, 0.0, "Top", 1.2, 0.7, _rect_pads_2pin(0.95, 0.55, 0.65, "LED_STAT", "LED_A")),
         PartDef("D1", "LED_GRN_0603", "Kingbright", "APT1608ZGC", "0603 Green Lock Status LED", "0603", "SMT", "LCSC: C72043",
-                12.5, 6.2, 0.0, "Top", 1.6, 0.8, _rect_pads_2pin(1.4, 0.7, 0.8, "LED_A", "GND")),
+                7.4, 9.2, 0.0, "Top", 1.6, 0.8, _rect_pads_2pin(1.4, 0.7, 0.8, "LED_A", "GND")),
         PartDef("SW1", "EVQP7J01P", "Panasonic", "EVQP7J01P", "Recessed Tactile Reset / DFU Button", "3.5x2.9mm", "SMT", "DigiKey: P16758CT-ND",
-                -13.5, 4.5, 0.0, "Top", 3.5, 2.9, _rect_pads_2pin(3.8, 0.9, 1.2, "nRESET", "GND")),
+                8.2, -5.2, 0.0, "Top", 3.5, 2.9, _rect_pads_2pin(3.8, 0.9, 1.2, "nRESET", "GND")),
     ])
 
-    # Bottom-side Pads (Zero added height): Tag-Connect TC2030 SWD, Strain Bridge Solder Pads, LiPo Pads
+    # Bottom-side Pads (Zero added height)
     j2_pads = [
         PadSpec("1", -1.27,  0.635, 0.78, 0.78, True, 0.0, "VDD_3V3"),
         PadSpec("2",  0.00,  0.635, 0.78, 0.78, True, 0.0, "SWDIO"),
@@ -239,25 +247,25 @@ def build_parts() -> List[PartDef]:
         "J2", "TC2030-IDC-NL", "Tag-Connect", "TC2030-IDC-NL_PAD",
         "Bottom-Side 6-Pin Pogo SWD/UART Debug Footprint (No Connector Mounted)",
         "TC2030_6PAD", "PCB_PAD_DNP", "N/A (Copper Pads Only)",
-        0.0, -3.5, 0.0, "Bottom", 4.0, 2.4, j2_pads
+        0.0, -1.5, 0.0, "Bottom", 4.0, 2.4, j2_pads
     ))
     j3_pads = [
-        PadSpec("1", -3.0, 0.0, 1.4, 2.0, True, 0.0, "AVDD"),
-        PadSpec("2", -1.0, 0.0, 1.4, 2.0, True, 0.0, "AGND"),
-        PadSpec("3",  1.0, 0.0, 1.4, 2.0, True, 0.0, "VIN1P"),
-        PadSpec("4",  3.0, 0.0, 1.4, 2.0, True, 0.0, "VIN1N"),
+        PadSpec("1", -2.7, 0.0, 1.2, 1.8, True, 0.0, "AVDD"),
+        PadSpec("2", -0.9, 0.0, 1.2, 1.8, True, 0.0, "AGND"),
+        PadSpec("3",  0.9, 0.0, 1.2, 1.8, True, 0.0, "VIN1P"),
+        PadSpec("4",  2.7, 0.0, 1.2, 1.8, True, 0.0, "VIN1N"),
     ]
     parts.append(PartDef(
-        "J3", "BRIDGE_4PAD", "CapHydro", "FLEXURE_WIRE_PADS",
-        "Bottom Solder Pads for 4x BF1000-3AA Wheatstone Bridge (E+/E-/S+/S-)",
-        "PAD_4x2.0mm", "PCB_PAD_DNP", "N/A (Solder Pads)",
-        10.0, -8.5, 0.0, "Bottom", 8.5, 2.2, j3_pads
+        "J3", "BRIDGE_4PAD", "HydroCap", "FLEXURE_WIRE_PADS",
+        "Bottom Solder Pads for 4x BF1000-2AA Wheatstone Bridge (E+/E-/S+/S-)",
+        "PAD_4x1.8mm", "PCB_PAD_DNP", "N/A (Solder Pads)",
+        6.2, -5.2, 0.0, "Bottom", 7.2, 2.0, j3_pads
     ))
     parts.append(PartDef(
-        "J4", "LIPO_302030_PADS", "CapHydro", "BAT_SOLDER_PADS",
-        "Bottom Solder Pads for 302030 150 mAh LiPo Pouch (BAT+ / BAT-)",
-        "PAD_2x2.5mm", "PCB_PAD_DNP", "N/A (Solder Pads)",
-        -10.0, 1.0, 0.0, "Bottom", 6.0, 2.5, _rect_pads_2pin(3.5, 2.0, 2.5, "VBAT", "GND")
+        "J4", "LIPO_401520_PADS", "HydroCap", "BAT_SOLDER_PADS",
+        "Bottom Solder Pads for 401520 100 mAh (or 302030 150 mAh) LiPo",
+        "PAD_2x2.2mm", "PCB_PAD_DNP", "N/A (Solder Pads)",
+        -6.2, 1.2, 0.0, "Bottom", 5.6, 2.2, _rect_pads_2pin(3.2, 1.8, 2.2, "VBAT", "GND")
     ))
     return parts
 
@@ -268,8 +276,35 @@ def _rot_xy(dx: float, dy: float, rot_deg: float) -> Tuple[float, float]:
     return (dx * c - dy * s, dx * s + dy * c)
 
 
+def validate_drc_geometry(parts: List[PartDef]) -> None:
+    """Assert zero component/mounting-hole bounding overlaps and board perimeter fit."""
+    for layer in ("Top", "Bottom"):
+        boxes: List[Tuple[str, float, float, float, float]] = []
+        for p in parts:
+            if p.layer != layer:
+                continue
+            bw, bh = (p.body_h, p.body_w) if int(round(p.rot)) % 180 == 90 else (p.body_w, p.body_h)
+            x1, x2 = p.x - bw / 2.0, p.x + bw / 2.0
+            y1, y2 = p.y - bh / 2.0, p.y + bh / 2.0
+            if p.ref != "J1":  # J1 mid-mount USB-C intentionally protrudes flush at -Y edge
+                max_r = max(math.hypot(x1, y1), math.hypot(x1, y2), math.hypot(x2, y1), math.hypot(x2, y2))
+                assert max_r <= BOARD_RADIUS_MM - 0.1, f"DRC perimeter fail on {p.ref}: max_r={max_r:.2f} > {BOARD_RADIUS_MM}"
+            boxes.append((p.ref, x1, y1, x2, y2))
+
+        for hx, hy in MOUNT_HOLES_MM:
+            max_hr = math.hypot(hx, hy) + 1.1
+            assert max_hr <= BOARD_RADIUS_MM - 0.2, f"Hole {(hx, hy)} exceeds board edge: {max_hr:.2f}"
+            boxes.append((f"HOLE_{hx}_{hy}", hx - 1.0, hy - 1.0, hx + 1.0, hy + 1.0))
+
+        for i in range(len(boxes)):
+            n1, ax1, ay1, ax2, ay2 = boxes[i]
+            for j in range(i + 1, len(boxes)):
+                n2, bx1, by1, bx2, by2 = boxes[j]
+                if not (ax2 <= bx1 + 0.05 or bx2 <= ax1 + 0.05 or ay2 <= by1 + 0.05 or by2 <= ay1 + 0.05):
+                    raise AssertionError(f"DRC overlap on {layer} between {n1} and {n2}")
+
+
 def build_routes(parts: List[PartDef]) -> List[Tuple[str, float, List[Tuple[float, float]]]]:
-    """Generate clean point-to-point copper traces between matching net pads."""
     by_ref = {p.ref: p for p in parts}
 
     def pad_abs(ref: str, pad_num: str) -> Tuple[float, float]:
@@ -280,38 +315,34 @@ def build_routes(parts: List[PartDef]) -> List[Tuple[str, float, List[Tuple[floa
                 return (p.x + rx, p.y + ry)
         raise KeyError(f"{ref}.{pad_num}")
 
-    routes: List[Tuple[str, float, List[Tuple[float, float]]]] = [
-        ("F.Cu", 0.35, [pad_abs("J1", "A4"), (-4.0, -14.2), pad_abs("U5", "5")]),
-        ("F.Cu", 0.35, [pad_abs("U5", "5"), (-8.5, -9.2), pad_abs("U4", "IN")]),
-        ("F.Cu", 0.25, [pad_abs("J1", "A6"), (-2.2, -13.5), pad_abs("U5", "1")]),
-        ("F.Cu", 0.25, [pad_abs("J1", "A7"), (-1.0, -14.5), pad_abs("U5", "3")]),
-        ("F.Cu", 0.20, [pad_abs("U5", "6"), (-5.5, -2.5), pad_abs("U1", "DP")]),
-        ("F.Cu", 0.20, [pad_abs("U5", "4"), (-4.8, -2.8), pad_abs("U1", "DM")]),
+    return [
+        ("F.Cu", 0.30, [pad_abs("J1", "A4"), (-4.2, -7.8), pad_abs("U5", "5")]),
+        ("F.Cu", 0.30, [pad_abs("U5", "5"), (-6.8, -3.5), pad_abs("U4", "IN")]),
+        ("F.Cu", 0.20, [pad_abs("J1", "A6"), (-2.2, -7.2), pad_abs("U5", "1")]),
+        ("F.Cu", 0.20, [pad_abs("J1", "A7"), (-1.0, -7.6), pad_abs("U5", "3")]),
+        ("F.Cu", 0.20, [pad_abs("U5", "6"), (-4.6, -2.0), pad_abs("U1", "DP")]),
+        ("F.Cu", 0.20, [pad_abs("U5", "4"), (-4.2, -2.4), pad_abs("U1", "DM")]),
         ("F.Cu", 0.20, [pad_abs("J1", "A5"), pad_abs("R4", "1")]),
         ("F.Cu", 0.20, [pad_abs("J1", "B5"), pad_abs("R5", "1")]),
-        ("F.Cu", 0.35, [pad_abs("U4", "SYS"), pad_abs("U6", "IN")]),
-        ("F.Cu", 0.35, [pad_abs("U6", "OUT"), (-5.0, 0.5), pad_abs("U1", "VDD")]),
-        ("F.Cu", 0.20, [pad_abs("U1", "SDA"), (1.8, 4.5), pad_abs("U3", "SDA")]),
-        ("F.Cu", 0.20, [pad_abs("U1", "SCL"), (3.0, 3.5), pad_abs("U3", "SCL")]),
-        ("F.Cu", 0.20, [pad_abs("U1", "SDA"), (6.0, 2.0), pad_abs("U2", "15")]),
-        ("F.Cu", 0.20, [pad_abs("U1", "SCL"), (6.2, 1.0), pad_abs("U2", "14")]),
-        ("F.Cu", 0.20, [pad_abs("U1", "INT1"), (-1.5, 5.2), pad_abs("U3", "INT1")]),
+        ("F.Cu", 0.30, [pad_abs("U4", "SYS"), pad_abs("U6", "IN")]),
+        ("F.Cu", 0.30, [pad_abs("U6", "OUT"), (-5.2, 1.5), pad_abs("U1", "VDD")]),
+        ("F.Cu", 0.20, [pad_abs("U1", "SDA"), (1.8, 3.2), pad_abs("U3", "SDA")]),
+        ("F.Cu", 0.20, [pad_abs("U1", "SCL"), (3.0, 2.8), pad_abs("U3", "SCL")]),
+        ("F.Cu", 0.20, [pad_abs("U1", "SDA"), (5.0, 2.4), pad_abs("U2", "15")]),
+        ("F.Cu", 0.20, [pad_abs("U1", "SCL"), (5.2, 1.6), pad_abs("U2", "14")]),
+        ("F.Cu", 0.20, [pad_abs("U1", "INT1"), (2.0, 3.8), pad_abs("U3", "INT1")]),
         ("F.Cu", 0.20, [pad_abs("U2", "3"), pad_abs("C1", "1")]),
         ("F.Cu", 0.20, [pad_abs("U2", "2"), pad_abs("C1", "2")]),
-        ("F.Cu", 0.25, [pad_abs("U2", "4"), pad_abs("C4", "1")]),
+        ("F.Cu", 0.20, [pad_abs("U2", "4"), pad_abs("C4", "1")]),
         ("F.Cu", 0.20, [pad_abs("U1", "LED"), pad_abs("R3", "1")]),
         ("F.Cu", 0.20, [pad_abs("R3", "2"), pad_abs("D1", "1")]),
         ("B.Cu", 0.25, [pad_abs("J4", "1"), pad_abs("U4", "BAT")]),
-        ("B.Cu", 0.20, [pad_abs("J2", "2"), (-2.5, 2.0), pad_abs("U1", "SWDIO")]),
-        ("B.Cu", 0.20, [pad_abs("J2", "4"), (-2.0, 3.0), pad_abs("U1", "SWDCLK")]),
-        ("B.Cu", 0.20, [pad_abs("J2", "3"), (-8.0, 2.5), pad_abs("SW1", "1")]),
+        ("B.Cu", 0.20, [pad_abs("J2", "2"), (-3.0, 1.8), pad_abs("U1", "SWDIO")]),
+        ("B.Cu", 0.20, [pad_abs("J2", "4"), (-2.6, 2.5), pad_abs("U1", "SWDCLK")]),
+        ("B.Cu", 0.20, [pad_abs("J2", "3"), (4.5, -2.5), pad_abs("SW1", "1")]),
     ]
-    return routes
 
 
-# ---------------------------------------------------------------------------
-# 1. KiCad 8 Project / Schematic / PCB Writers (Balanced S-Expressions)
-# ---------------------------------------------------------------------------
 def _assert_balanced(text: str, name: str) -> None:
     depth = 0
     for ch in text:
@@ -331,37 +362,18 @@ def write_kicad_project(kicad_dir: str, parts: List[PartDef], routes: List[Tuple
     sch_path = os.path.join(kicad_dir, "HydroCap_V2.kicad_sch")
     pcb_path = os.path.join(kicad_dir, "HydroCap_V2.kicad_pcb")
 
-    pro_json = """{
-  "board": {
-    "design_settings": {
-      "defaults": {
-        "board_outline_line_width": 0.1,
-        "copper_line_width": 0.2
-      }
-    }
-  },
-  "meta": {
-    "filename": "HydroCap_V2.kicad_pro",
-    "version": 1
-  },
-  "schematic": {
-    "meta": { "version": 1 }
-  }
-}
-"""
     with open(pro_path, "w", encoding="utf-8") as f:
-        f.write(pro_json)
+        f.write('{\n  "board": { "design_settings": { "defaults": { "board_outline_line_width": 0.1, "copper_line_width": 0.2 } } },\n  "meta": { "filename": "HydroCap_V2.kicad_pro", "version": 1 },\n  "schematic": { "meta": { "version": 1 } }\n}\n')
 
-    # KiCad 8 Schematic S-expression
     sch_lines = [
         '(kicad_sch (version 20231120) (generator "HydroCapGenerator")',
         f'  (uuid "{uuid.uuid4()}")',
         '  (paper "A3")',
         '  (title_block',
-        '    (title "HydroCap V2 — Waterproof USB-C + MDBT50Q + NAU7802 + BMA400")',
-        '    (rev "2.0")',
+        '    (title "HydroCap V2.1 Universal 28mm Core — IPX8 USB-C + MDBT50Q + NAU7802YG + BMA400")',
+        '    (rev "2.1")',
         '    (date "2026-11-22")',
-        '    (comment 1 "PCBWay 4-Layer 0.8mm Circular 42mm ENIG")',
+        '    (comment 1 "PCBWay 4-Layer 0.8mm Circular 28.0mm ENIG — Fits All 1.1x D_cap Shells")',
         '  )',
         '  (lib_symbols)',
     ]
@@ -379,28 +391,15 @@ def write_kicad_project(kicad_dir: str, parts: List[PartDef], routes: List[Tuple
     with open(sch_path, "w", encoding="utf-8") as f:
         f.write(sch_txt)
 
-    # KiCad 8 PCB S-expression (centered at 100, 100 mm; circular Edge.Cuts Ø42 mm)
     cx, cy = 100.0, 100.0
     pcb_lines = [
         '(kicad_pcb (version 20240108) (generator "HydroCapGenerator")',
         '  (general (thickness 0.8))',
         '  (paper "A4")',
         '  (layers',
-        '    (0 "F.Cu" signal)',
-        '    (1 "In1.Cu" power)',
-        '    (2 "In2.Cu" power)',
-        '    (31 "B.Cu" signal)',
-        '    (32 "B.Adhes" user)',
-        '    (33 "F.Adhes" user)',
-        '    (34 "B.Paste" user)',
-        '    (35 "F.Paste" user)',
-        '    (36 "B.SilkS" user)',
-        '    (37 "F.SilkS" user)',
-        '    (38 "B.Mask" user)',
-        '    (39 "F.Mask" user)',
-        '    (44 "Edge.Cuts" user)',
-        '    (46 "B.CrtYd" user)',
-        '    (47 "F.CrtYd" user)',
+        '    (0 "F.Cu" signal) (1 "In1.Cu" power) (2 "In2.Cu" power) (31 "B.Cu" signal)',
+        '    (34 "B.Paste" user) (35 "F.Paste" user) (36 "B.SilkS" user) (37 "F.SilkS" user)',
+        '    (38 "B.Mask" user) (39 "F.Mask" user) (44 "Edge.Cuts" user)',
         '  )',
         '  (net 0 "")',
     ]
@@ -409,12 +408,10 @@ def write_kicad_project(kicad_dir: str, parts: List[PartDef], routes: List[Tuple
     for n, nid in net_id.items():
         pcb_lines.append(f'  (net {nid} "{n}")')
 
-    # Circular board outline (Edge.Cuts)
     pcb_lines.append(f'  (gr_circle (center {cx:.2f} {cy:.2f}) (end {cx + BOARD_RADIUS_MM:.2f} {cy:.2f}) (stroke (width 0.1) (type solid)) (layer "Edge.Cuts"))')
-    # Antenna keepout zone at top (y > 14.5 mm relative -> y < cy - 14.5 in KiCad Y-down)
     pcb_lines.append(
         f'  (zone (net 0) (net_name "") (layers "F.Cu" "In1.Cu" "In2.Cu" "B.Cu") (keepout (tracks not_allowed) (vias not_allowed) (pads allowed) (copperpour not_allowed) (footprints allowed)) '
-        f'(polygon (pts (xy {cx - 6:.1f} {cy - 20.5:.1f}) (xy {cx + 6:.1f} {cy - 20.5:.1f}) (xy {cx + 6:.1f} {cy - 14.5:.1f}) (xy {cx - 6:.1f} {cy - 14.5:.1f}))))'
+        f'(polygon (pts (xy {cx - 5.2:.1f} {cy - 13.5:.1f}) (xy {cx + 5.2:.1f} {cy - 13.5:.1f}) (xy {cx + 5.2:.1f} {cy - 7.8:.1f}) (xy {cx - 5.2:.1f} {cy - 7.8:.1f}))))'
     )
 
     for p in parts:
@@ -426,14 +423,12 @@ def write_kicad_project(kicad_dir: str, parts: List[PartDef], routes: List[Tuple
         pcb_lines.append(f'    (property "Value" "{p.value}" (at 0 1.5 0) (layer "{silk_str}"))')
         for pad in p.pads:
             nid = net_id.get(pad.net, 0)
-            nname = pad.net
             layers = '"F.Cu" "F.Paste" "F.Mask"' if p.layer == "Top" else '"B.Cu" "B.Paste" "B.Mask"'
-            pcb_lines.append(f'    (pad "{pad.num}" smd rect (at {pad.dx:.3f} {-pad.dy:.3f} {p.rot:.1f}) (size {pad.w:.3f} {pad.h:.3f}) (layers {layers}) (net {nid} "{nname}"))')
+            pcb_lines.append(f'    (pad "{pad.num}" smd rect (at {pad.dx:.3f} {-pad.dy:.3f} {p.rot:.1f}) (size {pad.w:.3f} {pad.h:.3f}) (layers {layers}) (net {nid} "{pad.net}"))')
         pcb_lines.append('  )')
 
-    # 4x M2.2 NPTH Mounting Holes
-    for hx, hy in [(-15.5, 9.0), (15.5, 9.0), (-14.5, -10.5), (14.5, -10.5)]:
-        pcb_lines.append(f'  (footprint "MountingHole:2.2mm" (layer "F.Cu") (at {cx + hx:.2f} {cy - hy:.2f}) (pad "" np_thru_hole circle (at 0 0) (size 2.4 2.4) (drill 2.2) (layers "*.Cu" "*.Mask")))')
+    for hx, hy in MOUNT_HOLES_MM:
+        pcb_lines.append(f'  (footprint "MountingHole:1.6mm" (layer "F.Cu") (at {cx + hx:.2f} {cy - hy:.2f}) (pad "" np_thru_hole circle (at 0 0) (size 1.8 1.8) (drill 1.6) (layers "*.Cu" "*.Mask")))')
 
     for layer, width, pts in routes:
         for a, b in zip(pts[:-1], pts[1:]):
@@ -446,27 +441,17 @@ def write_kicad_project(kicad_dir: str, parts: List[PartDef], routes: List[Tuple
         f.write(pcb_txt)
 
 
-# ---------------------------------------------------------------------------
-# 2. RS-274X Gerber & Excellon Drill Generator (Origin at Board Center 0,0)
-# ---------------------------------------------------------------------------
 def _fmt_g(val_mm: float) -> str:
-    return str(int(round(val_mm * 1_000_000)))  # FSLAX46Y46 -> 6 decimal mm -> *1e6
+    return str(int(round(val_mm * 1_000_000)))
 
 
 def _gerber_header(title: str) -> List[str]:
-    return [
-        f"G04 HydroCap V2 {title}*",
-        "%FSLAX46Y46*%",
-        "%MOMM*%",
-        "%LPD*%",
-    ]
+    return [f"G04 HydroCap V2.1 28mm {title}*", "%FSLAX46Y46*%", "%MOMM*%", "%LPD*%"]
 
 
 def write_gerbers_and_zip(fab_dir: str, parts: List[PartDef], routes: List[Tuple[str, float, List[Tuple[float, float]]]]) -> str:
     gerb_dir = os.path.join(fab_dir, "gerbers")
     os.makedirs(gerb_dir, exist_ok=True)
-
-    # Collect unique rectangular pad apertures
     ap_map: Dict[Tuple[float, float], int] = {}
     ap_code = 10
 
@@ -478,83 +463,60 @@ def write_gerbers_and_zip(fab_dir: str, parts: List[PartDef], routes: List[Tuple
             ap_code += 1
         return ap_map[key]
 
-    # Pre-register pad & line apertures
     for p in parts:
         for pad in p.pads:
             rw, rh = (pad.h, pad.w) if int(round(p.rot)) % 180 == 90 else (pad.w, pad.h)
             get_rect_ap(rw, rh)
-    ap_trace_20 = 90
-    ap_trace_25 = 91
-    ap_trace_35 = 92
-    ap_outline = 95
+    ap_trace_20, ap_trace_30, ap_outline = 90, 91, 95
 
     def aperture_defs() -> List[str]:
-        lines = []
-        for (rw, rh), code in sorted(ap_map.items(), key=lambda kv: kv[1]):
-            lines.append(f"%ADD{code}R,{rw:.3f}X{rh:.3f}*%")
-        lines.append(f"%ADD{ap_trace_20}C,0.200*%")
-        lines.append(f"%ADD{ap_trace_25}C,0.250*%")
-        lines.append(f"%ADD{ap_trace_35}C,0.350*%")
-        lines.append(f"%ADD{ap_outline}C,0.100*%")
+        lines = [f"%ADD{code}R,{rw:.3f}X{rh:.3f}*%" for (rw, rh), code in sorted(ap_map.items(), key=lambda kv: kv[1])]
+        lines.extend([f"%ADD{ap_trace_20}C,0.200*%", f"%ADD{ap_trace_30}C,0.300*%", f"%ADD{ap_outline}C,0.100*%"])
         return lines
 
     def emit_copper_layer(layer_key: str, title: str, include_mask: bool = False, include_paste: bool = False) -> List[str]:
         lines = _gerber_header(title) + aperture_defs() + ["G01*"]
         target = "Top" if layer_key == "F.Cu" else "Bottom"
-        exp = 0.08 if include_mask else 0.0
         for p in parts:
-            if p.layer != target:
-                continue
-            if include_paste and p.assy_type == "PCB_PAD_DNP":
+            if p.layer != target or (include_paste and p.assy_type == "PCB_PAD_DNP"):
                 continue
             for pad in p.pads:
                 rx, ry = _rot_xy(pad.dx, pad.dy, p.rot)
                 rw, rh = (pad.h, pad.w) if int(round(p.rot)) % 180 == 90 else (pad.w, pad.h)
-                code = get_rect_ap(rw, rh)
-                lines.append(f"D{code}*")
+                lines.append(f"D{get_rect_ap(rw, rh)}*")
                 lines.append(f"X{_fmt_g(p.x + rx)}Y{_fmt_g(p.y + ry)}D03*")
         if not include_mask and not include_paste:
             for r_layer, width, pts in routes:
                 if r_layer != layer_key:
                     continue
-                code = ap_trace_35 if width >= 0.34 else (ap_trace_25 if width >= 0.24 else ap_trace_20)
-                lines.append(f"D{code}*")
+                lines.append(f"D{ap_trace_30 if width >= 0.28 else ap_trace_20}*")
                 lines.append(f"X{_fmt_g(pts[0][0])}Y{_fmt_g(pts[0][1])}D02*")
                 for px, py in pts[1:]:
                     lines.append(f"X{_fmt_g(px)}Y{_fmt_g(py)}D01*")
         lines.append("M02*")
         return lines
 
-    # Board Outline (.GM1)
     gm1 = _gerber_header("Board Outline Edge.Cuts") + [f"%ADD{ap_outline}C,0.100*%", "G01*", f"D{ap_outline}*"]
     for i in range(121):
         ang = 2.0 * math.pi * i / 120.0
-        ox = BOARD_RADIUS_MM * math.cos(ang)
-        oy = BOARD_RADIUS_MM * math.sin(ang)
-        gm1.append(f"X{_fmt_g(ox)}Y{_fmt_g(oy)}D{'02' if i == 0 else '01'}*")
+        gm1.append(f"X{_fmt_g(BOARD_RADIUS_MM * math.cos(ang))}Y{_fmt_g(BOARD_RADIUS_MM * math.sin(ang))}D{'02' if i == 0 else '01'}*")
     gm1.append("M02*")
 
-    # Inner Planes (.G2 GND, .G3 3V3)
     def emit_plane(name: str) -> List[str]:
-        lines = _gerber_header(name) + [f"%ADD{ap_trace_35}C,0.500*%", "G01*", f"D{ap_trace_35}*"]
-        # Draw ring boundary avoiding antenna keepout y > 14.5 mm
+        lines = _gerber_header(name) + [f"%ADD{ap_trace_30}C,0.500*%", "G01*", f"D{ap_trace_30}*"]
         for i in range(73):
             ang = 2.0 * math.pi * i / 72.0
-            px = min(19.5 * math.cos(ang), 19.5)
-            py = min(19.5 * math.sin(ang), 14.0)
-            lines.append(f"X{_fmt_g(px)}Y{_fmt_g(py)}D{'02' if i == 0 else '01'}*")
+            lines.append(f"X{_fmt_g(12.8 * math.cos(ang))}Y{_fmt_g(min(12.8 * math.sin(ang), 7.5))}D{'02' if i == 0 else '01'}*")
         lines.append("M02*")
         return lines
 
-    # Silkscreens (.GTO / .GBO)
     def emit_silk(target: str, title: str) -> List[str]:
         lines = _gerber_header(title) + [f"%ADD{ap_outline}C,0.150*%", "G01*", f"D{ap_outline}*"]
         for p in parts:
             if p.layer != target:
                 continue
             hw, hh = p.body_w / 2.0, p.body_h / 2.0
-            corners = [(-hw, -hh), (hw, -hh), (hw, hh), (-hw, hh), (-hw, -hh)]
-            for idx, (cx_, cy_) in enumerate(corners):
+            for idx, (cx_, cy_) in enumerate([(-hw, -hh), (hw, -hh), (hw, hh), (-hw, hh), (-hw, -hh)]):
                 lines.append(f"X{_fmt_g(p.x + cx_)}Y{_fmt_g(p.y + cy_)}D{'02' if idx == 0 else '01'}*")
         lines.append("M02*")
         return lines
@@ -571,17 +533,15 @@ def write_gerbers_and_zip(fab_dir: str, parts: List[PartDef], routes: List[Tuple
         "HydroCap_V2.GBO": emit_silk("Bottom", "Bottom Silkscreen"),
         "HydroCap_V2.GM1": gm1,
         "HydroCap_V2-PTH.drl": [
-            "M48", "; HydroCap V2 Plated Through-Hole Vias", "METRIC,TZ",
+            "M48", "; HydroCap V2.1 Plated Through-Hole Vias", "METRIC,TZ",
             "T1C0.300", "%", "T1",
-            "X-4.000Y-14.200", "X0.000Y0.000", "X6.000Y2.000", "X-8.000Y2.500",
+            "X-4.200Y-7.800", "X0.000Y0.000", "X5.000Y2.400", "X-3.000Y1.800",
             "M30",
         ],
         "HydroCap_V2-NPTH.drl": [
-            "M48", "; HydroCap V2 4x M2.2 Enclosure Mounting Holes", "METRIC,TZ",
-            "T1C2.200", "%", "T1",
-            "X-15.500Y9.000", "X15.500Y9.000", "X-14.500Y-10.500", "X14.500Y-10.500",
-            "M30",
-        ],
+            "M48", "; HydroCap V2.1 4x M1.6 Universal Core Mounting Holes", "METRIC,TZ",
+            "T1C1.600", "%", "T1",
+        ] + [f"X{hx:.3f}Y{hy:.3f}" for hx, hy in MOUNT_HOLES_MM] + ["M30"],
     }
 
     for fname, content in files.items():
@@ -595,82 +555,66 @@ def write_gerbers_and_zip(fab_dir: str, parts: List[PartDef], routes: List[Tuple
     return zip_path
 
 
-# ---------------------------------------------------------------------------
-# 3. PCBWay BOM CSV & Pick-and-Place CPL CSV (Strict 1:1 Designators)
-# ---------------------------------------------------------------------------
 def write_pcba_csvs(pcba_dir: str, parts: List[PartDef]) -> None:
     os.makedirs(pcba_dir, exist_ok=True)
-    bom_path = os.path.join(pcba_dir, "HydroCap_V2_PCBWay_BOM.csv")
-    cpl_path = os.path.join(pcba_dir, "HydroCap_V2_PCBWay_CPL_PickAndPlace.csv")
-
-    # Group only SMT parts for PCBA placement; list PCB pads clearly as DNP/Pad
-    with open(bom_path, "w", newline="", encoding="utf-8") as f:
+    with open(os.path.join(pcba_dir, "HydroCap_V2_PCBWay_BOM.csv"), "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(["Line#", "Designator", "Qty", "Manufacturer", "Part Number", "Description", "Package", "Type", "Distributor Ref"])
         for idx, p in enumerate(parts, start=1):
             w.writerow([idx, p.ref, 1, p.mfg, p.mpn, p.desc, p.pkg, p.assy_type, p.dist_ref])
 
-    with open(cpl_path, "w", newline="", encoding="utf-8") as f:
+    with open(os.path.join(pcba_dir, "HydroCap_V2_PCBWay_CPL_PickAndPlace.csv"), "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(["Designator", "Mid X (mm)", "Mid Y (mm)", "Layer", "Rotation", "Package", "Value"])
         for p in parts:
             w.writerow([p.ref, f"{p.x:.3f}", f"{p.y:.3f}", p.layer, f"{p.rot:.1f}", p.pkg, p.value])
 
 
-# ---------------------------------------------------------------------------
-# 4. Top & Bottom Visual PCB Render (pcb_layout_top_bottom.png)
-# ---------------------------------------------------------------------------
 def render_pcb_views(out_png: str, parts: List[PartDef], routes: List[Tuple[str, float, List[Tuple[float, float]]]]) -> None:
     fig, (ax_t, ax_b) = plt.subplots(1, 2, figsize=(14.5, 7.2), dpi=200)
     fig.patch.set_facecolor("#FFFFFF")
     fig.suptitle(
-        "HydroCap V2 PCBWay 4-Layer Circular PCB (Ø 42.0 mm × 0.8 mm, ENIG-RoHS) — IPX8 USB-C + Native Debug",
-        fontsize=13, fontweight="bold", color="#1A252C", y=0.97
+        "HydroCap V2.1 Universal Core PCB (Ø 28.0 mm × 0.8 mm, 4L ENIG) — Fits 1.1x D_cap (33.6 mm PET -> 69.3 mm Wide)",
+        fontsize=12.5, fontweight="bold", color="#1A252C", y=0.97
     )
 
     for ax, title, layer_name, cu_layer in [
-        (ax_t, "Top Layer (F.Cu / F.SilkS) — MDBT50Q + IPX8 USB-C + NAU7802 + BMA400", "Top", "F.Cu"),
+        (ax_t, "Top Layer (F.Cu / F.SilkS) — MDBT50Q + IPX8 USB-C + NAU7802YG + BMA400", "Top", "F.Cu"),
         (ax_b, "Bottom Layer (B.Cu / B.SilkS) — Tag-Connect TC2030 SWD & Solder Pads", "Bottom", "B.Cu"),
     ]:
-        ax.set_title(title, fontsize=10.2, fontweight="bold", color="#1B4F72", pad=8)
-        ax.set_xlim(-24.5, 24.5)
-        ax.set_ylim(-24.5, 24.5)
+        ax.set_title(title, fontsize=10.0, fontweight="bold", color="#1B4F72", pad=8)
+        ax.set_xlim(-17.0, 17.0)
+        ax.set_ylim(-17.0, 17.0)
         ax.set_aspect("equal")
         ax.set_xlabel("X (mm)", fontsize=8.5)
         ax.set_ylabel("Y (mm)", fontsize=8.5)
         ax.grid(True, linestyle=":", alpha=0.35)
 
-        # Green solder mask circle
         ax.add_patch(Circle((0, 0), BOARD_RADIUS_MM, facecolor="#0B5345", edgecolor="#F1C40F", linewidth=2.0, zorder=1))
-
-        # Antenna keep-out zone on top perimeter
-        ax.add_patch(Rectangle((-6.0, 14.5), 12.0, 6.0, facecolor="#78281F", edgecolor="#E74C3C", lw=1.2, ls="--", alpha=0.80, zorder=6))
+        ax.add_patch(Rectangle((-5.2, 7.8), 10.4, 5.7, facecolor="#78281F", edgecolor="#E74C3C", lw=1.2, ls="--", alpha=0.80, zorder=6))
         if layer_name == "Top":
-            ax.text(0, 17.8, "ANTENNA\nKEEP-OUT", ha="center", va="center", fontsize=6.5, fontweight="bold", color="#FADBD8", zorder=8)
+            ax.text(0, 10.8, "ANTENNA\nKEEP-OUT", ha="center", va="center", fontsize=6.5, fontweight="bold", color="#FADBD8", zorder=8)
 
-        # 4x M2.2 mounting holes
-        for hx, hy in [(-15.5, 9.0), (15.5, 9.0), (-14.5, -10.5), (14.5, -10.5)]:
-            ax.add_patch(Circle((hx, hy), 1.4, facecolor="#F1C40F", edgecolor="#9A7D0A", lw=0.8, zorder=3))
-            ax.add_patch(Circle((hx, hy), 1.1, facecolor="#FFFFFF", edgecolor="#1B2631", lw=0.6, zorder=4))
+        for hx, hy in MOUNT_HOLES_MM:
+            ax.add_patch(Circle((hx, hy), 1.0, facecolor="#F1C40F", edgecolor="#9A7D0A", lw=0.8, zorder=3))
+            ax.add_patch(Circle((hx, hy), 0.8, facecolor="#FFFFFF", edgecolor="#1B2631", lw=0.6, zorder=4))
 
-        # Copper routes
         for r_layer, width, pts in routes:
             if r_layer == cu_layer:
-                xs = [pt[0] for pt in pts]
-                ys = [pt[1] for pt in pts]
-                ax.plot(xs, ys, color="#E74C3C" if cu_layer == "F.Cu" else "#3498DB", linewidth=width * 4.5, alpha=0.85, zorder=4)
+                ax.plot([pt[0] for pt in pts], [pt[1] for pt in pts],
+                        color="#E74C3C" if cu_layer == "F.Cu" else "#3498DB", linewidth=width * 4.5, alpha=0.85, zorder=4)
 
-        # Component outlines, gold ENIG pads & designators
         for p in parts:
             if p.layer != layer_name:
                 continue
-            bx, by = p.x - p.body_w / 2.0, p.y - p.body_h / 2.0
-            ax.add_patch(Rectangle((bx, by), p.body_w, p.body_h, facecolor="#1C2833", edgecolor="#ECF0F1", lw=0.9, alpha=0.85, zorder=5))
+            bw, bh = (p.body_h, p.body_w) if int(round(p.rot)) % 180 == 90 else (p.body_w, p.body_h)
+            ax.add_patch(Rectangle((p.x - bw / 2.0, p.y - bh / 2.0), bw, bh,
+                                   facecolor="#1C2833", edgecolor="#ECF0F1", lw=0.9, alpha=0.85, zorder=5))
             for pad in p.pads:
                 rx, ry = _rot_xy(pad.dx, pad.dy, p.rot)
                 rw, rh = (pad.h, pad.w) if int(round(p.rot)) % 180 == 90 else (pad.w, pad.h)
                 ax.add_patch(Rectangle((p.x + rx - rw / 2.0, p.y + ry - rh / 2.0), rw, rh, facecolor="#F1C40F", edgecolor="none", zorder=6))
-            ax.text(p.x, p.y, p.ref, ha="center", va="center", fontsize=6.8, fontweight="bold", color="#FFFFFF", zorder=7)
+            ax.text(p.x, p.y, p.ref, ha="center", va="center", fontsize=6.8, fontweight="bold", color="#FFFFFF", zorder=8)
 
     plt.tight_layout(rect=[0, 0, 1, 0.94])
     fig.savefig(out_png, dpi=200, bbox_inches="tight", facecolor="#FFFFFF")
@@ -680,6 +624,7 @@ def render_pcb_views(out_png: str, parts: List[PartDef], routes: List[Tuple[str,
 def main() -> None:
     base_dir = os.path.dirname(os.path.abspath(__file__))
     parts = build_parts()
+    validate_drc_geometry(parts)
     routes = build_routes(parts)
 
     write_kicad_project(os.path.join(base_dir, "kicad"), parts, routes)
@@ -687,7 +632,7 @@ def main() -> None:
     write_pcba_csvs(os.path.join(base_dir, "pcba"), parts)
     render_pcb_views(os.path.join(base_dir, "pcb_layout_top_bottom.png"), parts, routes)
 
-    print(f"[PCBWay] Generated KiCad 8 sch/pcb, {len(parts)} BOM/CPL entries, and Gerbers -> {zip_path}")
+    print(f"[PCBWay] DRC PASSED (Ø {BOARD_RADIUS_MM * 2:.1f} mm) | {len(parts)} BOM/CPL entries | Gerbers -> {zip_path}")
 
 
 if __name__ == "__main__":

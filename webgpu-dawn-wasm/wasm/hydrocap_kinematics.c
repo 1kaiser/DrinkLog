@@ -1,8 +1,7 @@
 /*
  * HydroCap Relocation-Free wasm32 Kinematics, MVP Matrix & Physics Kernel.
- * Compiled directly by Debian Clang (--target=wasm32 -O3 -fno-math-errno
- * -fno-builtin-memset -fno-builtin-memcpy -nostdlib) without wasm-ld.
- * Zero static globals, zero .rodata LUTs, zero libc imports.
+ * Updated for 1.10x D_cap Proportioned Shell Family (pet_30: 33.6 mm on 30.5 mm cap)
+ * + Universal Ø28.0 mm PCBWay Core & Ø30.0 mm 3-Spoke Flexure.
  */
 
 #include <stdint.h>
@@ -16,12 +15,10 @@ static inline float smoothstepf(float x) {
     return t * t * (3.0f - 2.0f * t);
 }
 
-/* Range-reduced Taylor minimax sinf/cosf (accuracy < 2e-6, zero LUTs) */
 static inline float wasm_sinf(float x) {
     const float PI = 3.1415926535f;
     const float TWO_PI = 6.283185307f;
     const float HALF_PI = 1.570796327f;
-    /* Reduce to [-PI, PI] via floor */
     float k = (float)((int)(x / TWO_PI + ((x >= 0.0f) ? 0.5f : -0.5f)));
     float r = x - k * TWO_PI;
     if (r > HALF_PI) r = PI - r;
@@ -41,13 +38,7 @@ static inline float wasm_tanf(float x) {
 
 /*
  * Evaluate analytical HydroCap state at time t_sec over duration_sec (12.0s).
- * Writes 24 floats into out_state:
- *   [0]  stage (1..5)         [1]  jaw_radius_u      [2]  scroll_rot_y
- *   [3]  cap_drop_y           [4]  cap_rot_y         [5]  bottle_lift_y
- *   [6]  bail_angle_x         [7]  flex_strain       [8]  water_frac
- *   [9]  mass_g               [10] hc_ml             [11] usb_plug_z
- *   [12] cable_prog           [13] ble_phase         [14] phone_vis
- *   [15..17] cam_eye (x,y,z)  [18..20] cam_target    [21..23] led_rgb
+ * Proportions: D_cap = 30.5 mm (r = 1.525 u), D_hydrocap = 33.6 mm (1.10x, r = 1.68 u).
  */
 void wasm_eval_stage(float t_sec, float duration_sec, float* out_state) {
     float dur = (duration_sec > 0.1f) ? duration_sec : 12.0f;
@@ -56,7 +47,7 @@ void wasm_eval_stage(float t_sec, float duration_sec, float* out_state) {
     if (t < 0.0f) t += dur;
 
     float stage = 1.0f;
-    float jaw_dia_mm = 32.0f;
+    float jaw_dia_mm = 30.5f;
     float cap_drop_y = 0.0f;
     float cap_rot_y = 0.0f;
     float bottle_lift_y = 0.0f;
@@ -69,20 +60,21 @@ void wasm_eval_stage(float t_sec, float duration_sec, float* out_state) {
     float cable_prog = 0.0f;
     float ble_phase = -1.0f;
     float phone_vis = 0.0f;
-    float cx = 16.5f, cy = 20.5f, cz = 28.5f;
-    float tx = 0.0f, ty = 10.5f, tz = 0.0f;
+    float cx = 13.5f, cy = 19.0f, cz = 24.5f;
+    float tx = 0.0f, ty = 10.6f, tz = 0.0f;
     float lr = 0.18f, lg = 0.65f, lb = 0.90f;
 
     if (t < 2.6f) {
         stage = 1.0f;
         float u = smoothstepf(t / 2.6f);
-        jaw_dia_mm = 64.0f - 31.5f * u;
-        cap_drop_y = 3.8f * (1.0f - u);
-        cap_rot_y = 0.8f * (1.0f - u);
-        cx = 16.5f - 1.2f * u;
-        cy = 19.5f + 1.2f * u;
-        cz = 28.5f;
-        ty = 11.2f - 0.6f * u;
+        /* Compliant split collet gently closes from 34.0 mm to 30.5 mm flush on cap */
+        jaw_dia_mm = 34.0f - 3.5f * u;
+        cap_drop_y = 3.2f * (1.0f - u);
+        cap_rot_y = 0.85f * (1.0f - u);
+        cx = 12.8f - 0.8f * u;
+        cy = 18.5f + 0.8f * u;
+        cz = 24.0f;
+        ty = 11.2f - 0.4f * u;
     } else if (t < 5.2f) {
         stage = 2.0f;
         float u = smoothstepf((t - 2.6f) / 2.6f);
@@ -90,21 +82,21 @@ void wasm_eval_stage(float t_sec, float duration_sec, float* out_state) {
         bail_angle = 1.5707963f * bail_u;
         float lift_u = clampf((u - 0.22f) / 0.78f, 0.0f, 1.0f);
         float lift_bell = wasm_sinf(lift_u * 3.14159265f);
-        bottle_lift_y = 2.6f * lift_bell;
+        bottle_lift_y = 2.4f * lift_bell;
         flex_strain = lift_bell;
         mass_g = (lift_bell > 0.15f || u > 0.60f) ? 1180.0f : 0.0f;
-        cx = 17.5f; cy = 21.5f; cz = 32.5f;
-        ty = 11.4f;
+        cx = 13.5f; cy = 19.5f; cz = 26.5f;
+        ty = 10.8f;
         lr = 0.15f; lg = 0.85f; lb = 0.38f;
     } else if (t < 7.4f) {
         stage = 3.0f;
         float u = smoothstepf((t - 5.2f) / 2.2f);
-        cap_drop_y = 3.2f * wasm_sinf(u * 3.14159265f);
+        cap_drop_y = 2.8f * wasm_sinf(u * 3.14159265f);
         cap_rot_y = 6.2831853f * u;
         float sip_u = clampf((u - 0.22f) / 0.55f, 0.0f, 1.0f);
         water_frac = 0.85f - 0.24f * sip_u;
         mass_g = 0.0f;
-        cx = 16.5f; cy = 20.5f; cz = 28.5f;
+        cx = 13.0f; cy = 19.0f; cz = 24.5f;
         ty = 10.2f;
         lr = 0.05f; lg = 0.78f; lb = 0.92f;
     } else if (t < 9.8f) {
@@ -113,7 +105,7 @@ void wasm_eval_stage(float t_sec, float duration_sec, float* out_state) {
         bail_angle = 1.5707963f;
         float lift_u = clampf(u * 1.1f, 0.0f, 1.0f);
         float lift_bell = wasm_sinf(lift_u * 3.14159265f);
-        bottle_lift_y = 2.4f * lift_bell;
+        bottle_lift_y = 2.2f * lift_bell;
         flex_strain = 0.82f * lift_bell;
         water_frac = 0.61f;
         mass_g = 970.0f;
@@ -121,8 +113,8 @@ void wasm_eval_stage(float t_sec, float duration_sec, float* out_state) {
         float bp = u * 2.0f;
         ble_phase = bp - (float)((int)bp);
         phone_vis = 1.0f;
-        cx = 14.5f; cy = 20.5f; cz = 34.5f;
-        tx = 2.0f; ty = 11.4f; tz = 0.0f;
+        cx = 12.5f; cy = 18.8f; cz = 29.0f;
+        tx = 2.2f; ty = 10.2f; tz = 0.0f;
         lr = 0.15f; lg = 0.85f; lb = 0.38f;
     } else {
         stage = 5.0f;
@@ -132,8 +124,8 @@ void wasm_eval_stage(float t_sec, float duration_sec, float* out_state) {
         hc_ml = 210.0f;
         usb_plug_z = -2.0f * clampf(u * 2.0f, 0.0f, 1.0f);
         cable_prog = clampf((u - 0.25f) / 0.75f, 0.0f, 1.0f);
-        cx = -15.5f; cy = 18.8f; cz = 16.5f;
-        tx = -1.8f; ty = 14.5f; tz = 0.0f;
+        cx = -10.5f; cy = 17.5f; cz = 11.5f;
+        tx = -1.1f; ty = 14.8f; tz = 0.0f;
         if (cable_prog > 0.60f) {
             lr = 0.95f; lg = 0.22f; lb = 0.18f;
         } else {
@@ -143,7 +135,7 @@ void wasm_eval_stage(float t_sec, float duration_sec, float* out_state) {
 
     out_state[0] = stage;
     out_state[1] = (jaw_dia_mm / 10.0f) * 0.5f;
-    out_state[2] = (jaw_dia_mm - 32.0f) * 0.04f;
+    out_state[2] = (jaw_dia_mm - 30.5f) * 0.10f;
     out_state[3] = cap_drop_y;
     out_state[4] = cap_rot_y;
     out_state[5] = bottle_lift_y;
@@ -161,10 +153,6 @@ void wasm_eval_stage(float t_sec, float duration_sec, float* out_state) {
     out_state[21] = lr; out_state[22] = lg; out_state[23] = lb;
 }
 
-/*
- * Build Model (4x4) and WebGPU Zero-to-One MVP (4x4) in column-major order.
- * trs[9] = [tx, ty, tz, rx, ry, rz, sx, sy, sz].
- */
 void wasm_build_mvp(const float* trs,
                     const float* cam_eye,
                     const float* cam_target,
@@ -179,7 +167,6 @@ void wasm_build_mvp(const float* trs,
     float cz = wasm_cosf(trs[5]), sz = wasm_sinf(trs[5]);
     float scx = trs[6], scy = trs[7], scz = trs[8];
 
-    /* R = Ry * Rx * Rz * S */
     float m00 = (cy * cz + sy * sx * sz) * scx;
     float m10 = (cx * sz) * scx;
     float m20 = (-sy * cz + cy * sx * sz) * scx;
@@ -197,7 +184,6 @@ void wasm_build_mvp(const float* trs,
     out_model16[8] = m02; out_model16[9] = m12; out_model16[10] = m22; out_model16[11] = 0.0f;
     out_model16[12] = trs[0]; out_model16[13] = trs[1]; out_model16[14] = trs[2]; out_model16[15] = 1.0f;
 
-    /* LookAt view matrix (right-handed, up = 0,1,0) */
     float fx = cam_eye[0] - cam_target[0];
     float fy = cam_eye[1] - cam_target[1];
     float fz = cam_eye[2] - cam_target[2];
@@ -205,13 +191,11 @@ void wasm_build_mvp(const float* trs,
     if (f_len < 1e-5f) f_len = 1.0f;
     float zx = fx / f_len, zy = fy / f_len, zz = fz / f_len;
 
-    /* x_axis = normalize(cross(up, z_axis)) where up=(0,1,0) -> (zz, 0, -zx) */
     float xx = zz, xy = 0.0f, xz = -zx;
     float x_len = __builtin_sqrtf(xx * xx + xz * xz);
     if (x_len < 1e-5f) { xx = 1.0f; xz = 0.0f; x_len = 1.0f; }
     xx /= x_len; xz /= x_len;
 
-    /* y_axis = cross(z_axis, x_axis) */
     float yx = zy * xz - zz * xy;
     float yy = zz * xx - zx * xz;
     float yz = zx * xy - zy * xx;
@@ -223,7 +207,6 @@ void wasm_build_mvp(const float* trs,
     float vt1 = -(yx * cam_eye[0] + yy * cam_eye[1] + yz * cam_eye[2]);
     float vt2 = -(zx * cam_eye[0] + zy * cam_eye[1] + zz * cam_eye[2]);
 
-    /* Perspective WebGPU ZO: z_ndc in [0, 1] */
     float f_proj = 1.0f / wasm_tanf(fov_rad * 0.5f);
     float p00 = f_proj / aspect;
     float p11 = f_proj;
@@ -231,13 +214,11 @@ void wasm_build_mvp(const float* trs,
     float p22 = far_z * nf;
     float p32 = far_z * near_z * nf;
 
-    /* PV = P * V */
     float pv00 = p00 * vx0, pv01 = p00 * vy0, pv02 = p00 * vz0, pv03 = p00 * vt0;
     float pv10 = p11 * vx1, pv11 = p11 * vy1, pv12 = p11 * vz1, pv13 = p11 * vt1;
     float pv20 = p22 * vx2, pv21 = p22 * vy2, pv22 = p22 * vz2, pv23 = p22 * vt2 + p32;
     float pv30 = -vx2,      pv31 = -vy2,      pv32 = -vz2,      pv33 = -vt2;
 
-    /* MVP = PV * Model (column-major) */
     for (int col = 0; col < 4; ++col) {
         float c0 = out_model16[col * 4 + 0];
         float c1 = out_model16[col * 4 + 1];
@@ -250,12 +231,11 @@ void wasm_build_mvp(const float* trs,
     }
 }
 
-/* Inertial mass & sip classification parity kernel: out_res = [mass_g, delta_ml, event_type] */
 void wasm_eval_physics(float raw_force_g, float az_g, float prev_mass_g, float* out_res) {
     if (__builtin_fabsf(raw_force_g) < 45.0f) {
         out_res[0] = 0.0f;
         out_res[1] = 0.0f;
-        out_res[2] = 0.0f; /* Auto-tare */
+        out_res[2] = 0.0f;
         return;
     }
     float az = clampf(az_g, 0.85f, 1.15f);
